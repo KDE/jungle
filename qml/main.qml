@@ -1,44 +1,33 @@
-import QtQuick 2.0
-import QtMultimedia 5.0
+import QtQuick 2.1
+import QtQuick.Layouts 1.0
 
-Video {
-    id: video
-    width : 1800
-    height : 1600
-    source: "/home/vishesh/Videos/True.Detective.S01E01.HDTV.x264-2HD.mp4"
+Rectangle {
+    color: "black"
 
-    MouseArea {
+    Shows {
+        id: shows
+
         anchors.fill: parent
-        onClicked: {
-            if (video.playbackState == MediaPlayer.PlayingState) {
-                video.pause()
-            }
-            else {
-                video.play()
-            }
+
+        onPlay: {
+            videoPlayer.source = url
+            videoPlayer.visible = true
+            shows.visible = false
+
+            videoPlayer.play()
         }
     }
 
-    focus: true
-    Keys.onSpacePressed: video.playbackState == MediaPlayer.PlayingState ? video.pause() : video.play()
+    VideoPlayer {
+        id: videoPlayer
+        visible: false
 
-    Keys.onPressed: {
-        var amount = 0;
-        if (event.modifiers & Qt.ControlModifier) {
-            amount = 60000
-        }
-        else if (event.modifiers & Qt.AltModifier) {
-            amount = 10000
-        }
-        else if (event.modifiers & Qt.ShiftModifier) {
-            amount = 3000
-        }
+        anchors.fill: parent
+    }
 
-        if (event.key == Qt.Key_Left) {
-            video.seek(video.position - amount)
-        }
-        else if (event.key == Qt.Key_Right) {
-            video.seek(video.position + amount)
-        }
+    Keys.onEscapePressed: {
+        videoPlayer.stop()
+        videoPlayer.visible = false
+        shows.visible = true
     }
 }
