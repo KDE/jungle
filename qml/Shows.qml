@@ -5,9 +5,6 @@ GridView {
     id: gridView
     signal play (string url)
 
-    width: 500
-    height: 500
-
     model: ListModel {
         ListElement {
             cover: "/home/vishesh/lost.jpg"
@@ -26,31 +23,48 @@ GridView {
         }
     }
 
-    delegate: ColumnLayout {
-        Image {
-            source: cover
+    Component {
+        id: del
+        Item {
             width: cellWidth
             height: cellHeight
-        }
-        Text {
-            text: title
-            horizontalAlignment: Text.AlignHCenter
 
-            font.pointSize: 22
-        }
+            Image {
+                id: img
+                source: cover
 
-        anchors {
-            leftMargin: 50
-            rightMargin: 50
-        }
+                width: cellWidth - (anchors.leftMargin + anchors.rightMargin)
+                fillMode: Image.PreserveAspectFit
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                gridView.play(url)
+                anchors {
+                    top: parent.top
+                    leftMargin: 30
+                    rightMargin: 30
+                }
+            }
+            Text {
+                text: title
+                color: "white"
+                width: img.width
+                horizontalAlignment: Text.AlignHCenter
+
+                font.pointSize: 22
+                anchors {
+                    top: img.bottom
+                    bottom: parent.bottom
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    gridView.play(url)
+                }
             }
         }
     }
+
+    delegate: del
 
     cellWidth: 400
     cellHeight: 600

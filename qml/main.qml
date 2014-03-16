@@ -4,6 +4,9 @@ import QtQuick.Layouts 1.0
 Rectangle {
     color: "black"
 
+    width: 1800
+    height: 1600
+
     Shows {
         id: shows
 

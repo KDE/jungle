@@ -3,8 +3,6 @@ import QtMultimedia 5.0
 
 Video {
     id: video
-    width : 1800
-    height : 1600
 
     MouseArea {
         anchors.fill: parent
