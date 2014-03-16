@@ -1,23 +1,40 @@
 import QtQuick 2.0
 import QtMultimedia 5.0
 
-Video {
+Item {
     id: video
+    property alias source: mediaPlayer.source
+
+    MediaPlayer {
+        id: mediaPlayer
+        source: "/home/vishesh/Videos/True.Detective.S01E01.HDTV.x264-2HD.mp4"
+
+        onPositionChanged: {
+            progressBar.value = position
+            progressBar.maximum = duration
+        }
+    }
+
+    VideoOutput {
+        id: videoOutput
+        anchors.fill: parent
+        source: mediaPlayer
+    }
 
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            if (video.playbackState == MediaPlayer.PlayingState) {
-                video.pause()
+            if (mediaPlayer.playbackState == MediaPlayer.PlayingState) {
+                mediaPlayer.pause()
             }
             else {
-                video.play()
+                mediaPlayer.play()
             }
         }
     }
 
     focus: true
-    Keys.onSpacePressed: video.playbackState == MediaPlayer.PlayingState ? video.pause() : video.play()
+    Keys.onSpacePressed: mediaPlayer.playbackState == MediaPlayer.PlayingState ? mediaPlayer.pause() : mediaPlayer.play()
 
     Keys.onPressed: {
         var amount = 0;
@@ -32,10 +49,37 @@ Video {
         }
 
         if (event.key == Qt.Key_Left) {
-            video.seek(video.position - amount)
+            mediaPlayer.seek(mediaPlayer.position - amount)
         }
         else if (event.key == Qt.Key_Right) {
-            video.seek(video.position + amount)
+            mediaPlayer.seek(mediaPlayer.position + amount)
+        }
+    }
+
+    function play() {
+        mediaPlayer.play()
+    }
+
+    function stop() {
+        mediaPlayer.stop()
+    }
+
+    function pause() {
+        mediaPlayer.pause()
+    }
+
+    ProgressBar {
+        id: progressBar
+        width: parent.width - (anchors.leftMargin + anchors.rightMargin)
+        height: 30
+        radius: 10
+
+        y: parent.y + parent.height * 0.85
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+
+            leftMargin: 150
+            rightMargin: 150
         }
     }
 }
