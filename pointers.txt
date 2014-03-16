@@ -1,0 +1,8 @@
+-Something to play stuff
+-Fetch information
+-Models
+-Index
+-QML Gui
+-Subtitle fetching
+-OS X
+-Window
