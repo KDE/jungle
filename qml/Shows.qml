@@ -1,5 +1,6 @@
 import QtQuick 2.1
 import QtQuick.Layouts 1.0
+import QtGraphicalEffects 1.0
 
 GridView {
     id: gridView
@@ -42,6 +43,7 @@ GridView {
                     rightMargin: 30
                 }
             }
+
             Text {
                 text: title
                 color: "white"
@@ -60,6 +62,14 @@ GridView {
                 onClicked: {
                     gridView.play(url)
                 }
+            }
+
+            RectangularGlow {
+                anchors.fill: img
+                glowRadius: 7
+                spread: 0.1
+                color: "white"
+                z: -1
             }
         }
     }

@@ -71,7 +71,7 @@ Item {
     ProgressBar {
         id: progressBar
         width: parent.width - (anchors.leftMargin + anchors.rightMargin)
-        height: 30
+        height: 20
         radius: 10
 
         y: parent.y + parent.height * 0.85
