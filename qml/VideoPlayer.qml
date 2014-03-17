@@ -8,29 +8,12 @@ Item {
     MediaPlayer {
         id: mediaPlayer
         source: "/home/vishesh/Videos/True.Detective.S01E01.HDTV.x264-2HD.mp4"
-
-        onPositionChanged: {
-            progressBar.value = position
-            progressBar.maximum = duration
-        }
     }
 
     VideoOutput {
         id: videoOutput
         anchors.fill: parent
         source: mediaPlayer
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            if (mediaPlayer.playbackState == MediaPlayer.PlayingState) {
-                mediaPlayer.pause()
-            }
-            else {
-                mediaPlayer.play()
-            }
-        }
     }
 
     focus: true
@@ -54,6 +37,9 @@ Item {
         else if (event.key == Qt.Key_Right) {
             mediaPlayer.seek(mediaPlayer.position + amount)
         }
+
+       toolBox.opacity = 1.0
+       toolBoxHideTimer.start()
     }
 
     function play() {
@@ -68,18 +54,38 @@ Item {
         mediaPlayer.pause()
     }
 
-    ProgressBar {
-        id: progressBar
-        width: parent.width - (anchors.leftMargin + anchors.rightMargin)
-        height: 20
-        radius: 10
+    ToolBox {
+        id: toolBox
+        source: mediaPlayer
 
-        y: parent.y + parent.height * 0.85
-        anchors {
-            horizontalCenter: parent.horizontalCenter
+        width: parent.width
+        y: parent.y + parent.height * 0.80
 
-            leftMargin: 150
-            rightMargin: 150
+        Behavior on opacity {
+            NumberAnimation { duration: 500 }
         }
     }
+
+    Timer {
+        id: toolBoxHideTimer
+        interval: 3000
+        repeat: false
+
+        onTriggered: {
+            toolBox.opacity = 0.0
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+
+        onPositionChanged: {
+            toolBox.opacity = 1.0
+            toolBoxHideTimer.start()
+        }
+
+        propagateComposedEvents: true
+    }
 }
+
