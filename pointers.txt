@@ -6,3 +6,5 @@
 -Subtitle fetching
 -OS X
 -Window
+
+libtvdb can be found at kde:scratch/sebas/libtvdb-code --branch frameworks
