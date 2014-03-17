@@ -10,6 +10,7 @@ Item {
     property int value: 30
     property int radius: 0
     property string color: "white"
+    signal clicked (double percent)
 
     Rectangle {
         id: border
@@ -40,5 +41,13 @@ Item {
         spread: 0.1
         color: parent.color
         z: -1
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            var percent = mouse.x / parent.width
+            progressBar.clicked(percent)
+        }
     }
 }

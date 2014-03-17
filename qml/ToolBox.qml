@@ -51,5 +51,9 @@ Item {
             rightMargin: 150
             topMargin: 30
         }
+
+        onClicked: {
+            source.seek(source.duration * percent)
+        }
     }
 }
