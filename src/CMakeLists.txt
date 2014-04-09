@@ -1,6 +1,15 @@
 set(SRC
-    main.cpp
+    qmlplugins.cpp
+    videosmodel.cpp
 )
 
-add_executable(jungle ${SRC})
+add_library(jungleqmlplugin SHARED ${SRC})
 
+target_link_libraries(jungleqmlplugin
+    Qt5::Core
+    Qt5::Qml
+    ${BALOO_LIBRARIES}
+)
+
+install(TARGETS jungleqmlplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
+install(FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)

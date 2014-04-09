@@ -2,27 +2,13 @@ import QtQuick 2.1
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 
+import org.kde.jungle 0.1 as Jungle
+
 GridView {
     id: gridView
     signal play (string url)
 
-    model: ListModel {
-        ListElement {
-            cover: "/home/vishesh/lost.jpg"
-            title: "Lost"
-            url: "/home/vishesh/The.Big.Bang.Theory.S07E16.HDTV.x264-LOL.mp4"
-        }
-        ListElement {
-            cover: "/home/vishesh/lost.jpg"
-            title: "Lost"
-            url: "/home/vishesh/The.Big.Bang.Theory.S07E16.HDTV.x264-LOL.mp4"
-        }
-        ListElement {
-            cover: "/home/vishesh/lost.jpg"
-            title: "Lost"
-            url: "/home/vishesh/The.Big.Bang.Theory.S07E16.HDTV.x264-LOL.mp4"
-        }
-    }
+    model: Jungle.VideosModel {}
 
     Component {
         id: del
