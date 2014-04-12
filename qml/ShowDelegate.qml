@@ -31,8 +31,7 @@ ColumnLayout {
     }
 
     Text {
-        id: year
-        text: "2014"
+        text: date.getFullYear()
         color: "white"
         width: img.width
         opacity: 0.5
