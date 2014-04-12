@@ -19,29 +19,22 @@
  */
 
 #include "feeder.h"
+#include "moviefetchjob.h"
 
 #include <QTimer>
 #include <QDebug>
-#include <QFileInfo>
-#include <QRegularExpression>
 
 #include <baloo/query.h>
 #include <baloo/resultiterator.h>
 
-#include <tmdbqt/searchjob.h>
-
 #include <QSqlQuery>
 #include <QSqlError>
 
-// Issued to vhanda for personal use
-static const char* s_key = "d27948732458af6587dbc9b9764aad37";
-
 Feeder::Feeder(QSqlDatabase& sqlDb, QObject* parent)
     : QObject(parent)
-    , m_api(QString::fromLatin1(s_key))
     , m_sqlDb(sqlDb)
 {
-    connect(&m_api, SIGNAL(initialized()), this, SLOT(fetchFiles()));
+    QTimer::singleShot(0, this, SLOT(fetchFiles()));
 }
 
 Feeder::~Feeder()
@@ -59,67 +52,37 @@ void Feeder::fetchFiles()
         m_files << it.url().toLocalFile();
     }
 
-    QTimer::singleShot(0, this, SLOT(processNext()));
+    if (!m_files.isEmpty()) {
+        QTimer::singleShot(0, this, SLOT(processNext()));
+    }
 }
 
 void Feeder::processNext()
 {
     const QString url = m_files.takeLast();
-    if (filterUrl(url)) {
-        if (!m_files.isEmpty()) {
-            QTimer::singleShot(0, this, SLOT(processNext()));
-        }
-        return;
-    }
 
-    const QString fileName = QUrl::fromLocalFile(url).fileName();
-
-    QString name;
-    int year = 0;
-
-    if (!fetchNameAndYear(fileName, name, year)) {
-        if (!m_files.isEmpty()) {
-            QTimer::singleShot(0, this, SLOT(processNext()));
-        }
-        return;
-    }
-
-    qDebug() << name << year;
-
-    TmdbQt::SearchJob* job = m_api.searchMovie(name, year);
-    connect(job, SIGNAL(result(TmdbQt::SearchJob*)),
-            this, SLOT(slotMovieResult(TmdbQt::SearchJob*)));
+    auto job = new MovieFetchJob(url, this);
+    connect(job, &MovieFetchJob::result, this, &Feeder::slotResult);
 }
 
-void Feeder::slotMovieResult(TmdbQt::SearchJob* job)
+void Feeder::slotResult(MovieFetchJob* job)
 {
-    // FIXME: Try match the year, if the year matches, then it is probably the
-    //        same movie
-    TmdbQt::MovieDbList list = job->result();
-    if (list.size() != 1) {
-        qDebug() << "Have no received a single result";
-        if (!m_files.isEmpty()) {
+    if (job->id() == 0) {
+        if (!m_files.isEmpty())
             QTimer::singleShot(0, this, SLOT(processNext()));
-        }
         return;
     }
-
-    TmdbQt::MovieDb movie = list.first();
-
-    qDebug() << movie.id() << movie.title() << movie.releaseDate();
-
-    //
-    // FIXME: The poster needs to be fetched and saved somewhere?
-    //
+    job->deleteLater();
 
     // Push into the db
     QSqlQuery query;
-    query.prepare("insert into movies (mid, title, releaseDate, posterPath) "
-                  "VALUES (?, ?, ?, ?)");
-    query.addBindValue(movie.id());
-    query.addBindValue(movie.title());
-    query.addBindValue(movie.releaseDate());
-    query.addBindValue(movie.posterPath());
+    query.prepare("insert into movies (url, mid, title, releaseDate, posterPath) "
+                  "VALUES (?, ?, ?, ?, ?)");
+    query.addBindValue(job->url());
+    query.addBindValue(job->id());
+    query.addBindValue(job->title());
+    query.addBindValue(job->releaseDate());
+    query.addBindValue(job->posterUrl());
 
     if (!query.exec()) {
         qDebug() << query.lastError();
@@ -128,70 +91,4 @@ void Feeder::slotMovieResult(TmdbQt::SearchJob* job)
     if (!m_files.isEmpty()) {
         QTimer::singleShot(0, this, SLOT(processNext()));
     }
-}
-
-bool Feeder::filterUrl(const QString& url)
-{
-    QFileInfo info(url);
-
-    // A movie should be at least 100mb
-    if (info.size() <= 100 * 1024 * 1024) {
-        return true;
-    }
-
-    return false;
-}
-
-bool Feeder::fetchNameAndYear(const QString& fileName, QString& name, int& year)
-{
-    // FIXME: Use the actual mimetype
-    QStringList allowedVideoTypes;
-    allowedVideoTypes << "mp4" << "avi" << "mkv";
-
-    bool found = false;
-    foreach (const QString& type, allowedVideoTypes) {
-        if (fileName.endsWith(type)) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) {
-        return false;
-    }
-
-    name = fileName;
-
-    // Stupid hueristic
-    QStringList fillers;
-    fillers << allowedVideoTypes;
-    fillers << "." << "-" << "[" << "]" << "(" << ")"
-            << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
-            << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
-            << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
-            << "eng" << "bellatrix";
-
-    foreach (const QString& f, fillers) {
-        name.replace(f, " ", Qt::CaseInsensitive);
-    }
-
-    name = name.simplified();
-
-    // Remove the movie year if present
-    QRegularExpression yearRegexp("\\b([\\d]{4})\\b");
-    QRegularExpressionMatch m = yearRegexp.match(name);
-    if (m.isValid()) {
-        year = m.captured(1).toInt();
-        name.replace(yearRegexp, "");
-    }
-
-    QRegularExpression tvshowRegexp("\\b[Ss][\\d]{1,2}[Ee][\\d]{1,2}\\b");
-    if (name.contains(tvshowRegexp)) {
-        return false;
-    }
-
-    name = name.simplified();
-    // TODO: Check the length of the file. If < 2 minutes, then ignore
-
-    return true;
 }

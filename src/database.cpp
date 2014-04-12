@@ -42,10 +42,10 @@ bool Database::init()
 
     QSqlQuery query(*m_sqlDb);
     query.exec("CREATE TABLE IF NOT EXISTS movies("
-               "fid INTEGER PRIMARY KEY, "
+               "url TEXT NOT NULL PRIMARY KEY, "
                "mid INTEGER, "
-               "title TEXT, "
-               "releaseDate TEXT, "
+               "title TEXT NOT NULL, "
+               "releaseDate TEXT NOT NULL, "
                "posterPath TEXT)");
 
     if (query.lastError().isValid()) {

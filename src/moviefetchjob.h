@@ -18,32 +18,47 @@
  *
  */
 
-#ifndef FEEDER_H
-#define FEEDER_H
-
-#include <QSqlDatabase>
+#ifndef MOVIEFETCHJOB_H
+#define MOVIEFETCHJOB_H
 
 #include <QObject>
-#include <QStringList>
+#include <QNetworkAccessManager>
+#include <tmdbqt/themoviedbapi.h>
 
-class MovieFetchJob;
-
-class Feeder : public QObject
+class MovieFetchJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit Feeder(QSqlDatabase& sqlDb, QObject* parent = 0);
-    virtual ~Feeder();
+    MovieFetchJob(const QString &url, QObject* parent = 0);
 
-private Q_SLOTS:
-    void fetchFiles();
-    void processNext();
+    QString url() const { return m_url; }
 
-    void slotResult(MovieFetchJob* job);
+    int id() const { return m_id; }
+    QString title() const { return m_title; }
+    QDate releaseDate() const { return m_date; }
+    QString posterUrl() const { return m_posterUrl; }
+
+signals:
+    void result(MovieFetchJob* job);
+
+private slots:
+    void slotInitialized();
+    void slotMovieResult(TmdbQt::SearchJob* job);
+
 private:
-    QStringList m_files;
+    bool fetchNameAndYear(const QString& fileName, QString& name, int& year);
+    bool filterUrl(const QString& url);
 
-    QSqlDatabase& m_sqlDb;
+    TmdbQt::TheMovieDbApi m_api;
+
+    QString m_url;
+    QString m_searchTerm;
+    int m_year;
+
+    int m_id;
+    QString m_title;
+    QDate m_date;
+    QString m_posterUrl;
 };
 
-#endif // FEEDER_H
+#endif // MOVIEFETCHJOB_H

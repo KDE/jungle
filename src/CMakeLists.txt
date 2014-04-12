@@ -2,6 +2,7 @@ set(SRCS
     main.cpp
     database.cpp
     feeder.cpp
+    moviefetchjob.cpp
 )
 
 add_executable(jungle ${SRCS})
