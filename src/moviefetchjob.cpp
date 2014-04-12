@@ -23,8 +23,13 @@
 #include <QUrl>
 #include <QTimer>
 #include <QRegularExpression>
+
+#include <QFile>
 #include <QFileInfo>
 #include <QDebug>
+#include <QStandardPaths>
+
+#include <QNetworkReply>
 
 #include <tmdbqt/searchjob.h>
 
@@ -39,6 +44,9 @@ MovieFetchJob::MovieFetchJob(const QString& url, QObject* parent)
 {
     qDebug() << url;
     connect(&m_api, SIGNAL(initialized()), this, SLOT(slotInitialized()));
+
+    connect(&m_network, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(slotNetworkReply(QNetworkReply*)));
 }
 
 void MovieFetchJob::slotInitialized()
@@ -77,10 +85,21 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
     m_id = movie.id();
     m_title = movie.title();
     m_date = movie.releaseDate();
-    m_posterUrl = movie.posterUrl(QLatin1String("w32")).toLocalFile();
 
-    qDebug() << m_id << m_title << m_date << m_posterUrl;
-    // FIXME: The poster needs to be fetched
+    QUrl posterUrl = movie.posterUrl(QLatin1String("w342"));
+    m_network.get(QNetworkRequest(posterUrl));
+}
+
+void MovieFetchJob::slotNetworkReply(QNetworkReply* reply)
+{
+    const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    m_posterUrl = dataDir + "/jungle/" + QString::number(m_id);
+
+    QFile file(m_posterUrl);
+    file.open(QIODevice::WriteOnly);
+    file.write(reply->readAll());
+    file.close();
+
     emit result(this);
 }
 

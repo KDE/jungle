@@ -44,12 +44,14 @@ signals:
 private slots:
     void slotInitialized();
     void slotMovieResult(TmdbQt::SearchJob* job);
+    void slotNetworkReply(QNetworkReply* reply);
 
 private:
     bool fetchNameAndYear(const QString& fileName, QString& name, int& year);
     bool filterUrl(const QString& url);
 
     TmdbQt::TheMovieDbApi m_api;
+    QNetworkAccessManager m_network;
 
     QString m_url;
     QString m_searchTerm;
