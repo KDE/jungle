@@ -18,25 +18,37 @@
  *
  */
 
-#include <QApplication>
-#include <QStandardPaths>
-#include <QDir>
+#ifndef FEEDER_H
+#define FEEDER_H
 
-#include "database.h"
-#include "feeder.h"
+#include <QSqlDatabase>
 
-int main(int argc, char** argv)
+#include <QObject>
+#include <QStringList>
+
+#include <tmdbqt/themoviedbapi.h>
+
+class Feeder : public QObject
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
+public:
+    explicit Feeder(QSqlDatabase& sqlDb, QObject* parent = 0);
+    virtual ~Feeder();
 
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-    QDir().mkpath(dataDir);
+private Q_SLOTS:
+    void fetchFiles();
+    void processNext();
 
-    Database db(dataDir);
-    if (!db.init()) {
-        return 1;
-    }
+    void slotMovieResult(TmdbQt::SearchJob* job);
 
-    Feeder feeder(*db.sqlDatabase());
-    return app.exec();
-}
+private:
+    QStringList m_files;
+    TmdbQt::TheMovieDbApi m_api;
+
+    QSqlDatabase& m_sqlDb;
+
+    bool fetchNameAndYear(const QString& fileName, QString& name, int& year);
+    bool filterUrl(const QString& url);
+};
+
+#endif // FEEDER_H

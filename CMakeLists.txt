@@ -9,6 +9,8 @@ find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service)
 find_package(KFileMetaData REQUIRED)
 find_package(Baloo REQUIRED)
 
+find_package(TmdbQt5 REQUIRED)
+
 include(ECMSetupVersion)
 include(ECMAddTests)
 

@@ -75,7 +75,7 @@ QVariant VideosModel::data(const QModelIndex& index, int role) const
             return m_results[row].url();
 
         case CoverRole:
-            return QLatin1Literal("/home/vishesh/lost.jpg");
+            return QLatin1Literal("/home/vishesh/frozen.jpg");
     }
 
     return QVariant();

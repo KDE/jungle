@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,25 +17,21 @@
  *
  */
 
-#include <QApplication>
-#include <QStandardPaths>
-#include <QDir>
+#ifndef DATABASE_H
+#define DATABASE_H
 
-#include "database.h"
-#include "feeder.h"
+#include <QSqlDatabase>
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
+class Database {
+public:
+    Database(const QString& path);
 
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-    QDir().mkpath(dataDir);
+    bool init();
+    QSqlDatabase* sqlDatabase();
 
-    Database db(dataDir);
-    if (!db.init()) {
-        return 1;
-    }
+private:
+    QString m_path;
+    QSqlDatabase* m_sqlDb;
+};
 
-    Feeder feeder(*db.sqlDatabase());
-    return app.exec();
-}
+#endif // DATABASE_H
