@@ -21,6 +21,8 @@ install(TARGETS jungle DESTINATION ${BIN_INSTALL_DIR})
 set(SRC
     qmlplugins.cpp
     videosmodel.cpp
+    moviesmodel.cpp
+    database.cpp
 )
 
 add_library(jungleqmlplugin SHARED ${SRC})
