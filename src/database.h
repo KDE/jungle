@@ -21,6 +21,9 @@
 #define DATABASE_H
 
 #include <QSqlDatabase>
+#include "movie.h"
+
+namespace Jungle {
 
 class Database {
 public:
@@ -28,11 +31,15 @@ public:
     ~Database();
 
     bool init();
-    QSqlDatabase sqlDatabase();
+
+    void addMovie(const Movie& movie);
+    QList<Movie> allMovies() const;
 
 private:
     QString m_path;
     QSqlDatabase m_sqlDb;
 };
+
+}
 
 #endif // DATABASE_H

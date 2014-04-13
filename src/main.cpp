@@ -32,11 +32,11 @@ int main(int argc, char** argv)
     QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
     QDir().mkpath(dataDir);
 
-    Database db(dataDir);
+    Jungle::Database db(dataDir);
     if (!db.init()) {
         return 1;
     }
 
-    Feeder feeder(db.sqlDatabase());
+    Jungle::Feeder feeder(&db);
     return app.exec();
 }

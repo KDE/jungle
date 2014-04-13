@@ -23,6 +23,8 @@
 #include <QSqlError>
 #include <QDebug>
 
+using namespace Jungle;
+
 Database::Database(const QString& path)
     : m_path(path)
 {
@@ -63,7 +65,39 @@ bool Database::init()
     return true;
 }
 
-QSqlDatabase Database::sqlDatabase()
+void Database::addMovie(const Movie& movie)
 {
-    return m_sqlDb;
+    QSqlQuery query(m_sqlDb);
+    query.prepare("insert into movies (url, mid, title, releaseDate, posterPath) "
+                  "VALUES (?, ?, ?, ?, ?)");
+    query.addBindValue(movie.url());
+    query.addBindValue(movie.id());
+    query.addBindValue(movie.title());
+    query.addBindValue(movie.releaseDate());
+    query.addBindValue(movie.posterUrl());
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+}
+
+QList<Movie> Database::allMovies() const
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select url, mid, title, releaseDate, posterPath from movies");
+    query.exec();
+
+    QList<Movie> movies;
+    while (query.next()) {
+        Movie movie;
+        movie.setUrl(query.value("url").toString());
+        movie.setId(query.value("id").toInt());
+        movie.setTitle(query.value("title").toString());
+        movie.setReleaseDate(query.value("releaseDate").toDate());
+        movie.setPosterUrl(query.value("posterPath").toString());
+
+        movies << movie;
+    }
+
+    return movies;
 }

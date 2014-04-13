@@ -30,9 +30,11 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-Feeder::Feeder(const QSqlDatabase& sqlDb, QObject* parent)
+using namespace Jungle;
+
+Feeder::Feeder(Database* db, QObject* parent)
     : QObject(parent)
-    , m_sqlDb(sqlDb)
+    , m_db(db)
 {
     QTimer::singleShot(0, this, SLOT(fetchFiles()));
 }
@@ -74,19 +76,13 @@ void Feeder::slotResult(MovieFetchJob* job)
     }
     job->deleteLater();
 
-    // Push into the db
-    QSqlQuery query;
-    query.prepare("insert into movies (url, mid, title, releaseDate, posterPath) "
-                  "VALUES (?, ?, ?, ?, ?)");
-    query.addBindValue(job->url());
-    query.addBindValue(job->id());
-    query.addBindValue(job->title());
-    query.addBindValue(job->releaseDate());
-    query.addBindValue(job->posterUrl());
+    Movie movie;
+    movie.setId(job->id());
+    movie.setTitle(job->title());
+    movie.setReleaseDate(job->releaseDate());
+    movie.setPosterUrl(job->posterUrl());
 
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-    }
+    m_db->addMovie(movie);
 
     if (!m_files.isEmpty()) {
         QTimer::singleShot(0, this, SLOT(processNext()));

@@ -25,6 +25,8 @@
 #include <QNetworkAccessManager>
 #include <tmdbqt/themoviedbapi.h>
 
+namespace Jungle {
+
 class MovieFetchJob : public QObject
 {
     Q_OBJECT
@@ -63,4 +65,5 @@ private:
     QString m_posterUrl;
 };
 
+}
 #endif // MOVIEFETCHJOB_H

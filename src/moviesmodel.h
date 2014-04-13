@@ -21,6 +21,7 @@
 #ifndef JUNGLE_MOVIESMODEL_H
 #define JUNGLE_MOVIESMODEL_H
 
+#include "movie.h"
 #include <QAbstractListModel>
 #include <QDate>
 
@@ -46,15 +47,7 @@ private slots:
     void slotPopulate();
 
 private:
-    struct MovieInfo {
-        int id;
-        QString url;
-        QString title;
-        QDate releaseDate;
-        QString posterUrl;
-    };
-
-    QList<MovieInfo> m_movies;
+    QList<Movie> m_movies;
 };
 }
 

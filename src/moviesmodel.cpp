@@ -52,22 +52,8 @@ void MoviesModel::slotPopulate()
     Database db(dataDir);
     db.init();
 
-    QSqlQuery query(db.sqlDatabase());
-    query.prepare("select url, mid, title, releaseDate, posterPath from movies");
-    query.exec();
-
     beginResetModel();
-    m_movies.clear();
-    while (query.next()) {
-        MovieInfo info;
-        info.url = query.value("url").toString();
-        info.id = query.value("mid").toInt();
-        info.title = query.value("title").toString();
-        info.releaseDate = query.value("releaseDate").toDate();
-        info.posterUrl = query.value("posterPath").toString();
-
-        m_movies << info;
-    }
+    m_movies = db.allMovies();
     endResetModel();
 }
 
@@ -77,19 +63,19 @@ QVariant MoviesModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    MovieInfo info = m_movies[index.row()];
+    Movie movie = m_movies[index.row()];
     switch (role) {
         case Qt::DisplayRole:
-            return info.title;
+            return movie.title();
 
         case UrlRole:
-            return info.url;
+            return movie.url();
 
         case CoverRole:
-            return info.posterUrl;
+            return movie.posterUrl();
 
         case ReleaseDateRole:
-            return info.releaseDate;
+            return movie.releaseDate();
     }
 
     return QVariant();

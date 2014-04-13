@@ -18,36 +18,60 @@
  *
  */
 
-#ifndef FEEDER_H
-#define FEEDER_H
+#include "movie.h"
 
-#include "database.h"
+using namespace Jungle;
 
-#include <QObject>
-#include <QStringList>
-
-namespace Jungle {
-
-class MovieFetchJob;
-
-class Feeder : public QObject
+Movie::Movie()
 {
-    Q_OBJECT
-public:
-    explicit Feeder(Database* db, QObject* parent = 0);
-    virtual ~Feeder();
-
-private Q_SLOTS:
-    void fetchFiles();
-    void processNext();
-
-    void slotResult(MovieFetchJob* job);
-private:
-    QStringList m_files;
-
-    Database* m_db;
-};
-
 }
 
-#endif // FEEDER_H
+int Movie::id() const
+{
+    return m_id;
+}
+
+void Movie::setId(int id)
+{
+    m_id = id;
+}
+
+QString Movie::url() const
+{
+    return m_url;
+}
+
+void Movie::setUrl(const QString& url)
+{
+    m_url = url;
+}
+
+QString Movie::title() const
+{
+    return m_title;
+}
+
+void Movie::setTitle(const QString& title)
+{
+    m_title = title;
+}
+
+void Movie::setReleaseDate(const QDate& date)
+{
+    m_releaseDate = date;
+}
+
+QDate Movie::releaseDate() const
+{
+    return m_releaseDate;
+}
+
+void Movie::setPosterUrl(const QString& url)
+{
+    m_posterUrl = url;
+}
+
+QString Movie::posterUrl() const
+{
+    return m_posterUrl;
+}

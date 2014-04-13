@@ -33,6 +33,8 @@
 
 #include <tmdbqt/searchjob.h>
 
+using namespace Jungle;
+
 // Issued to vhanda for personal use
 static const char* s_key = "d27948732458af6587dbc9b9764aad37";
 

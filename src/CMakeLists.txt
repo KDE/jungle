@@ -2,6 +2,7 @@ set(SRCS
     main.cpp
     database.cpp
     feeder.cpp
+    movie.cpp
     moviefetchjob.cpp
 )
 
@@ -23,6 +24,7 @@ set(SRC
     videosmodel.cpp
     moviesmodel.cpp
     database.cpp
+    movie.cpp
 )
 
 add_library(jungleqmlplugin SHARED ${SRC})
