@@ -50,6 +50,9 @@ bool Database::init()
         return false;
     }
 
+    //
+    // Movies table
+    //
     QSqlQuery query(m_sqlDb);
     query.exec("CREATE TABLE IF NOT EXISTS movies("
                "fid INTEGER NOT NULL PRIMARY KEY, "
@@ -57,6 +60,16 @@ bool Database::init()
                "title TEXT NOT NULL, "
                "releaseDate TEXT NOT NULL, "
                "posterPath TEXT)");
+
+    if (query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    // Videos table
+    // This is used to check if a video has been processed
+    query.exec("CREATE TABLE IF NOT EXISTS videos("
+               "fid INTEGER NOT NULL PRIMARY KEY)");
 
     if (query.lastError().isValid()) {
         qDebug() << query.lastError();
@@ -78,22 +91,13 @@ bool Database::init()
 
 void Database::addMovie(const Movie& movie)
 {
-    // Fetch the video id
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select id from files where url = ? LIMIT 1");
-    query.addBindValue(movie.url());
-    query.exec();
-
-    int id = 0;
-    while (query.next()) {
-        id = query.value(0).toInt();
-    }
-
+    int id = fileId(movie.url());
     if (id == 0) {
         qDebug() << "Could not find an id for" << movie.url();
         return;
     }
 
+    QSqlQuery query(m_sqlDb);
     query.prepare("insert into movies (fid, mid, title, releaseDate, posterPath) "
                   "VALUES (?, ?, ?, ?, ?)");
     query.addBindValue(id);
@@ -130,3 +134,59 @@ QList<Movie> Database::allMovies() const
 
     return movies;
 }
+
+bool Database::hasVideo(int fileId)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select 1 from videos where fid = ?");
+    query.addBindValue(fileId);
+
+    if (!query.exec()) {
+        qDebug() << "hasVideo:" << query.lastError();
+        return false;
+    }
+
+    return query.next();
+}
+
+
+void Database::addVideo(const QString& url)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("insert into videos VALUES (?)");
+    query.addBindValue(fileId(url));
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+}
+
+int Database::fileId(const QString& url)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select id from files where url = ? LIMIT 1");
+    query.addBindValue(url);
+    query.exec();
+
+    int id = 0;
+    while (query.next()) {
+        id = query.value(0).toInt();
+    }
+
+    return id;
+}
+
+QString Database::fileUrl(int fid)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select url from files where id = ? LIMIT 1");
+    query.addBindValue(fid);
+    query.exec();
+
+    QString url;
+    while (query.next()) {
+        url = query.value(0).toString();
+    }
+
+    return url;
+}
+

@@ -51,11 +51,17 @@ void Feeder::fetchFiles()
 
     auto it = query.exec();
     while (it.next()) {
-        m_files << it.url().toLocalFile();
+        int id = it.id().mid(QByteArray("file:").size()).toInt();
+
+        if (!m_db->hasVideo(id)) {
+            m_files << it.url().toLocalFile();
+        }
     }
 
     if (!m_files.isEmpty()) {
         QTimer::singleShot(0, this, SLOT(processNext()));
+    } else {
+        qDebug() << "No files to process";
     }
 }
 
@@ -69,6 +75,10 @@ void Feeder::processNext()
 
 void Feeder::slotResult(MovieFetchJob* job)
 {
+    // Mark the url as processed
+    m_db->addVideo(job->url());
+
+    // Add data if there is any
     if (job->id() == 0) {
         if (!m_files.isEmpty())
             QTimer::singleShot(0, this, SLOT(processNext()));

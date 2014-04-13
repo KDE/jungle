@@ -40,7 +40,13 @@ public:
     void addMovie(const Movie& movie);
     QList<Movie> allMovies() const;
 
+    bool hasVideo(int fileId);
+    void addVideo(const QString& url);
+
 private:
+    int fileId(const QString& url);
+    QString fileUrl(int fid);
+
     QString m_path;
     QString m_fileMapDb;
 
