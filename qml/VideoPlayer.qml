@@ -76,16 +76,18 @@ Item {
         }
     }
 
+    // TODO: Do not cover the ToolBox
     MouseArea {
-        anchors.fill: parent
+        anchors {
+            fill: parent
+        }
         hoverEnabled: true
+        acceptedButtons: Qt.NoButton
 
         onPositionChanged: {
             toolBox.opacity = 1.0
             toolBoxHideTimer.start()
         }
-
-        propagateComposedEvents: true
     }
 }
 

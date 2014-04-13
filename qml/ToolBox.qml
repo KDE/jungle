@@ -2,16 +2,23 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.0
+import QtQuick.Controls 1.1 as QtControls
 
+// TODO: Some important things to implement - Nice progress bar
+// Simple play / pause buttons
+// Volume Control
+// Show duration
 Item {
     id: container
     property MediaPlayer source: MediaPlayer {}
 
-    Image {
+    QtControls.Button {
         id: button
+
         width: 150
-        source: "Alarm-Pause-icon.png"
-        fillMode: Image.PreserveAspectFit
+        height: 150
+
+        iconName: source.playbackState == MediaPlayer.PlayingState ? "media-playback-pause" : "media-playback-start"
         opacity: 0.8
 
         anchors {
@@ -19,20 +26,14 @@ Item {
             top: parent.top
         }
 
-    }
-
-    MouseArea {
-        anchors.fill: button
         onClicked: {
             if (source.playbackState == MediaPlayer.PlayingState) {
                 source.pause()
-            }
-            else {
+            } else {
                 source.play()
             }
         }
     }
-
 
     ProgressBar {
         id: progressBar
