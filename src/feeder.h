@@ -43,6 +43,12 @@ private Q_SLOTS:
 
     void slotResult(MovieFetchJob* job);
 private:
+    /**
+     * Remove extra crap from the file name
+     */
+    static QString filterFileName(const QString& fileName);
+    static bool filterUrl(const QString& url);
+
     QStringList m_files;
 
     Database* m_db;

@@ -23,6 +23,8 @@
 
 #include <QTimer>
 #include <QDebug>
+#include <QRegularExpression>
+#include <QFileInfo>
 
 #include <baloo/query.h>
 #include <baloo/resultiterator.h>
@@ -65,11 +67,105 @@ void Feeder::fetchFiles()
     }
 }
 
+QString Feeder::filterFileName(const QString& fileName)
+{
+    QStringList allowedVideoTypes;
+    allowedVideoTypes << "mp4" << "avi" << "mkv";
+
+    bool found = false;
+    foreach (const QString& type, allowedVideoTypes) {
+        if (fileName.endsWith(type)) {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        return QString();
+    }
+
+    QString name = fileName;
+
+    // Stupid hueristic
+    QStringList fillers;
+    fillers << allowedVideoTypes;
+    fillers << "." << "-" << "[" << "]" << "(" << ")"
+            << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
+            << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
+            << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
+            << "MP3" << "RARBG"
+            << "eng" << "bellatrix";
+
+    foreach (const QString& f, fillers) {
+        name.replace(f, " ", Qt::CaseInsensitive);
+    }
+
+    return name.simplified();
+}
+
+bool Feeder::filterUrl(const QString& url)
+{
+    QFileInfo info(url);
+
+    // A video should be at least 100mb
+    if (info.size() <= 100 * 1024 * 1024) {
+        return true;
+    }
+
+    return false;
+}
+
 void Feeder::processNext()
 {
     const QString url = m_files.takeLast();
+    if (filterUrl(url)) {
+        if (!m_files.isEmpty())
+            QTimer::singleShot(0, this, SLOT(processNext()));
+        return;
+    }
 
-    auto job = new MovieFetchJob(url, this);
+    QString fileName = QUrl::fromLocalFile(url).fileName();
+    fileName = filterFileName(fileName);
+
+    if (fileName.isEmpty()) {
+        if (!m_files.isEmpty())
+            QTimer::singleShot(0, this, SLOT(processNext()));
+        return;
+    }
+
+    //
+    // Check if tv show or movie
+    //
+    QRegularExpression tvshowRegexp("\\b[Ss]([\\d]{1,2})[Ee]([\\d]{1,2})\\b");
+    QRegularExpressionMatch match = tvshowRegexp.match(fileName);
+    if (match.hasMatch()) {
+        int season = match.captured(1).toInt();
+        int episode = match.captured(2).toInt();
+
+        Q_UNUSED(season);
+        Q_UNUSED(episode);
+        fileName.replace(tvshowRegexp, "");
+
+        // TODO: Implement tv show fetching
+        qDebug() << fileName.simplified() << season << episode;
+        if (!m_files.isEmpty())
+            QTimer::singleShot(0, this, SLOT(processNext()));
+        return;
+    }
+
+    //
+    // Must be a movie otherwise
+    //
+    int year = 0;
+
+    QRegularExpression yearRegexp("\\b([\\d]{4})\\b");
+    QRegularExpressionMatch m = yearRegexp.match(fileName);
+    if (m.isValid()) {
+        year = m.captured(1).toInt();
+        fileName.replace(yearRegexp, "");
+    }
+
+    auto job = new MovieFetchJob(url, fileName, year, this);
     connect(job, &MovieFetchJob::result, this, &Feeder::slotResult);
 }
 

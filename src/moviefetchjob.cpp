@@ -38,14 +38,15 @@ using namespace Jungle;
 // Issued to vhanda for personal use
 static const char* s_key = "d27948732458af6587dbc9b9764aad37";
 
-MovieFetchJob::MovieFetchJob(const QString& url, QObject* parent)
+MovieFetchJob::MovieFetchJob(const QString& url, const QString& name, int year, QObject* parent)
     : QObject(parent)
     , m_api(QString::fromLatin1(s_key))
     , m_url(url)
-    , m_year(0)
+    , m_searchTerm(name)
+    , m_year(year)
     , m_id(0)
 {
-    qDebug() << url;
+    qDebug() << url << name << year;
     connect(&m_api, SIGNAL(initialized()), this, SLOT(slotInitialized()));
 
     connect(&m_network, SIGNAL(finished(QNetworkReply*)),
@@ -54,18 +55,6 @@ MovieFetchJob::MovieFetchJob(const QString& url, QObject* parent)
 
 void MovieFetchJob::slotInitialized()
 {
-    if (filterUrl(m_url)) {
-        emit result(this);
-        return;
-    }
-
-    const QString fileName = QUrl::fromLocalFile(m_url).fileName();
-
-    if (!fetchNameAndYear(fileName, m_searchTerm, m_year)) {
-        emit result(this);
-        return;
-    }
-
     TmdbQt::SearchJob* job = m_api.searchMovie(m_searchTerm, m_year);
     connect(job, SIGNAL(result(TmdbQt::SearchJob*)),
             this, SLOT(slotMovieResult(TmdbQt::SearchJob*)));
@@ -121,72 +110,5 @@ void MovieFetchJob::slotNetworkReply(QNetworkReply* reply)
     file.close();
 
     emit result(this);
-}
-
-bool MovieFetchJob::filterUrl(const QString& url)
-{
-    QFileInfo info(url);
-
-    // A movie should be at least 100mb
-    if (info.size() <= 100 * 1024 * 1024) {
-        return true;
-    }
-
-    return false;
-}
-
-bool MovieFetchJob::fetchNameAndYear(const QString& fileName, QString& name, int& year)
-{
-    // FIXME: Use the actual mimetype
-    QStringList allowedVideoTypes;
-    allowedVideoTypes << "mp4" << "avi" << "mkv";
-
-    bool found = false;
-    foreach (const QString& type, allowedVideoTypes) {
-        if (fileName.endsWith(type)) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) {
-        return false;
-    }
-
-    name = fileName;
-
-    // Stupid hueristic
-    QStringList fillers;
-    fillers << allowedVideoTypes;
-    fillers << "." << "-" << "[" << "]" << "(" << ")"
-            << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
-            << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
-            << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
-            << "MP3" << "RARBG"
-            << "eng" << "bellatrix";
-
-    foreach (const QString& f, fillers) {
-        name.replace(f, " ", Qt::CaseInsensitive);
-    }
-
-    name = name.simplified();
-
-    // Remove the movie year if present
-    QRegularExpression yearRegexp("\\b([\\d]{4})\\b");
-    QRegularExpressionMatch m = yearRegexp.match(name);
-    if (m.isValid()) {
-        year = m.captured(1).toInt();
-        name.replace(yearRegexp, "");
-    }
-
-    QRegularExpression tvshowRegexp("\\b[Ss][\\d]{1,2}[Ee][\\d]{1,2}\\b");
-    if (name.contains(tvshowRegexp)) {
-        return false;
-    }
-
-    name = name.simplified();
-    // TODO: Check the length of the file. If < 2 minutes, then ignore
-
-    return true;
 }
 

@@ -31,7 +31,7 @@ class MovieFetchJob : public QObject
 {
     Q_OBJECT
 public:
-    MovieFetchJob(const QString &url, QObject* parent = 0);
+    MovieFetchJob(const QString& url, const QString& name, int year, QObject* parent = 0);
 
     QString url() const { return m_url; }
 
@@ -49,9 +49,6 @@ private slots:
     void slotNetworkReply(QNetworkReply* reply);
 
 private:
-    static bool fetchNameAndYear(const QString& fileName, QString& name, int& year);
-    static bool filterUrl(const QString& url);
-
     TmdbQt::TheMovieDbApi m_api;
     QNetworkAccessManager m_network;
 
