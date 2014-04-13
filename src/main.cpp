@@ -32,7 +32,9 @@ int main(int argc, char** argv)
     QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
     QDir().mkpath(dataDir);
 
-    Jungle::Database db(dataDir);
+    QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
+
+    Jungle::Database db(dataDir, fileMapDb);
     if (!db.init()) {
         return 1;
     }

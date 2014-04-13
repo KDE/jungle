@@ -78,6 +78,7 @@ void Feeder::slotResult(MovieFetchJob* job)
 
     Movie movie;
     movie.setId(job->id());
+    movie.setUrl(job->url());
     movie.setTitle(job->title());
     movie.setReleaseDate(job->releaseDate());
     movie.setPosterUrl(job->posterUrl());

@@ -49,7 +49,9 @@ void MoviesModel::slotPopulate()
     QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
     QDir().mkpath(dataDir);
 
-    Database db(dataDir);
+    QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
+
+    Database db(dataDir, fileMapDb);
     db.init();
 
     beginResetModel();

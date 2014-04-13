@@ -25,8 +25,9 @@
 
 using namespace Jungle;
 
-Database::Database(const QString& path)
+Database::Database(const QString& path, const QString& fileMapDb)
     : m_path(path)
+    , m_fileMapDb(fileMapDb)
 {
 }
 
@@ -51,7 +52,7 @@ bool Database::init()
 
     QSqlQuery query(m_sqlDb);
     query.exec("CREATE TABLE IF NOT EXISTS movies("
-               "url TEXT NOT NULL PRIMARY KEY, "
+               "fid INTEGER NOT NULL PRIMARY KEY, "
                "mid INTEGER, "
                "title TEXT NOT NULL, "
                "releaseDate TEXT NOT NULL, "
@@ -62,15 +63,40 @@ bool Database::init()
         return false;
     }
 
+    //
+    // Attach the file mapping db
+    //
+    query.prepare("ATTACH DATABASE ? AS fileMap");
+    query.addBindValue(m_fileMapDb);
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
     return true;
 }
 
 void Database::addMovie(const Movie& movie)
 {
+    // Fetch the video id
     QSqlQuery query(m_sqlDb);
-    query.prepare("insert into movies (url, mid, title, releaseDate, posterPath) "
-                  "VALUES (?, ?, ?, ?, ?)");
+    query.prepare("select id from files where url = ? LIMIT 1");
     query.addBindValue(movie.url());
+    query.exec();
+
+    int id = 0;
+    while (query.next()) {
+        id = query.value(0).toInt();
+    }
+
+    if (id == 0) {
+        qDebug() << "Could not find an id for" << movie.url();
+        return;
+    }
+
+    query.prepare("insert into movies (fid, mid, title, releaseDate, posterPath) "
+                  "VALUES (?, ?, ?, ?, ?)");
+    query.addBindValue(id);
     query.addBindValue(movie.id());
     query.addBindValue(movie.title());
     query.addBindValue(movie.releaseDate());
@@ -84,14 +110,17 @@ void Database::addMovie(const Movie& movie)
 QList<Movie> Database::allMovies() const
 {
     QSqlQuery query(m_sqlDb);
-    query.prepare("select url, mid, title, releaseDate, posterPath from movies");
-    query.exec();
+    query.exec("select files.url, mid, title, releaseDate, posterPath from files, movies where files.id = movies.fid");
+    if (query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return QList<Movie>();
+    }
 
     QList<Movie> movies;
     while (query.next()) {
         Movie movie;
         movie.setUrl(query.value("url").toString());
-        movie.setId(query.value("id").toInt());
+        movie.setId(query.value("mid").toInt());
         movie.setTitle(query.value("title").toString());
         movie.setReleaseDate(query.value("releaseDate").toDate());
         movie.setPosterUrl(query.value("posterPath").toString());

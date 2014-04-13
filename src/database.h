@@ -27,7 +27,12 @@ namespace Jungle {
 
 class Database {
 public:
-    Database(const QString& path);
+    /**
+     * Create a database at path \p path which will contain all of the
+     * data. The parameter \p fileMapDb should be the path to a sqlite
+     * db which maps an integer to a file.
+     */
+    Database(const QString& path, const QString& fileMapDb);
     ~Database();
 
     bool init();
@@ -37,6 +42,8 @@ public:
 
 private:
     QString m_path;
+    QString m_fileMapDb;
+
     QSqlDatabase m_sqlDb;
 };
 
