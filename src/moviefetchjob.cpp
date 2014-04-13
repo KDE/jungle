@@ -160,6 +160,7 @@ bool MovieFetchJob::fetchNameAndYear(const QString& fileName, QString& name, int
             << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
             << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
             << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
+            << "MP3" << "RARBG"
             << "eng" << "bellatrix";
 
     foreach (const QString& f, fillers) {
