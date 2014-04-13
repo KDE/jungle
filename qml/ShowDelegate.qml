@@ -12,8 +12,8 @@ ColumnLayout {
     Text {
         text: display
         color: "white"
-        width: img.width
 
+        Layout.fillWidth: true
         elide: Text.ElideRight
 
         font.pointSize: 8
@@ -24,6 +24,9 @@ ColumnLayout {
         text: date.getFullYear()
         color: "white"
         opacity: 0.5
+
+        Layout.fillWidth: true
+        elide: Text.ElideRight
 
         font.pointSize: 8
     }
