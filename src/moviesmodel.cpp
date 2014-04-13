@@ -33,6 +33,7 @@
 using namespace Jungle;
 
 MoviesModel::MoviesModel(QObject* parent)
+    : QAbstractListModel(parent)
 {
     QTimer::singleShot(0, this, SLOT(slotPopulate()));
 
@@ -51,7 +52,7 @@ void MoviesModel::slotPopulate()
     Database db(dataDir);
     db.init();
 
-    QSqlQuery query(*db.sqlDatabase());
+    QSqlQuery query(db.sqlDatabase());
     query.prepare("select url, mid, title, releaseDate, posterPath from movies");
     query.exec();
 

@@ -32,7 +32,7 @@ class Feeder : public QObject
 {
     Q_OBJECT
 public:
-    explicit Feeder(QSqlDatabase& sqlDb, QObject* parent = 0);
+    explicit Feeder(const QSqlDatabase& sqlDb, QObject* parent = 0);
     virtual ~Feeder();
 
 private Q_SLOTS:
@@ -43,7 +43,7 @@ private Q_SLOTS:
 private:
     QStringList m_files;
 
-    QSqlDatabase& m_sqlDb;
+    QSqlDatabase m_sqlDb;
 };
 
 #endif // FEEDER_H

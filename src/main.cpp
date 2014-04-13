@@ -37,6 +37,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Feeder feeder(*db.sqlDatabase());
+    Feeder feeder(db.sqlDatabase());
     return app.exec();
 }

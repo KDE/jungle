@@ -25,13 +25,14 @@
 class Database {
 public:
     Database(const QString& path);
+    ~Database();
 
     bool init();
-    QSqlDatabase* sqlDatabase();
+    QSqlDatabase sqlDatabase();
 
 private:
     QString m_path;
-    QSqlDatabase* m_sqlDb;
+    QSqlDatabase m_sqlDb;
 };
 
 #endif // DATABASE_H

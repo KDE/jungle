@@ -25,22 +25,29 @@
 
 Database::Database(const QString& path)
     : m_path(path)
-    , m_sqlDb(0)
 {
+}
+
+Database::~Database()
+{
+    const QString name = m_sqlDb.connectionName();
+
+    m_sqlDb = QSqlDatabase();
+    QSqlDatabase::removeDatabase(name);
 }
 
 bool Database::init()
 {
     qDebug() << "PATH:" << m_path;
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
-    m_sqlDb->setDatabaseName(m_path + "/webdata.sqlite3");
+    m_sqlDb = QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
+    m_sqlDb.setDatabaseName(m_path + "/webdata.sqlite3");
 
-    if (!m_sqlDb->open()) {
-        qDebug() << "Failed to open db" << m_sqlDb->lastError().text();
+    if (!m_sqlDb.open()) {
+        qDebug() << "Failed to open db" << m_sqlDb.lastError().text();
         return false;
     }
 
-    QSqlQuery query(*m_sqlDb);
+    QSqlQuery query(m_sqlDb);
     query.exec("CREATE TABLE IF NOT EXISTS movies("
                "url TEXT NOT NULL PRIMARY KEY, "
                "mid INTEGER, "
@@ -56,7 +63,7 @@ bool Database::init()
     return true;
 }
 
-QSqlDatabase* Database::sqlDatabase()
+QSqlDatabase Database::sqlDatabase()
 {
     return m_sqlDb;
 }

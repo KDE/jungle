@@ -30,7 +30,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-Feeder::Feeder(QSqlDatabase& sqlDb, QObject* parent)
+Feeder::Feeder(const QSqlDatabase& sqlDb, QObject* parent)
     : QObject(parent)
     , m_sqlDb(sqlDb)
 {
