@@ -87,18 +87,25 @@ QString Feeder::filterFileName(const QString& fileName)
 
     QString name = fileName;
 
+    QStringList basicFilters;
+    basicFilters << "." << "-" << "[" << "]" << "(" << ")";
+    foreach (const QString& f, basicFilters) {
+        name.replace(f, " ");
+    }
+
     // Stupid hueristic
     QStringList fillers;
     fillers << allowedVideoTypes;
-    fillers << "." << "-" << "[" << "]" << "(" << ")"
-            << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
+    fillers << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
             << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
             << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
-            << "MP3" << "RARBG" << "DIMENSION"
+            << "MP3" << "RARBG" << "DIMENSION" << "NTb" << "DD5" << "2HD" << "NF"
+            << "REMARKABLE" << "PROPER" << "AFG"
             << "eng" << "bellatrix";
 
     foreach (const QString& f, fillers) {
-        name.replace(f, " ", Qt::CaseInsensitive);
+        QRegularExpression exp("\\b" + f + "\\b", QRegularExpression::CaseInsensitiveOption);
+        name.replace(exp, " ");
     }
 
     return name.simplified();
