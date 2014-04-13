@@ -47,8 +47,8 @@ private slots:
     void slotNetworkReply(QNetworkReply* reply);
 
 private:
-    bool fetchNameAndYear(const QString& fileName, QString& name, int& year);
-    bool filterUrl(const QString& url);
+    static bool fetchNameAndYear(const QString& fileName, QString& name, int& year);
+    static bool filterUrl(const QString& url);
 
     TmdbQt::TheMovieDbApi m_api;
     QNetworkAccessManager m_network;

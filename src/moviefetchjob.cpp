@@ -40,6 +40,7 @@ MovieFetchJob::MovieFetchJob(const QString& url, QObject* parent)
     : QObject(parent)
     , m_api(QString::fromLatin1(s_key))
     , m_url(url)
+    , m_year(0)
     , m_id(0)
 {
     qDebug() << url;
@@ -58,30 +59,47 @@ void MovieFetchJob::slotInitialized()
 
     const QString fileName = QUrl::fromLocalFile(m_url).fileName();
 
-    QString name;
-    int year = 0;
-
-    if (!fetchNameAndYear(fileName, name, year)) {
+    if (!fetchNameAndYear(fileName, m_searchTerm, m_year)) {
         emit result(this);
         return;
     }
 
-    TmdbQt::SearchJob* job = m_api.searchMovie(name, year);
+    TmdbQt::SearchJob* job = m_api.searchMovie(m_searchTerm, m_year);
     connect(job, SIGNAL(result(TmdbQt::SearchJob*)),
             this, SLOT(slotMovieResult(TmdbQt::SearchJob*)));
 }
 
 void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
 {
-    // FIXME: Try match the year, if the year matches, then it is probably the
-    //        same movie
     TmdbQt::MovieDbList list = job->result();
-    if (list.size() != 1) {
+    if (list.isEmpty()) {
         emit result(this);
         return;
     }
 
-    TmdbQt::MovieDb movie = list.first();
+    TmdbQt::MovieDb movie = list.takeFirst();
+    if (m_year == 0 && !list.isEmpty()) {
+        emit result(this);
+        return;
+    }
+
+    for (const TmdbQt::MovieDb& mov : list) {
+        bool sameYear = (mov.releaseDate().year() == m_year);
+
+        QStringList origWords = m_searchTerm.split(' ', QString::SkipEmptyParts);
+        QStringList resultWords = mov.title().split(' ', QString::SkipEmptyParts);
+
+        // simple huerisitic
+        if (sameYear && origWords.size() == resultWords.size()) {
+            if (movie.id() == -1) {
+                movie = mov;
+            } else {
+                emit result(this);
+                return;
+            }
+        }
+    }
+
     m_id = movie.id();
     m_title = movie.title();
     m_date = movie.releaseDate();
