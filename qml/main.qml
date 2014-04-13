@@ -7,17 +7,40 @@ Rectangle {
     width: 1800
     height: 1600
 
-    Shows {
-        id: shows
-
+    Item {
+        id: mainItem
         anchors.fill: parent
 
-        onPlay: {
-            videoPlayer.source = url
-            videoPlayer.visible = true
-            shows.visible = false
+        Sidebar {
+            id: sidebar
 
-            videoPlayer.play()
+            width: 400
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+
+                topMargin: 50
+                leftMargin: 20
+                rightMargin: 20
+            }
+        }
+
+        Shows {
+            id: shows
+
+            anchors.left: sidebar.right
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+
+            onPlay: {
+                videoPlayer.source = url
+                videoPlayer.visible = true
+                mainItem.visible = false
+
+                videoPlayer.play()
+            }
         }
     }
 
@@ -31,6 +54,6 @@ Rectangle {
     Keys.onEscapePressed: {
         videoPlayer.stop()
         videoPlayer.visible = false
-        shows.visible = true
+        mainItem.visible = true
     }
 }
