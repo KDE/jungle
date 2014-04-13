@@ -29,6 +29,7 @@
 namespace Jungle {
 
 class MovieFetchJob;
+class TvShowFetchJob;
 
 class Feeder : public QObject
 {
@@ -42,6 +43,7 @@ private Q_SLOTS:
     void processNext();
 
     void slotResult(MovieFetchJob* job);
+    void slotResult(TvShowFetchJob* job);
 private:
     /**
      * Remove extra crap from the file name

@@ -4,6 +4,8 @@ set(SRCS
     feeder.cpp
     movie.cpp
     moviefetchjob.cpp
+    show.cpp
+    tvshowfetchjob.cpp
 )
 
 add_executable(jungle ${SRCS})
@@ -12,6 +14,7 @@ target_link_libraries(jungle
     Qt5::Qml
     ${BALOO_LIBRARIES}
     TmdbQt::TmdbQt5
+    ${LIBTVDB_LIBRARIES}
 )
 
 install(TARGETS jungle DESTINATION ${BIN_INSTALL_DIR})
@@ -25,6 +28,7 @@ set(SRC
     moviesmodel.cpp
     database.cpp
     movie.cpp
+    show.cpp
 )
 
 add_library(jungleqmlplugin SHARED ${SRC})

@@ -1,4 +1,5 @@
 /*
+ * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -17,46 +18,63 @@
  *
  */
 
-#ifndef DATABASE_H
-#define DATABASE_H
-
-#include <QSqlDatabase>
-#include "movie.h"
 #include "show.h"
 
-namespace Jungle {
+using namespace Jungle;
 
-class Database {
-public:
-    /**
-     * Create a database at path \p path which will contain all of the
-     * data. The parameter \p fileMapDb should be the path to a sqlite
-     * db which maps an integer to a file.
-     */
-    Database(const QString& path, const QString& fileMapDb);
-    ~Database();
-
-    bool init();
-
-    void addMovie(const Movie& movie);
-    QList<Movie> allMovies() const;
-
-    bool hasVideo(int fileId);
-    void addVideo(const QString& url);
-
-    bool hasShow(const QString& name);
-    void addShow(const Show& show);
-
-private:
-    int fileId(const QString& url);
-    QString fileUrl(int fid);
-
-    QString m_path;
-    QString m_fileMapDb;
-
-    QSqlDatabase m_sqlDb;
-};
-
+Show::Show()
+    : m_id(0)
+    , m_numSeasons(0)
+{
 }
 
-#endif // DATABASE_H
+QString Show::coverUrl() const
+{
+    return m_coverUrl;
+}
+
+QDate Show::firstAired() const
+{
+    return m_firstAired;
+}
+
+int Show::id() const
+{
+    return m_id;
+}
+
+int Show::numSeasons() const
+{
+    return m_numSeasons;
+}
+
+void Show::setCoverUrl(const QString& url)
+{
+    m_coverUrl = url;
+}
+
+void Show::setFirstAired(const QDate& date)
+{
+    m_firstAired = date;
+}
+
+void Show::setId(int id)
+{
+    m_id = id;
+}
+
+void Show::setNumSeasons(int num)
+{
+    m_numSeasons = num;
+}
+
+void Show::setTitle(const QString& name)
+{
+    m_title = name;
+}
+
+QString Show::title() const
+{
+    return m_title;
+}
+

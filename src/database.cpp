@@ -77,6 +77,21 @@ bool Database::init()
     }
 
     //
+    // Tv shows
+    //
+    query.exec("CREATE TABLE IF NOT EXISTS shows("
+               "id INTEGER NOT NULL PRIMARY KEY, "
+               "title TEXT NOT NULL, "
+               "releaseDate TEXT NOT NULL, "
+               "numSeasons INTEGER NOT NULL, "
+               "posterPath TEXT)");
+
+    if (query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    //
     // Attach the file mapping db
     //
     query.prepare("ATTACH DATABASE ? AS fileMap");
@@ -189,4 +204,37 @@ QString Database::fileUrl(int fid)
 
     return url;
 }
+
+bool Database::hasShow(const QString& name)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select 1 from shows where title = ?");
+    query.addBindValue(name);
+    query.exec();
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    return query.next();
+}
+
+void Database::addShow(const Show& show)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("insert into shows (id, title, releaseDate, numSeasons, posterPath) "
+                  "VALUES (?, ?, ?, ?, ?)");
+    query.addBindValue(show.id());
+    query.addBindValue(show.title());
+    query.addBindValue(show.firstAired());
+    query.addBindValue(show.numSeasons());
+    query.addBindValue(show.coverUrl());
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+}
+
+
 

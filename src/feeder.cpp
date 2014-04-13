@@ -20,6 +20,7 @@
 
 #include "feeder.h"
 #include "moviefetchjob.h"
+#include "tvshowfetchjob.h"
 
 #include <QTimer>
 #include <QDebug>
@@ -93,7 +94,7 @@ QString Feeder::filterFileName(const QString& fileName)
             << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
             << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
             << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
-            << "MP3" << "RARBG"
+            << "MP3" << "RARBG" << "DIMENSION"
             << "eng" << "bellatrix";
 
     foreach (const QString& f, fillers) {
@@ -142,11 +143,19 @@ void Feeder::processNext()
         int season = match.captured(1).toInt();
         int episode = match.captured(2).toInt();
 
-        Q_UNUSED(season);
-        Q_UNUSED(episode);
         fileName.replace(tvshowRegexp, "");
+        fileName = fileName.simplified();
 
-        // TODO: Implement tv show fetching
+        // vHanda: What about the case?
+        /*
+        if (!m_db->hasShow(fileName)) {
+            // vHanda: What about the actual episode?
+            TvShowFetchJob* job = new TvShowFetchJob(fileName, this);
+            connect(job, SIGNAL(result(TvShowFetchJob*)),
+                    this, SLOT(slotResult(TvShowFetchJob*)));
+            return;
+        }*/
+
         qDebug() << fileName.simplified() << season << episode;
         if (!m_files.isEmpty())
             QTimer::singleShot(0, this, SLOT(processNext()));
@@ -166,7 +175,8 @@ void Feeder::processNext()
     }
 
     auto job = new MovieFetchJob(url, fileName, year, this);
-    connect(job, &MovieFetchJob::result, this, &Feeder::slotResult);
+    connect(job, SIGNAL(result(MovieFetchJob*)),
+            this, SLOT(slotResult(MovieFetchJob*)));
 }
 
 void Feeder::slotResult(MovieFetchJob* job)
@@ -190,6 +200,26 @@ void Feeder::slotResult(MovieFetchJob* job)
     movie.setPosterUrl(job->posterUrl());
 
     m_db->addMovie(movie);
+
+    if (!m_files.isEmpty()) {
+        QTimer::singleShot(0, this, SLOT(processNext()));
+    }
+}
+
+void Feeder::slotResult(TvShowFetchJob* job)
+{
+    Show show = job->show();
+
+    // Add data if there is any
+    if (show.id() == 0) {
+        if (!m_files.isEmpty())
+            QTimer::singleShot(0, this, SLOT(processNext()));
+        return;
+    }
+    job->deleteLater();
+
+    qDebug() << "Adding show" << show.title();
+    m_db->addShow(show);
 
     if (!m_files.isEmpty()) {
         QTimer::singleShot(0, this, SLOT(processNext()));

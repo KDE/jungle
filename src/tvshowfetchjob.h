@@ -1,4 +1,5 @@
 /*
+ * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -17,46 +18,44 @@
  *
  */
 
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef TVSHOWFETCHJOB_H
+#define TVSHOWFETCHJOB_H
 
-#include <QSqlDatabase>
-#include "movie.h"
+#include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+
 #include "show.h"
+#include "tvdb/client.h"
 
 namespace Jungle {
 
-class Database {
+class TvShowFetchJob : public QObject
+{
+    Q_OBJECT
 public:
-    /**
-     * Create a database at path \p path which will contain all of the
-     * data. The parameter \p fileMapDb should be the path to a sqlite
-     * db which maps an integer to a file.
-     */
-    Database(const QString& path, const QString& fileMapDb);
-    ~Database();
+    explicit TvShowFetchJob(const QString& name, QObject* parent = 0);
+    virtual ~TvShowFetchJob();
 
-    bool init();
+    Show show() { return m_show; }
 
-    void addMovie(const Movie& movie);
-    QList<Movie> allMovies() const;
+signals:
+    void result(TvShowFetchJob* job);
 
-    bool hasVideo(int fileId);
-    void addVideo(const QString& url);
+private slots:
+    void slotFinished(const Tvdb::Series& series);
+    void slotMultipleResultsFound(const QList<Tvdb::Series>& series);
+    void slotNetworkReply(QNetworkReply* reply);
+    void slotNetworkReply();
 
-    bool hasShow(const QString& name);
-    void addShow(const Show& show);
-
+    void slotBah();
 private:
-    int fileId(const QString& url);
-    QString fileUrl(int fid);
+    Tvdb::Client* m_client;
+    QNetworkAccessManager m_network;
+    QString m_name;
 
-    QString m_path;
-    QString m_fileMapDb;
-
-    QSqlDatabase m_sqlDb;
+    Show m_show;
 };
 
 }
-
-#endif // DATABASE_H
+#endif // TVSHOWFETCHJOB_H
