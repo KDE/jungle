@@ -19,6 +19,7 @@
  */
 
 #include "tvshowfetchjob.h"
+#include <tmdbqt/tvdblist.h>
 
 #include <QStandardPaths>
 #include <QNetworkRequest>
@@ -27,68 +28,43 @@
 
 using namespace Jungle;
 
-TvShowFetchJob::TvShowFetchJob(const QString& name, QObject* parent)
+TvShowFetchJob::TvShowFetchJob(TmdbQt::TvSearchJob* job, const QString& name, QObject* parent)
     : QObject(parent)
     , m_name(name)
 {
+    connect(job, SIGNAL(result(TmdbQt::TvSearchJob*)),
+            this, SLOT(slotResult(TmdbQt::TvSearchJob*)));
     connect(&m_network, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(slotNetworkReply(QNetworkReply*)));
 
-    m_client = new Tvdb::Client(this);
-    connect(m_client, SIGNAL(finished(Tvdb::Series)),
-            this, SLOT(slotFinished(Tvdb::Series)));
-
-    qDebug() << "Calling" << name;
-    //QTimer::singleShot(0, this, SLOT(slotBah()));
-    //return;
-
-    m_client->getSeriesByName(name);
+    qDebug() << "TvShow:" << name;
 }
-
-void TvShowFetchJob::slotBah()
-{
-    emit result(this);
-}
-
 
 TvShowFetchJob::~TvShowFetchJob()
 {
-    delete m_client;
 }
 
-void TvShowFetchJob::slotFinished(const Tvdb::Series& series)
+void TvShowFetchJob::slotResult(TmdbQt::TvSearchJob* job)
 {
-    m_show.setTitle(series.name());
-    m_show.setFirstAired(series.firstAired());
-    m_show.setNumSeasons(series.numSeasons());
-    m_show.setId(series.id());
-
-    QList<QUrl> urls = series.posterUrls();
-    if (urls.isEmpty()) {
+    TmdbQt::TvDbList shows = job->result();
+    if (shows.isEmpty()) {
         emit result(this);
         return;
     }
 
-    qDebug() << "NET" << urls.first();
-    QNetworkReply* reply = m_network.get(QNetworkRequest(urls.first()));
-    connect(reply, SIGNAL(finished()), this, SLOT(slotNetworkReply()));
+    TmdbQt::TvDb tvshow = shows.first();
+    m_show.setTitle(tvshow.name());
+    m_show.setFirstAired(tvshow.firstAiredDate());
+    m_show.setId(tvshow.id());
 
-    delete m_client;
-    qDebug() << reply << reply->isRunning();
-}
-
-void TvShowFetchJob::slotMultipleResultsFound(const QList<Tvdb::Series>& series)
-{
-    // FIXME: Better multiple result handling?
-    qDebug() << "MULIT" << series.size();
-    slotFinished(series.first());
+    QUrl posterUrl = tvshow.posterUrl(QLatin1String("w342"));
+    m_network.get(QNetworkRequest(posterUrl));
 }
 
 void TvShowFetchJob::slotNetworkReply(QNetworkReply* reply)
 {
-    qDebug() << "NETsssssssssssss";
     const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    QString url = dataDir + "/jungle/" + QString::number(m_show.id());
+    QString url = dataDir + "/jungle/tvshow-" + QString::number(m_show.id());
 
     QFile file(url);
     file.open(QIODevice::WriteOnly);
@@ -99,12 +75,3 @@ void TvShowFetchJob::slotNetworkReply(QNetworkReply* reply)
 
     emit result(this);
 }
-
-void TvShowFetchJob::slotNetworkReply()
-{
-    qDebug() << "EEEE";
-    slotNetworkReply(qobject_cast<QNetworkReply*>(sender()));
-}
-
-
-

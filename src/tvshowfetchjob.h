@@ -26,7 +26,7 @@
 #include <QNetworkReply>
 
 #include "show.h"
-#include "tvdb/client.h"
+#include "tmdbqt/tvsearchjob.h"
 
 namespace Jungle {
 
@@ -34,7 +34,7 @@ class TvShowFetchJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit TvShowFetchJob(const QString& name, QObject* parent = 0);
+    explicit TvShowFetchJob(TmdbQt::TvSearchJob* job, const QString& name, QObject* parent = 0);
     virtual ~TvShowFetchJob();
 
     Show show() { return m_show; }
@@ -43,14 +43,10 @@ signals:
     void result(TvShowFetchJob* job);
 
 private slots:
-    void slotFinished(const Tvdb::Series& series);
-    void slotMultipleResultsFound(const QList<Tvdb::Series>& series);
+    void slotResult(TmdbQt::TvSearchJob* job);
     void slotNetworkReply(QNetworkReply* reply);
-    void slotNetworkReply();
 
-    void slotBah();
 private:
-    Tvdb::Client* m_client;
     QNetworkAccessManager m_network;
     QString m_name;
 

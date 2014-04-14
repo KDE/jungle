@@ -18,46 +18,40 @@
  *
  */
 
-#ifndef FEEDER_H
-#define FEEDER_H
-
-#include "database.h"
 #include "themoviedbstore.h"
 
-#include <QObject>
-#include <QStringList>
+#include <QFile>
+#include <QFileInfo>
+#include <QDebug>
+#include <QStandardPaths>
 
-namespace Jungle {
+#include <QNetworkReply>
 
-class MovieFetchJob;
-class TvShowFetchJob;
+#include <tmdbqt/searchjob.h>
 
-class Feeder : public QObject
+// Issued to vhanda for personal use
+static const char* s_key = "d27948732458af6587dbc9b9764aad37";
+
+using namespace Jungle;
+
+TheMovieDbStore::TheMovieDbStore(QObject* parent)
+    : QObject(parent)
+    , m_api(QString::fromLatin1(s_key))
 {
-    Q_OBJECT
-public:
-    explicit Feeder(Database* db, QObject* parent = 0);
-    virtual ~Feeder();
-
-private Q_SLOTS:
-    void fetchFiles();
-    void processNext();
-
-    void slotResult(MovieFetchJob* job);
-    void slotResult(TvShowFetchJob* job);
-private:
-    /**
-     * Remove extra crap from the file name
-     */
-    static QString filterFileName(const QString& fileName);
-    static bool filterUrl(const QString& url);
-
-    QStringList m_files;
-
-    Database* m_db;
-    TheMovieDbStore* m_theMovieDb;
-};
-
+    connect(&m_api, &TmdbQt::TheMovieDbApi::initialized,
+            this, &TheMovieDbStore::initialized);
 }
 
-#endif // FEEDER_H
+MovieFetchJob* TheMovieDbStore::fetchMovie(const QString& url, const QString& name, int year)
+{
+    TmdbQt::SearchJob* job = m_api.searchMovie(name, year);
+    MovieFetchJob* mjob = new MovieFetchJob(job, url, name, year);
+
+    return mjob;
+}
+
+TvShowFetchJob* TheMovieDbStore::fetchTvShow(const QString& name)
+{
+    TmdbQt::TvSearchJob* job = m_api.searchTvShow(name);
+    return new TvShowFetchJob(job, name);
+}

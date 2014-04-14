@@ -18,48 +18,35 @@
  *
  */
 
-#ifndef MOVIEFETCHJOB_H
-#define MOVIEFETCHJOB_H
+#ifndef THEMOVIEDBSTORE_H
+#define THEMOVIEDBSTORE_H
 
 #include <QObject>
+#include "movie.h"
+#include "moviefetchjob.h"
+#include "tvshowfetchjob.h"
+
 #include <QNetworkAccessManager>
 #include <tmdbqt/themoviedbapi.h>
 
 namespace Jungle {
 
-class MovieFetchJob : public QObject
+class TheMovieDbStore : public QObject
 {
     Q_OBJECT
 public:
-    MovieFetchJob(TmdbQt::SearchJob* job, const QString& url,
-                  const QString& searchTerm, int year, QObject* parent = 0);
+    explicit TheMovieDbStore(QObject* parent = 0);
 
-    QString url() const { return m_url; }
-
-    int id() const { return m_id; }
-    QString title() const { return m_title; }
-    QDate releaseDate() const { return m_date; }
-    QString posterUrl() const { return m_posterUrl; }
+    MovieFetchJob* fetchMovie(const QString& url, const QString& name, int year = 0);
+    TvShowFetchJob* fetchTvShow(const QString& name);
 
 signals:
-    void result(MovieFetchJob* job);
-
-private slots:
-    void slotMovieResult(TmdbQt::SearchJob* job);
-    void slotNetworkReply(QNetworkReply* reply);
+    void initialized();
 
 private:
-    QNetworkAccessManager m_network;
-
-    QString m_url;
-    QString m_searchTerm;
-    int m_year;
-
-    int m_id;
-    QString m_title;
-    QDate m_date;
-    QString m_posterUrl;
+    TmdbQt::TheMovieDbApi m_api;
 };
 
 }
-#endif // MOVIEFETCHJOB_H
+
+#endif // THEMOVIEDBSTORE_H

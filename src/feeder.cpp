@@ -39,7 +39,9 @@ Feeder::Feeder(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
 {
-    QTimer::singleShot(0, this, SLOT(fetchFiles()));
+    m_theMovieDb = new TheMovieDbStore(this);
+    connect(m_theMovieDb, SIGNAL(initialized()),
+            this, SLOT(fetchFiles()));
 }
 
 Feeder::~Feeder()
@@ -155,14 +157,13 @@ void Feeder::processNext()
         fileName = fileName.simplified();
 
         // vHanda: What about the case?
-        /*
         if (!m_db->hasShow(fileName)) {
             // vHanda: What about the actual episode?
-            TvShowFetchJob* job = new TvShowFetchJob(fileName, this);
+            TvShowFetchJob* job = m_theMovieDb->fetchTvShow(fileName);
             connect(job, SIGNAL(result(TvShowFetchJob*)),
                     this, SLOT(slotResult(TvShowFetchJob*)));
             return;
-        }*/
+        }
 
         qDebug() << fileName.simplified() << season << episode;
         if (!m_files.isEmpty())
@@ -183,7 +184,7 @@ void Feeder::processNext()
         fileName = fileName.simplified();
     }
 
-    auto job = new MovieFetchJob(url, fileName, year, this);
+    auto job = m_theMovieDb->fetchMovie(url, fileName, year);
     connect(job, SIGNAL(result(MovieFetchJob*)),
             this, SLOT(slotResult(MovieFetchJob*)));
 }

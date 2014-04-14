@@ -35,29 +35,19 @@
 
 using namespace Jungle;
 
-// Issued to vhanda for personal use
-static const char* s_key = "d27948732458af6587dbc9b9764aad37";
-
-MovieFetchJob::MovieFetchJob(const QString& url, const QString& name, int year, QObject* parent)
+MovieFetchJob::MovieFetchJob(TmdbQt::SearchJob* job, const QString& url,
+                             const QString& searchTerm, int year, QObject* parent)
     : QObject(parent)
-    , m_api(QString::fromLatin1(s_key))
     , m_url(url)
-    , m_searchTerm(name)
+    , m_searchTerm(searchTerm)
     , m_year(year)
     , m_id(0)
 {
-    qDebug() << url << name << year;
-    connect(&m_api, SIGNAL(initialized()), this, SLOT(slotInitialized()));
-
-    connect(&m_network, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(slotNetworkReply(QNetworkReply*)));
-}
-
-void MovieFetchJob::slotInitialized()
-{
-    TmdbQt::SearchJob* job = m_api.searchMovie(m_searchTerm, m_year);
+    qDebug() << url << searchTerm << year;
     connect(job, SIGNAL(result(TmdbQt::SearchJob*)),
             this, SLOT(slotMovieResult(TmdbQt::SearchJob*)));
+    connect(&m_network, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(slotNetworkReply(QNetworkReply*)));
 }
 
 void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
@@ -102,7 +92,7 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
 void MovieFetchJob::slotNetworkReply(QNetworkReply* reply)
 {
     const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    m_posterUrl = dataDir + "/jungle/" + QString::number(m_id);
+    m_posterUrl = dataDir + "/jungle/movie-" + QString::number(m_id);
 
     QFile file(m_posterUrl);
     file.open(QIODevice::WriteOnly);

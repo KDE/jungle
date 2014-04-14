@@ -3,6 +3,7 @@ set(SRCS
     database.cpp
     feeder.cpp
     movie.cpp
+    themoviedbstore.cpp
     moviefetchjob.cpp
     show.cpp
     tvshowfetchjob.cpp
@@ -16,7 +17,6 @@ target_link_libraries(jungle
     Qt5::Sql
     ${BALOO_LIBRARIES}
     TmdbQt::TmdbQt5
-    ${LIBTVDB_LIBRARIES}
 )
 
 install(TARGETS jungle DESTINATION ${BIN_INSTALL_DIR})
