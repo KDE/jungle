@@ -26,9 +26,7 @@ Rectangle {
             }
         }
 
-        Shows {
-            id: shows
-
+        Movies {
             anchors.left: sidebar.right
             anchors.right: parent.right
             anchors.top: parent.top

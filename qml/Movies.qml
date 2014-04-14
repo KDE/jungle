@@ -10,7 +10,7 @@ GridView {
 
     model: Jungle.MoviesModel {}
 
-    delegate: ShowDelegate {
+    delegate: MovieDelegate {
         MouseArea {
             anchors.fill: parent
             onClicked: {
