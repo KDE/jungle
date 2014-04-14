@@ -28,6 +28,7 @@ set(SRC
     qmlplugins.cpp
     videosmodel.cpp
     moviesmodel.cpp
+    tvshowsmodel.cpp
     database.cpp
     movie.cpp
     show.cpp

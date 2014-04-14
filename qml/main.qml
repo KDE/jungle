@@ -24,9 +24,20 @@ Rectangle {
                 leftMargin: 20
                 rightMargin: 20
             }
+
+            onMoviesActivated: {
+                movies.visible = true
+                tvshows.visible = false
+            }
+
+            onTvShowsActivated: {
+                movies.visible = false
+                tvshows.visible = true
+            }
         }
 
         Movies {
+            id: movies
             anchors.left: sidebar.right
             anchors.right: parent.right
             anchors.top: parent.top
@@ -39,6 +50,16 @@ Rectangle {
 
                 videoPlayer.play()
             }
+        }
+
+        TvShows {
+            id: tvshows
+            visible: false
+
+            anchors.left: sidebar.right
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
         }
     }
 

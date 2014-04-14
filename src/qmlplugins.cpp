@@ -22,6 +22,7 @@
 #include "qmlplugins.h"
 #include "videosmodel.h"
 #include "moviesmodel.h"
+#include "tvshowsmodel.h"
 
 #include <QtQml/qqml.h>
 
@@ -31,5 +32,6 @@ void QmlPlugins::registerTypes(const char *uri)
 
     qmlRegisterType<Jungle::VideosModel> (uri, 0, 1, "VideosModel");
     qmlRegisterType<Jungle::MoviesModel> (uri, 0, 1, "MoviesModel");
+    qmlRegisterType<Jungle::TvShowsModel> (uri, 0, 1, "TvShowsModel");
 }
 

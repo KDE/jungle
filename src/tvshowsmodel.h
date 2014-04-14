@@ -1,4 +1,5 @@
 /*
+ * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -17,47 +18,36 @@
  *
  */
 
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef JUNGLE_TVSHOWSMODEL_H
+#define JUNGLE_TVSHOWSMODEL_H
 
-#include <QSqlDatabase>
-#include "movie.h"
 #include "show.h"
+#include <QAbstractListModel>
+#include <QDate>
 
 namespace Jungle {
 
-class Database {
+class TvShowsModel : public QAbstractListModel
+{
+    Q_OBJECT
 public:
-    /**
-     * Create a database at path \p path which will contain all of the
-     * data. The parameter \p fileMapDb should be the path to a sqlite
-     * db which maps an integer to a file.
-     */
-    Database(const QString& path, const QString& fileMapDb);
-    ~Database();
+    explicit TvShowsModel(QObject* parent = 0);
 
-    bool init();
+    virtual QVariant data(const QModelIndex& index, int role) const;
+    virtual int columnCount(const QModelIndex& parent) const;
+    virtual int rowCount(const QModelIndex& parent) const;
 
-    void addMovie(const Movie& movie);
-    QList<Movie> allMovies() const;
+    enum Roles {
+        CoverRole = Qt::UserRole + 1,
+        ReleaseDateRole
+    };
 
-    bool hasVideo(int fileId);
-    void addVideo(const QString& url);
+private slots:
+    void slotPopulate();
 
-    bool hasShow(const QString& name);
-    void addShow(const Show& show);
-
-    QList<Show> allShows() const;
 private:
-    int fileId(const QString& url);
-    QString fileUrl(int fid);
-
-    QString m_path;
-    QString m_fileMapDb;
-
-    QSqlDatabase m_sqlDb;
+    QList<Show> m_shows;
 };
-
 }
 
-#endif // DATABASE_H
+#endif

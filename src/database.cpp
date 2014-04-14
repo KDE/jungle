@@ -236,5 +236,27 @@ void Database::addShow(const Show& show)
     }
 }
 
+QList<Show> Database::allShows() const
+{
+    QSqlQuery query(m_sqlDb);
+    query.exec("select id, title, releaseDate, posterPath from shows");
+    if (query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return QList<Show>();
+    }
+
+    QList<Show> shows;
+    while (query.next()) {
+        Show show;
+        show.setId(query.value("id").toInt());
+        show.setTitle(query.value("title").toString());
+        show.setFirstAired(query.value("releaseDate").toDate());
+        show.setCoverUrl(query.value("posterPath").toString());
+
+        shows << show;
+    }
+
+    return shows;
+}
 
 
