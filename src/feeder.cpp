@@ -88,7 +88,7 @@ QString Feeder::filterFileName(const QString& fileName)
     QString name = fileName;
 
     QStringList basicFilters;
-    basicFilters << "." << "-" << "[" << "]" << "(" << ")";
+    basicFilters << "." << "-" << "[" << "]" << "(" << ")" << "{" << "}";
     foreach (const QString& f, basicFilters) {
         name.replace(f, " ");
     }
@@ -100,8 +100,9 @@ QString Feeder::filterFileName(const QString& fileName)
             << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
             << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
             << "MP3" << "RARBG" << "DIMENSION" << "NTb" << "DD5" << "2HD" << "NF"
-            << "REMARKABLE" << "PROPER" << "AFG"
-            << "eng" << "bellatrix";
+            << "REMARKABLE" << "PROPER" << "AFG" << "bdrip" << "miguel" << "axxo"
+            << "occor" << "1337x" << "noir" << "Hindi" << "ViZNU" << "AAC"
+            << "eng" << "bellatrix" << "hon3y";
 
     foreach (const QString& f, fillers) {
         QRegularExpression exp("\\b" + f + "\\b", QRegularExpression::CaseInsensitiveOption);
@@ -179,6 +180,7 @@ void Feeder::processNext()
     if (m.isValid()) {
         year = m.captured(1).toInt();
         fileName.replace(yearRegexp, "");
+        fileName = fileName.simplified();
     }
 
     auto job = new MovieFetchJob(url, fileName, year, this);
