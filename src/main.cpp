@@ -18,7 +18,7 @@
  *
  */
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QStandardPaths>
 #include <QDir>
 
@@ -27,7 +27,7 @@
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
     QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
     QDir().mkpath(dataDir);
