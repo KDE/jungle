@@ -10,6 +10,7 @@ find_package(KFileMetaData REQUIRED)
 find_package(Baloo REQUIRED)
 
 find_package(TmdbQt5 REQUIRED)
+find_package(LibTvdb CONFIG REQUIRED)
 
 include(ECMSetupVersion)
 include(ECMAddTests)
@@ -22,6 +23,7 @@ include(KDECompilerSettings)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src
+  ${LIBTVDB_INCLUDE_DIR}
 )
 
 add_subdirectory(src)
