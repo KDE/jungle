@@ -21,6 +21,7 @@
 #ifndef SHOW_H
 #define SHOW_H
 
+#include "tvseason.h"
 #include <QString>
 #include <QDate>
 
@@ -30,7 +31,7 @@ class Show
 {
 public:
     Show();
-    
+
     int id() const;
     void setId(int id);
 
@@ -43,15 +44,16 @@ public:
     QDate firstAired() const;
     void setFirstAired(const QDate& date);
 
-    int numSeasons() const;
-    void setNumSeasons(int num);
+    QList<TvSeason> seasons() const;
+    void setTvSeasons(const QList<TvSeason>& seasons);
 
 private:
     int m_id;
     QString m_title;
     QString m_coverUrl;
     QDate m_firstAired;
-    int m_numSeasons;
+
+    QList<TvSeason> m_seasons;
 };
 }
 

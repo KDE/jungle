@@ -18,39 +18,41 @@
  *
  */
 
-#include "themoviedbstore.h"
+#ifndef JUNGLE_TVEPISODE_H
+#define JUNGLE_TVEPISODE_H
 
-#include <QFile>
-#include <QFileInfo>
-#include <QDebug>
-#include <QStandardPaths>
+#include <QDate>
+#include <QString>
 
-#include <QNetworkReply>
+namespace Jungle {
 
-#include <tmdbqt/searchjob.h>
-
-// Issued to vhanda for personal use
-static const char* s_key = "d27948732458af6587dbc9b9764aad37";
-
-using namespace Jungle;
-
-TheMovieDbStore::TheMovieDbStore(QObject* parent)
-    : QObject(parent)
-    , m_api(QString::fromLatin1(s_key))
+class TvEpisode
 {
-    connect(&m_api, &TmdbQt::TheMovieDbApi::initialized,
-            this, &TheMovieDbStore::initialized);
+public:
+    TvEpisode();
+
+    int episodeNumber() const;
+    void setEpisodeNumber(int num);
+
+    QDate airDate() const;
+    void setAirDate(const QDate& date);
+
+    QString name() const;
+    void setName(const QString& name);
+
+    QString overview() const;
+    void setOverview(const QString& overview);
+
+    QString stillUrl() const;
+    void setStillUrl(const QString& url);
+
+private:
+    int m_episodeNum;
+    QDate m_airDate;
+    QString m_name;
+    QString m_overview;
+    QString m_stillUrl;
+};
 }
 
-MovieFetchJob* TheMovieDbStore::fetchMovie(const QString& url, const QString& name, int year)
-{
-    TmdbQt::SearchJob* job = m_api.searchMovie(name, year);
-    MovieFetchJob* mjob = new MovieFetchJob(job, url, name, year);
-
-    return mjob;
-}
-
-TvShowFetchJob* TheMovieDbStore::fetchTvShow(const QString& name)
-{
-    return new TvShowFetchJob(&m_api, name);
-}
+#endif // JUNGLE_TVEPISODE_H

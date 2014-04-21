@@ -228,7 +228,7 @@ void Database::addShow(const Show& show)
     query.addBindValue(show.id());
     query.addBindValue(show.title());
     query.addBindValue(show.firstAired());
-    query.addBindValue(show.numSeasons());
+    query.addBindValue(show.seasons().size());
     query.addBindValue(show.coverUrl());
 
     if (!query.exec()) {

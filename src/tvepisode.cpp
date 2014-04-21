@@ -18,39 +18,62 @@
  *
  */
 
-#include "themoviedbstore.h"
-
-#include <QFile>
-#include <QFileInfo>
-#include <QDebug>
-#include <QStandardPaths>
-
-#include <QNetworkReply>
-
-#include <tmdbqt/searchjob.h>
-
-// Issued to vhanda for personal use
-static const char* s_key = "d27948732458af6587dbc9b9764aad37";
+#include "tvepisode.h"
 
 using namespace Jungle;
 
-TheMovieDbStore::TheMovieDbStore(QObject* parent)
-    : QObject(parent)
-    , m_api(QString::fromLatin1(s_key))
+TvEpisode::TvEpisode()
+    : m_episodeNum(0)
 {
-    connect(&m_api, &TmdbQt::TheMovieDbApi::initialized,
-            this, &TheMovieDbStore::initialized);
 }
 
-MovieFetchJob* TheMovieDbStore::fetchMovie(const QString& url, const QString& name, int year)
+QDate TvEpisode::airDate() const
 {
-    TmdbQt::SearchJob* job = m_api.searchMovie(name, year);
-    MovieFetchJob* mjob = new MovieFetchJob(job, url, name, year);
-
-    return mjob;
+    return m_airDate;
 }
 
-TvShowFetchJob* TheMovieDbStore::fetchTvShow(const QString& name)
+int TvEpisode::episodeNumber() const
 {
-    return new TvShowFetchJob(&m_api, name);
+    return m_episodeNum;
 }
+
+QString TvEpisode::name() const
+{
+    return m_name;
+}
+
+QString TvEpisode::overview() const
+{
+    return m_overview;
+}
+
+void TvEpisode::setAirDate(const QDate& date)
+{
+    m_airDate = date;
+}
+
+void TvEpisode::setEpisodeNumber(int num)
+{
+    m_episodeNum = num;
+}
+
+void TvEpisode::setName(const QString& name)
+{
+    m_name = name;
+}
+
+void TvEpisode::setOverview(const QString& overview)
+{
+    m_overview = overview;
+}
+
+void TvEpisode::setStillUrl(const QString& url)
+{
+    m_stillUrl = url;
+}
+
+QString TvEpisode::stillUrl() const
+{
+    return m_stillUrl;
+}
+

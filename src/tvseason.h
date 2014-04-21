@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,61 +17,46 @@
  *
  */
 
-#include "show.h"
+#ifndef JUNGLE_TVSEASON_H
+#define JUNGLE_TVSEASON_H
 
-using namespace Jungle;
+#include "tvepisode.h"
+#include <QString>
+#include <QDate>
 
-Show::Show()
-    : m_id(0)
+namespace Jungle {
+
+class TvSeason
 {
+public:
+    TvSeason();
+
+    int id() const;
+    void setId(int id);
+
+    int seasonNumber() const;
+    void setSeasonNumber(int num);
+
+    QDate airDate() const;
+    void setAirDate(const QDate& date);
+
+    QString posterUrl() const;
+    void setPosterUrl(const QString& url);
+
+    QString overview();
+    void setOverview(const QString& overview);
+
+    QList<TvEpisode> episodes() const;
+    void setEpisodes(const QList<TvEpisode>& episodes);
+
+private:
+    int m_id;
+    int m_seasonNum;
+    QDate m_airDate;
+    QString m_posterUrl;
+    QString m_overview;
+    QList<TvEpisode> m_episodes;
+};
 }
 
-QString Show::coverUrl() const
-{
-    return m_coverUrl;
-}
-
-QDate Show::firstAired() const
-{
-    return m_firstAired;
-}
-
-int Show::id() const
-{
-    return m_id;
-}
-
-void Show::setCoverUrl(const QString& url)
-{
-    m_coverUrl = url;
-}
-
-void Show::setFirstAired(const QDate& date)
-{
-    m_firstAired = date;
-}
-
-void Show::setId(int id)
-{
-    m_id = id;
-}
-
-void Show::setTitle(const QString& name)
-{
-    m_title = name;
-}
-
-QString Show::title() const
-{
-    return m_title;
-}
-
-QList< TvSeason > Show::seasons() const
-{
-    return m_seasons;
-}
-
-void Show::setTvSeasons(const QList< TvSeason >& seasons)
-{
-    m_seasons = seasons;
-}
+#endif // JUNGLE_TVSEASON_H

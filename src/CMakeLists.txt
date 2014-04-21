@@ -6,6 +6,8 @@ set(SRCS
     themoviedbstore.cpp
     moviefetchjob.cpp
     show.cpp
+    tvseason.cpp
+    tvepisode.cpp
     tvshowfetchjob.cpp
 )
 
