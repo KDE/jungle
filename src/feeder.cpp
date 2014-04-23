@@ -184,6 +184,10 @@ void Feeder::processNext()
             m_db->addEpisode(showId, season, ep);
         }
         qDebug() << fileName.simplified() << season << episode;
+        if (!m_files.isEmpty()) {
+            QTimer::singleShot(0, this, SLOT(processNext()));
+        }
+        return;
     }
 
     //

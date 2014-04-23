@@ -29,6 +29,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QDebug>
 
 using namespace Jungle;
 
@@ -40,6 +41,7 @@ TvShowsModel::TvShowsModel(QObject* parent)
     QHash<int, QByteArray> names = roleNames();
     names.insert(CoverRole, "cover");
     names.insert(ReleaseDateRole, "date");
+    names.insert(ShowIdRole, "showId");
     setRoleNames(names);
 }
 
@@ -74,6 +76,9 @@ QVariant TvShowsModel::data(const QModelIndex& index, int role) const
 
         case ReleaseDateRole:
             return show.firstAired();
+
+        case ShowIdRole:
+            return show.id();
     }
 
     return QVariant();

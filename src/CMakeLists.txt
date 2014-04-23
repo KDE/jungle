@@ -32,6 +32,7 @@ set(SRC
     videosmodel.cpp
     moviesmodel.cpp
     tvshowsmodel.cpp
+    tvepisodemodel.cpp
     database.cpp
     movie.cpp
     show.cpp

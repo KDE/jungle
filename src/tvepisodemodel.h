@@ -18,49 +18,40 @@
  *
  */
 
-#ifndef JUNGLE_TVEPISODE_H
-#define JUNGLE_TVEPISODE_H
+#ifndef JUNGLE_EPISODEMODEL_H
+#define JUNGLE_EPISODEMODEL_H
 
-#include <QDate>
-#include <QString>
+#include <QAbstractListModel>
+#include "tvepisode.h"
 
 namespace Jungle {
 
-class TvEpisode
+class TvEpisodeModel : public QAbstractListModel
 {
+    Q_OBJECT
+    Q_PROPERTY(int showId READ showId WRITE setShowId)
+
 public:
-    TvEpisode();
+    explicit TvEpisodeModel(QObject* parent = 0);
 
-    int episodeNumber() const;
-    void setEpisodeNumber(int num);
+    enum Roles {
+        UrlRole = Qt::UserRole + 1,
+        CoverRole,
+        AirDateRole,
+        SeasonRole,
+        EpisodeNumberRole
+    };
 
-    QDate airDate() const;
-    void setAirDate(const QDate& date);
+    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-    QString name() const;
-    void setName(const QString& name);
-
-    QString overview() const;
-    void setOverview(const QString& overview);
-
-    QString stillUrl() const;
-    void setStillUrl(const QString& url);
-
-    QString url() const;
-    void setUrl(const QString& url);
-
-    int season() const;
-    void setSeason(int s);
+    int showId() const;
+    void setShowId(int id);
 
 private:
-    int m_episodeNum;
-    QDate m_airDate;
-    QString m_name;
-    QString m_overview;
-    QString m_stillUrl;
-    QString m_url;
-    int m_season;
+    QList<TvEpisode> m_episodes;
+    int m_showId;
 };
 }
 
-#endif // JUNGLE_TVEPISODE_H
+#endif // JUNGLE_EPISODEMODEL_H

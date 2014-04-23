@@ -24,6 +24,7 @@ using namespace Jungle;
 
 TvEpisode::TvEpisode()
     : m_episodeNum(0)
+    , m_season(0)
 {
 }
 
@@ -87,4 +88,13 @@ QString TvEpisode::url() const
     return m_url;
 }
 
+int TvEpisode::season() const
+{
+    return m_season;
+}
+
+void TvEpisode::setSeason(int s)
+{
+    m_season = s;
+}
 

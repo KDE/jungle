@@ -60,6 +60,14 @@ Rectangle {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
+
+            onPlay: {
+                videoPlayer.source = url
+                videoPlayer.visible = true
+                mainItem.visible = false
+
+                videoPlayer.play()
+            }
         }
     }
 

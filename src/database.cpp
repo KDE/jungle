@@ -242,7 +242,7 @@ QString Database::fileUrl(int fid)
 int Database::showId(const QString& name)
 {
     QSqlQuery query(m_sqlDb);
-    query.prepare("select id from shows where title = ?");
+    query.prepare("select id from shows where lower(title) = lower(?)");
     query.addBindValue(name);
     query.exec();
 
@@ -304,6 +304,7 @@ void Database::addEpisode(int showId, int seasonId, const TvEpisode& episode)
     query.addBindValue(episode.overview());
     query.addBindValue(episode.stillUrl());
 
+    qDebug() << episode.url() << fileId(episode.url());
     if (!query.exec()) {
         qDebug() << "EP" << query.lastError();
     }
@@ -335,13 +336,14 @@ QList<Show> Database::allShows() const
 TvEpisode Database::episode(int showId, int season, int epNum)
 {
     QSqlQuery query(m_sqlDb);
-    query.prepare("select episodeNum, season, show, fid, airDate, name, overview, stillPath from tvepisodes"
+    query.prepare("select * from tvepisodes "
                   "where show = ? AND season = ? AND episodeNum = ?");
     query.addBindValue(showId);
     query.addBindValue(season);
     query.addBindValue(epNum);
 
     if (!query.exec()) {
+        qDebug() << query.lastError();
         return TvEpisode();
     }
 
@@ -359,6 +361,36 @@ TvEpisode Database::episode(int showId, int season, int epNum)
 
     return ep;
 }
+
+QList<TvEpisode> Database::allEpisodes(int showId)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select * from tvepisodes, files "
+                  "where show = ? AND fid = files.id");
+    query.addBindValue(showId);
+
+    if (!query.exec()) {
+        qDebug() << "EE" << query.lastError();
+        return QList<TvEpisode>();
+    }
+
+    QList<TvEpisode> epList;
+    while (query.next()) {
+        TvEpisode ep;
+        ep.setAirDate(query.value("airDate").toDate());
+        ep.setName(query.value("name").toString());
+        ep.setOverview(query.value("overview").toString());
+        ep.setStillUrl(query.value("stillPath").toString());
+        ep.setEpisodeNumber(query.value("episodeNum").toInt());
+        ep.setUrl(query.value("url").toString());
+        ep.setSeason(query.value("season").toInt());
+
+        epList << ep;
+    }
+
+    return epList;
+}
+
 
 bool Database::hasEpisodes(int show, int season)
 {
