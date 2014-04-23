@@ -9,6 +9,11 @@ Item {
     id: topElem
     signal play (string url)
 
+    function reset() {
+        tvshows.visible = true
+        tvepisodes.visible = false
+    }
+
     GridView {
         id: tvshows
         model: Jungle.TvShowsModel {}

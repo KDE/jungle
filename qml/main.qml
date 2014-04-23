@@ -33,6 +33,7 @@ Rectangle {
             onTvShowsActivated: {
                 movies.visible = false
                 tvshows.visible = true
+                tvshows.reset()
             }
         }
 
