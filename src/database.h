@@ -44,10 +44,16 @@ public:
     bool hasVideo(int fileId);
     void addVideo(const QString& url);
 
-    bool hasShow(const QString& name);
+    int showId(const QString& name);
     void addShow(const Show& show);
 
     QList<Show> allShows() const;
+
+    bool hasEpisodes(int show, int season);
+    void addEpisode(int showId, int seasonId, const TvEpisode& episode);
+
+    TvEpisode episode(int showId, int season, int epNum);
+
 private:
     int fileId(const QString& url);
     QString fileUrl(int fid);

@@ -46,12 +46,16 @@ public:
     QString stillUrl() const;
     void setStillUrl(const QString& url);
 
+    QString url() const;
+    void setUrl(const QString& url);
+
 private:
     int m_episodeNum;
     QDate m_airDate;
     QString m_name;
     QString m_overview;
     QString m_stillUrl;
+    QString m_url;
 };
 }
 

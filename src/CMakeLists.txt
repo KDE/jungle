@@ -9,6 +9,7 @@ set(SRCS
     tvseason.cpp
     tvepisode.cpp
     tvshowfetchjob.cpp
+    tvseasonfetchjob.cpp
 )
 
 add_executable(jungle ${SRCS})
@@ -34,6 +35,8 @@ set(SRC
     database.cpp
     movie.cpp
     show.cpp
+    tvseason.cpp
+    tvepisode.cpp
 )
 
 add_library(jungleqmlplugin SHARED ${SRC})

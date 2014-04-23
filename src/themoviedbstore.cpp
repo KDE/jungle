@@ -54,3 +54,8 @@ TvShowFetchJob* TheMovieDbStore::fetchTvShow(const QString& name)
 {
     return new TvShowFetchJob(&m_api, name);
 }
+
+TvSeasonFetchJob* TheMovieDbStore::fetchTvSeason(int showId, int seasonNum)
+{
+    return new TvSeasonFetchJob(&m_api, showId, seasonNum, this);
+}

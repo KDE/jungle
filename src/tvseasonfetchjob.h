@@ -18,47 +18,49 @@
  *
  */
 
-#ifndef FEEDER_H
-#define FEEDER_H
-
-#include "database.h"
-#include "themoviedbstore.h"
+#ifndef JUNGLE_TVSEASONFETCHJOB_H
+#define JUNGLE_TVSEASONFETCHJOB_H
 
 #include <QObject>
-#include <QStringList>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+
+#include "show.h"
+#include "tvseason.h"
+#include "tvepisode.h"
+
+#include <tmdbqt/themoviedbapi.h>
 
 namespace Jungle {
 
-class MovieFetchJob;
-class TvShowFetchJob;
-
-class Feeder : public QObject
+class TvSeasonFetchJob : public QObject
 {
     Q_OBJECT
 public:
-    explicit Feeder(Database* db, QObject* parent = 0);
-    virtual ~Feeder();
+    TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int season, QObject* parent = 0);
 
-private Q_SLOTS:
-    void fetchFiles();
-    void processNext();
+    TvSeason result() const;
 
-    void slotResult(MovieFetchJob* job);
+signals:
+    void result(TvSeasonFetchJob* job);
+
+private slots:
+    void slotResult(TmdbQt::TvSeasonInfoJob* job);
+    void slotNetworkReply(QNetworkReply* reply);
+
 private:
-    /**
-     * Remove extra crap from the file name
-     */
-    static QString filterFileName(const QString& fileName);
-    static bool filterUrl(const QString& url);
+    TmdbQt::TheMovieDbApi* m_api;
+    QNetworkAccessManager m_network;
 
-    int fetchOrCreateShow(const QString& show);
+    int m_showId;
+    int m_seasonNum;
+    int m_pendingJobs;
 
-    QStringList m_files;
-
-    Database* m_db;
-    TheMovieDbStore* m_theMovieDb;
+    TvSeason m_season;
+    QList<TvEpisode> m_episodes;
 };
 
 }
 
-#endif // FEEDER_H
+
+#endif // JUNGLE_TVSEASONFETCHJOB_H

@@ -25,6 +25,7 @@
 #include "movie.h"
 #include "moviefetchjob.h"
 #include "tvshowfetchjob.h"
+#include "tvseasonfetchjob.h"
 
 #include <QNetworkAccessManager>
 #include <tmdbqt/themoviedbapi.h>
@@ -39,6 +40,7 @@ public:
 
     MovieFetchJob* fetchMovie(const QString& url, const QString& name, int year = 0);
     TvShowFetchJob* fetchTvShow(const QString& name);
+    TvSeasonFetchJob* fetchTvSeason(int showId, int seasonNum);
 
 signals:
     void initialized();

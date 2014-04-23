@@ -77,3 +77,14 @@ QString TvEpisode::stillUrl() const
     return m_stillUrl;
 }
 
+void TvEpisode::setUrl(const QString& url)
+{
+    m_url = url;
+}
+
+QString TvEpisode::url() const
+{
+    return m_url;
+}
+
+

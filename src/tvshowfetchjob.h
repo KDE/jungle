@@ -37,7 +37,7 @@ public:
     explicit TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name, QObject* parent = 0);
     virtual ~TvShowFetchJob();
 
-    Show show() { return m_show; }
+    Show result() { return m_show; }
 
 signals:
     void result(TvShowFetchJob* job);

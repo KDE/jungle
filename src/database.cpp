@@ -83,11 +83,45 @@ bool Database::init()
                "id INTEGER NOT NULL PRIMARY KEY, "
                "title TEXT NOT NULL, "
                "releaseDate TEXT NOT NULL, "
-               "numSeasons INTEGER NOT NULL, "
                "posterPath TEXT)");
 
     if (query.lastError().isValid()) {
         qDebug() << query.lastError();
+        return false;
+    }
+
+    //
+    // Tv Seasons
+    //
+    query.exec("CREATE TABLE IF NOT EXISTS tvseasons("
+               "id INTEGER NOT NULL, "
+               "show INTEGER NOT NULL, "
+               "seasonNum INTEGER NOT NULL, "
+               "airDate TEXT NOT NULL, "
+               "posterPath TEXT NOT NULL,"
+               "PRIMARY KEY(show, seasonNum))");
+
+    if (query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    //
+    // Tv episodes
+    //
+    query.exec("CREATE TABLE IF NOT EXISTS tvepisodes("
+               "episodeNum INTEGER NOT NULL, "
+               "season INTEGER NOT NULL, "
+               "show INTEGER NOT NULL, "
+               "fid INTEGER, "
+               "airDate TEXT NOT NULL, "
+               "name TEXT NOT NULL, "
+               "overview TEXT NOT NULL, "
+               "stillPath TEXT NOT NULL, "
+               "PRIMARY KEY(episodeNum, season, show))");
+
+    if (query.lastError().isValid()) {
+        qDebug() << "TV EP" << query.lastError();
         return false;
     }
 
@@ -205,34 +239,73 @@ QString Database::fileUrl(int fid)
     return url;
 }
 
-bool Database::hasShow(const QString& name)
+int Database::showId(const QString& name)
 {
     QSqlQuery query(m_sqlDb);
-    query.prepare("select 1 from shows where title = ?");
+    query.prepare("select id from shows where title = ?");
     query.addBindValue(name);
     query.exec();
 
     if (!query.exec()) {
         qDebug() << query.lastError();
-        return false;
+        return 0;
     }
 
-    return query.next();
+    if (query.next()) {
+        return query.value(0).toInt();
+    }
+
+    return 0;
 }
 
 void Database::addShow(const Show& show)
 {
     QSqlQuery query(m_sqlDb);
-    query.prepare("insert into shows (id, title, releaseDate, numSeasons, posterPath) "
-                  "VALUES (?, ?, ?, ?, ?)");
+    query.prepare("insert into shows (id, title, releaseDate, posterPath) "
+                  "VALUES (?, ?, ?, ?)");
     query.addBindValue(show.id());
     query.addBindValue(show.title());
     query.addBindValue(show.firstAired());
-    query.addBindValue(show.seasons().size());
     query.addBindValue(show.coverUrl());
 
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        qDebug() << "SHOW" << query.lastError();
+    }
+
+    foreach (const TvSeason& s, show.seasons()) {
+        QSqlQuery query(m_sqlDb);
+        query.prepare("insert into tvseasons (id, show, seasonNum, airDate, posterPath) "
+                      "VALUES (?, ?, ?, ?, ?)");
+        query.addBindValue(s.id());
+        query.addBindValue(show.id());
+        query.addBindValue(s.seasonNumber());
+        query.addBindValue(s.airDate());
+        query.addBindValue(s.posterUrl());
+
+        if (!query.exec()) {
+            qDebug() << s.id() << show.id();
+            qDebug() << "SEASON" << query.lastError();
+        }
+    }
+}
+
+void Database::addEpisode(int showId, int seasonId, const TvEpisode& episode)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("insert or replace into tvepisodes "
+                  "(episodeNum, season, show, fid, airDate, name, overview, stillPath) "
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    query.addBindValue(episode.episodeNumber());
+    query.addBindValue(seasonId);
+    query.addBindValue(showId);
+    query.addBindValue(fileId(episode.url()));
+    query.addBindValue(episode.airDate());
+    query.addBindValue(episode.name());
+    query.addBindValue(episode.overview());
+    query.addBindValue(episode.stillUrl());
+
+    if (!query.exec()) {
+        qDebug() << "EP" << query.lastError();
     }
 }
 
@@ -259,4 +332,44 @@ QList<Show> Database::allShows() const
     return shows;
 }
 
+TvEpisode Database::episode(int showId, int season, int epNum)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select episodeNum, season, show, fid, airDate, name, overview, stillPath from tvepisodes"
+                  "where show = ? AND season = ? AND episodeNum = ?");
+    query.addBindValue(showId);
+    query.addBindValue(season);
+    query.addBindValue(epNum);
 
+    if (!query.exec()) {
+        return TvEpisode();
+    }
+
+    TvEpisode ep;
+    if (query.next()) {
+        ep.setAirDate(query.value("airDate").toDate());
+        ep.setName(query.value("name").toString());
+        ep.setOverview(query.value("overview").toString());
+        ep.setStillUrl(query.value("stillPath").toString());
+        ep.setEpisodeNumber(query.value("episodeNum").toInt());
+
+        int fid = query.value("fid").toInt();
+        ep.setUrl(fileUrl(fid));
+    }
+
+    return ep;
+}
+
+bool Database::hasEpisodes(int show, int season)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select 1 from tvepisodes where show = ? AND season = ?");
+    query.addBindValue(show);
+    query.addBindValue(season);
+
+    if (!query.exec()) {
+        return false;
+    }
+
+    return query.next();
+}

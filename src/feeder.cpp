@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QRegularExpression>
 #include <QFileInfo>
+#include <qeventloop.h>
 
 #include <baloo/query.h>
 #include <baloo/resultiterator.h>
@@ -156,19 +157,33 @@ void Feeder::processNext()
         fileName.replace(tvshowRegexp, "");
         fileName = fileName.simplified();
 
-        // vHanda: What about the case?
-        if (!m_db->hasShow(fileName)) {
-            // vHanda: What about the actual episode?
-            TvShowFetchJob* job = m_theMovieDb->fetchTvShow(fileName);
-            connect(job, SIGNAL(result(TvShowFetchJob*)),
-                    this, SLOT(slotResult(TvShowFetchJob*)));
+        int showId = fetchOrCreateShow(fileName);
+        if (!showId) {
+            if (!m_files.isEmpty())
+                QTimer::singleShot(0, this, SLOT(processNext()));
             return;
         }
 
+        if (!m_db->hasEpisodes(showId, season)) {
+            TvSeasonFetchJob* job = m_theMovieDb->fetchTvSeason(showId, season);
+
+            QEventLoop loop;
+            connect(job, SIGNAL(result(TvSeasonFetchJob*)),
+                    &loop, SLOT(quit()));
+            loop.exec();
+
+            TvSeason tvseason = job->result();
+            foreach (const TvEpisode& ep, tvseason.episodes()) {
+                m_db->addEpisode(showId, season, ep);
+            }
+        }
+
+        TvEpisode ep = m_db->episode(showId, season, episode);
+        if (ep.episodeNumber() == episode) {
+            ep.setUrl(url);
+            m_db->addEpisode(showId, season, ep);
+        }
         qDebug() << fileName.simplified() << season << episode;
-        if (!m_files.isEmpty())
-            QTimer::singleShot(0, this, SLOT(processNext()));
-        return;
     }
 
     //
@@ -216,22 +231,24 @@ void Feeder::slotResult(MovieFetchJob* job)
     }
 }
 
-void Feeder::slotResult(TvShowFetchJob* job)
+int Feeder::fetchOrCreateShow(const QString& showName)
 {
-    Show show = job->show();
+    int showId = m_db->showId(showName);
+    if (showId)
+        return showId;
 
-    // Add data if there is any
-    if (show.id() == 0) {
-        if (!m_files.isEmpty())
-            QTimer::singleShot(0, this, SLOT(processNext()));
-        return;
+    TvShowFetchJob* job = m_theMovieDb->fetchTvShow(showName);
+
+    QEventLoop loop;
+    connect(job, SIGNAL(result(TvShowFetchJob*)),
+            &loop, SLOT(quit()));
+    loop.exec();
+
+    Show show = job->result();
+    if (show.id()) {
+        m_db->addShow(show);
     }
-    job->deleteLater();
 
-    qDebug() << "Adding show" << show.title();
-    m_db->addShow(show);
-
-    if (!m_files.isEmpty()) {
-        QTimer::singleShot(0, this, SLOT(processNext()));
-    }
+    return show.id();
 }
+
