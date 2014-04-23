@@ -366,7 +366,7 @@ QList<TvEpisode> Database::allEpisodes(int showId)
 {
     QSqlQuery query(m_sqlDb);
     query.prepare("select * from tvepisodes, files "
-                  "where show = ? AND fid = files.id");
+                  "where show = ? AND fid = files.id ORDER BY episodeNum");
     query.addBindValue(showId);
 
     if (!query.exec()) {
