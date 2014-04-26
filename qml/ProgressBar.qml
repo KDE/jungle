@@ -12,7 +12,7 @@ Item {
 
     property string color: "#2874CC"
 
-    property string backgroundColor: "black"
+    property string backgroundColor: "white"
     property bool backgroundShown: false
 
     property string borderColor: "black"
@@ -48,7 +48,7 @@ Item {
         color: backgroundColor
 
         radius: parent.radius
-        opacity: backgroundShown ? 0.5 : 0.0
+        opacity: backgroundShown ? 0.2 : 0.0
         z: -1
     }
 

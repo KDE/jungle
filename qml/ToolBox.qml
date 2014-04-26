@@ -10,29 +10,14 @@ import QtQuick.Controls 1.1 as QtControls
 // Show duration
 Item {
     id: container
+
     property MediaPlayer source: MediaPlayer {}
+    height: childrenRect.height
 
-    QtControls.Button {
-        id: button
-
-        width: 150
-        height: 150
-
-        iconName: source.playbackState == MediaPlayer.PlayingState ? "media-playback-pause" : "media-playback-start"
-        opacity: 0.8
-
-        anchors {
-            horizontalCenter: progressBar.horizontalCenter
-            top: parent.top
-        }
-
-        onClicked: {
-            if (source.playbackState == MediaPlayer.PlayingState) {
-                source.pause()
-            } else {
-                source.play()
-            }
-        }
+    Rectangle {
+        color: "black"
+        anchors.fill: parent
+        z: -10
     }
 
     ProgressBar {
@@ -46,16 +31,37 @@ Item {
         backgroundShown: true
 
         anchors {
-            top: button.bottom
-            horizontalCenter: parent.horizontalCenter
-
-            leftMargin: 150
-            rightMargin: 150
-            topMargin: 30
+            top: parent.top
+            left: parent.left
+            right: parent.right
         }
 
         onClicked: {
             source.seek(source.duration * percent)
         }
     }
+
+    QtControls.Button {
+        id: button
+
+        width: 50
+        height: width
+
+        iconName: source.playbackState == MediaPlayer.PlayingState ? "media-playback-pause" : "media-playback-start"
+        opacity: 0.8
+
+        anchors {
+            top: progressBar.bottom
+            left: parent.left
+        }
+
+        onClicked: {
+            if (source.playbackState == MediaPlayer.PlayingState) {
+                source.pause()
+            } else {
+                source.play()
+            }
+        }
+    }
+
 }

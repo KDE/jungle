@@ -59,7 +59,7 @@ Item {
         source: mediaPlayer
 
         width: parent.width
-        y: parent.y + parent.height * 0.80
+        anchors.bottom: parent.bottom
 
         Behavior on opacity {
             NumberAnimation { duration: 500 }
