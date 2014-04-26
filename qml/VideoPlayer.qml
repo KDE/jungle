@@ -68,7 +68,7 @@ Item {
 
     Timer {
         id: toolBoxHideTimer
-        interval: 3000
+        interval: 1000
         repeat: false
 
         onTriggered: {
@@ -76,17 +76,23 @@ Item {
         }
     }
 
-    // TODO: Do not cover the ToolBox
     MouseArea {
-        anchors {
-            fill: parent
-        }
+        anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
 
         onPositionChanged: {
             toolBox.opacity = 1.0
-            toolBoxHideTimer.start()
+
+            var inToolBox = false
+            if (toolBox.x <= mouse.x && mouse.x <= toolBox.x + toolBox.width &&
+                toolBox.y <= mouse.y && mouse.y <= toolBox.y + toolBox.height)
+                inToolBox = true;
+
+            if (inToolBox)
+                toolBoxHideTimer.stop()
+            else
+                toolBoxHideTimer.restart()
         }
     }
 }
