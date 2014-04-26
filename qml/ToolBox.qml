@@ -81,4 +81,26 @@ Item {
         }
     }
 
+    RowLayout {
+        anchors.top: rowLayout.top
+        anchors.bottom: rowLayout.bottom
+        anchors.right: parent.right
+
+        ProgressBar {
+            id: volumeBar
+            width: 300
+            height: rowLayout.height / 4
+
+            value: source.volume * 100
+            maximum: 100
+
+            backgroundShown: true
+
+            anchors.verticalCenter: parent.verticalCenter
+            onClicked: {
+                source.volume = percent
+                console.log(source.volume)
+            }
+        }
+    }
 }
