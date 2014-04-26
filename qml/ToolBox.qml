@@ -2,7 +2,10 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.0
+
 import QtQuick.Controls 1.1 as QtControls
+import QtQuick.Controls.Styles 1.1
+
 import org.kde.kcoreaddons 1.0 as KCoreAddons
 
 // TODO: Some important things to implement - Nice progress bar
@@ -86,6 +89,21 @@ Item {
         anchors.bottom: rowLayout.bottom
         anchors.right: parent.right
 
+        QtControls.Button {
+            iconName: "audio-volume-high"
+            opacity: 0.8
+            property double previousVolume
+
+            onClicked: {
+                if (source.volume) {
+                    previousVolume = source.volume
+                    source.volume = 0
+                }
+                else
+                    source.volume = previousVolume
+            }
+        }
+
         ProgressBar {
             id: volumeBar
             width: 300
@@ -99,7 +117,6 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             onClicked: {
                 source.volume = percent
-                console.log(source.volume)
             }
         }
     }
