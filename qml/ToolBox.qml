@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import QtMultimedia 5.0
 import QtQuick.Controls 1.1 as QtControls
+import org.kde.kcoreaddons 1.0 as KCoreAddons
 
 // TODO: Some important things to implement - Nice progress bar
 // Simple play / pause buttons
@@ -41,26 +42,42 @@ Item {
         }
     }
 
-    QtControls.Button {
-        id: button
+    RowLayout {
+        id: rowLayout
+        anchors.top: progressBar.bottom
 
-        width: 50
-        height: width
+        QtControls.Button {
+            id: button
 
-        iconName: source.playbackState == MediaPlayer.PlayingState ? "media-playback-pause" : "media-playback-start"
-        opacity: 0.8
+            iconName: source.playbackState == MediaPlayer.PlayingState ? "media-playback-pause" : "media-playback-start"
+            opacity: 0.8
 
-        anchors {
-            top: progressBar.bottom
-            left: parent.left
+            onClicked: {
+                if (source.playbackState == MediaPlayer.PlayingState) {
+                    source.pause()
+                } else {
+                    source.play()
+                }
+            }
         }
 
-        onClicked: {
-            if (source.playbackState == MediaPlayer.PlayingState) {
-                source.pause()
-            } else {
-                source.play()
-            }
+        KCoreAddons.Formats {
+            id: formats
+        }
+
+        Text {
+            text: formats.formatDuration(source.position)
+            color: "white"
+        }
+
+        Text {
+            text: " / "
+            color: "white"
+        }
+
+        Text {
+            text: formats.formatDuration(source.duration)
+            color: "white"
         }
     }
 
