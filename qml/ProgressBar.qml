@@ -9,7 +9,15 @@ Item {
     property int maximum: 100
     property int value: 30
     property int radius: 0
-    property string color: "white"
+
+    property string color: "#2874CC"
+
+    property string backgroundColor: "black"
+    property bool backgroundShown: false
+
+    property string borderColor: "black"
+    property bool borderShown: false
+
     signal clicked (double percent)
 
     Rectangle {
@@ -20,7 +28,8 @@ Item {
         anchors.fill: parent
 
         border.width: 2
-        border.color: parent.color
+        border.color: borderColor
+        opacity: borderShown ? 1.0 : 0.0
     }
 
     Rectangle {
@@ -34,10 +43,19 @@ Item {
         radius: parent.radius
     }
 
+    Rectangle {
+        anchors.fill: parent
+        color: backgroundColor
+
+        radius: parent.radius
+        opacity: backgroundShown ? 0.5 : 0.0
+        z: -1
+    }
+
     RectangularGlow {
         anchors.fill: main
 
-        glowRadius: 7
+        glowRadius: 4
         spread: 0.1
         color: parent.color
         z: -1

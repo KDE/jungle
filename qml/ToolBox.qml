@@ -39,10 +39,11 @@ Item {
         id: progressBar
         width: parent.width - (anchors.leftMargin + anchors.rightMargin)
         height: 20
-        radius: 10
 
         value: source.position
         maximum: source.duration
+
+        backgroundShown: true
 
         anchors {
             top: button.bottom
