@@ -163,7 +163,8 @@ void Database::addMovie(const Movie& movie)
 QList<Movie> Database::allMovies() const
 {
     QSqlQuery query(m_sqlDb);
-    query.exec("select files.url, mid, title, releaseDate, posterPath from files, movies where files.id = movies.fid");
+    query.exec("select files.url, mid, title, releaseDate, posterPath from files, "
+               "movies where files.id = movies.fid ORDER BY title");
     if (query.lastError().isValid()) {
         qDebug() << query.lastError();
         return QList<Movie>();
