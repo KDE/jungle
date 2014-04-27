@@ -21,9 +21,6 @@
 #include "tvepisodemodel.h"
 #include "database.h"
 
-#include <QStandardPaths>
-#include <QDir>
-
 using namespace Jungle;
 
 TvEpisodeModel::TvEpisodeModel(QObject* parent)
@@ -86,16 +83,8 @@ void TvEpisodeModel::setShowId(int id)
 {
     m_showId = id;
 
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-    QDir().mkpath(dataDir);
-
-    QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
-
-    Database db(dataDir, fileMapDb);
-    db.init();
-
     beginResetModel();
-    m_episodes = db.allEpisodes(m_showId);
+    m_episodes = Database::instance()->allEpisodes(m_showId);
     endResetModel();
 }
 
@@ -109,16 +98,8 @@ void TvEpisodeModel::setSeason(int season)
     }
     m_season = season;
 
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-    QDir().mkpath(dataDir);
-
-    QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
-
-    Database db(dataDir, fileMapDb);
-    db.init();
-
     beginResetModel();
-    m_episodes = db.allEpisodes(m_showId, season);
+    m_episodes = Database::instance()->allEpisodes(m_showId, season);
     endResetModel();
 }
 

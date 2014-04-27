@@ -25,7 +25,6 @@
 #include <QTimer>
 #include <QDir>
 
-#include <QStandardPaths>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -46,16 +45,8 @@ MoviesModel::MoviesModel(QObject* parent)
 
 void MoviesModel::slotPopulate()
 {
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-    QDir().mkpath(dataDir);
-
-    QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
-
-    Database db(dataDir, fileMapDb);
-    db.init();
-
     beginResetModel();
-    m_movies = db.allMovies();
+    m_movies = Database::instance()->allMovies();
     endResetModel();
 }
 

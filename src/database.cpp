@@ -23,11 +23,15 @@
 #include <QSqlError>
 #include <QDebug>
 
+#include <QStandardPaths>
+#include <QDir>
+
 using namespace Jungle;
 
 Database::Database(const QString& path, const QString& fileMapDb)
     : m_path(path)
     , m_fileMapDb(fileMapDb)
+    , m_initialized(false)
 {
 }
 
@@ -39,9 +43,27 @@ Database::~Database()
     QSqlDatabase::removeDatabase(name);
 }
 
+// static
+Database* Database::instance()
+{
+    static QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
+    static QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
+    static Database db(dataDir, fileMapDb);
+
+    if (!db.initialized()) {
+        QDir().mkpath(dataDir);
+        db.init();
+    }
+    return &db;
+}
+
+bool Database::initialized()
+{
+    return m_initialized;
+}
+
 bool Database::init()
 {
-    qDebug() << "PATH:" << m_path;
     m_sqlDb = QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     m_sqlDb.setDatabaseName(m_path + "/webdata.sqlite3");
 
@@ -135,6 +157,7 @@ bool Database::init()
         return false;
     }
 
+    m_initialized = true;
     return true;
 }
 
@@ -305,7 +328,6 @@ void Database::addEpisode(int showId, int seasonId, const TvEpisode& episode)
     query.addBindValue(episode.overview());
     query.addBindValue(episode.stillUrl());
 
-    qDebug() << episode.url() << fileId(episode.url());
     if (!query.exec()) {
         qDebug() << "EP" << query.lastError();
     }

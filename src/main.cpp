@@ -19,8 +19,6 @@
  */
 
 #include <QGuiApplication>
-#include <QStandardPaths>
-#include <QDir>
 
 #include "database.h"
 #include "feeder.h"
@@ -28,17 +26,13 @@
 int main(int argc, char** argv)
 {
     QGuiApplication app(argc, argv);
+    app.setApplicationDisplayName("Jungle");
 
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-    QDir().mkpath(dataDir);
-
-    QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
-
-    Jungle::Database db(dataDir, fileMapDb);
-    if (!db.init()) {
+    Jungle::Database* db = Jungle::Database::instance();
+    if (!db->initialized()) {
         return 1;
     }
 
-    Jungle::Feeder feeder(&db);
+    Jungle::Feeder feeder(db);
     return app.exec();
 }

@@ -36,7 +36,10 @@ public:
     Database(const QString& path, const QString& fileMapDb);
     ~Database();
 
+    static Database* instance();
+
     bool init();
+    bool initialized();
 
     void addMovie(const Movie& movie);
     QList<Movie> allMovies() const;
@@ -60,6 +63,7 @@ private:
 
     QString m_path;
     QString m_fileMapDb;
+    bool m_initialized;
 
     QSqlDatabase m_sqlDb;
 };
