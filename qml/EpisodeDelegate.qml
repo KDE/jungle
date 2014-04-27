@@ -21,7 +21,7 @@ ColumnLayout {
     }
 
     Text {
-        text: date
+        text: date.toDateString()
         color: "white"
         opacity: 0.5
 
