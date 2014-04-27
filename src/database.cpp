@@ -363,12 +363,18 @@ TvEpisode Database::episode(int showId, int season, int epNum)
     return ep;
 }
 
-QList<TvEpisode> Database::allEpisodes(int showId)
+QList<TvEpisode> Database::allEpisodes(int showId, int season)
 {
+    QString queryStr("select * from tvepisodes, files where show = ? ");
+    if (season != -1)
+        queryStr.append("AND season = ? ");
+    queryStr.append("AND fid = files.id ORDER BY episodeNum");
+
     QSqlQuery query(m_sqlDb);
-    query.prepare("select * from tvepisodes, files "
-                  "where show = ? AND fid = files.id ORDER BY episodeNum");
+    query.prepare(queryStr);
     query.addBindValue(showId);
+    if (season != -1)
+        query.addBindValue(season);
 
     if (!query.exec()) {
         qDebug() << "EE" << query.lastError();

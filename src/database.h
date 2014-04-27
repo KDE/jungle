@@ -53,7 +53,7 @@ public:
     void addEpisode(int showId, int seasonId, const TvEpisode& episode);
 
     TvEpisode episode(int showId, int season, int epNum);
-    QList<TvEpisode> allEpisodes(int showId);
+    QList<TvEpisode> allEpisodes(int showId, int season = -1);
 private:
     int fileId(const QString& url);
     QString fileUrl(int fid);

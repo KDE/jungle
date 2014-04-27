@@ -28,6 +28,8 @@ using namespace Jungle;
 
 TvEpisodeModel::TvEpisodeModel(QObject* parent)
     : QAbstractListModel(parent)
+    , m_showId(0)
+    , m_season(-1)
 {
     QHash<int, QByteArray> names = roleNames();
     names.insert(UrlRole, "url");
@@ -94,6 +96,29 @@ void TvEpisodeModel::setShowId(int id)
 
     beginResetModel();
     m_episodes = db.allEpisodes(m_showId);
+    endResetModel();
+}
+
+void TvEpisodeModel::setSeason(int season)
+{
+    if (!m_showId) {
+        beginResetModel();
+        m_episodes.clear();
+        endResetModel();
+        return;
+    }
+    m_season = season;
+
+    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
+    QDir().mkpath(dataDir);
+
+    QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
+
+    Database db(dataDir, fileMapDb);
+    db.init();
+
+    beginResetModel();
+    m_episodes = db.allEpisodes(m_showId, season);
     endResetModel();
 }
 

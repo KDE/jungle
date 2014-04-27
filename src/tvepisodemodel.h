@@ -48,9 +48,18 @@ public:
     int showId() const;
     void setShowId(int id);
 
+    int season() const;
+    /**
+     * Set the season from which the episodes should be shown.
+     * Setting the season to -1 (the default), results in all the available
+     * episodes being shown
+     */
+    void setSeason(int season);
+
 private:
     QList<TvEpisode> m_episodes;
     int m_showId;
+    int m_season;
 };
 }
 
