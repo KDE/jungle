@@ -19,6 +19,11 @@
  */
 
 #include <QGuiApplication>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QQmlComponent>
+
+#include <QStandardPaths>
 
 #include "database.h"
 #include "feeder.h"
@@ -34,5 +39,13 @@ int main(int argc, char** argv)
     }
 
     Jungle::Feeder feeder(db);
+
+    QQmlEngine engine;
+    QScopedPointer<QQmlContext> objectContext(new QQmlContext(engine.rootContext()));
+
+    QString path = QStandardPaths::locate(QStandardPaths::DataLocation, "main.qml");
+    QQmlComponent component(&engine, path);
+    QScopedPointer<QObject> object(component.create(objectContext.data()));
+
     return app.exec();
 }
