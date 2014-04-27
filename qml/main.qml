@@ -4,6 +4,7 @@ import QtQuick.Controls 1.1
 import QtQuick.Window 2.1
 
 ApplicationWindow {
+    id: root
     color: "black"
     title: "Jungle"
 
@@ -11,7 +12,6 @@ ApplicationWindow {
     height: 1600
 
     visible: true
-    visibility: Window.FullScreen
 
     Item {
         id: mainItem
@@ -88,6 +88,18 @@ ApplicationWindow {
             videoPlayer.stop()
             videoPlayer.visible = false
             mainItem.visible = true
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        propagateComposedEvents: true
+        onDoubleClicked: {
+            if (root.visibility != Window.FullScreen) {
+                root.visibility = Window.FullScreen
+            } else {
+                root.visibility = Window.AutomaticVisibility
+            }
         }
     }
 }
