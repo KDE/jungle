@@ -1,11 +1,17 @@
 import QtQuick 2.1
 import QtQuick.Layouts 1.0
+import QtQuick.Controls 1.1
+import QtQuick.Window 2.1
 
-Rectangle {
+ApplicationWindow {
     color: "black"
+    title: "Jungle"
 
     width: 1800
     height: 1600
+
+    visible: true
+    visibility: Window.FullScreen
 
     Item {
         id: mainItem
@@ -77,11 +83,11 @@ Rectangle {
         visible: false
 
         anchors.fill: parent
-    }
 
-    Keys.onEscapePressed: {
-        videoPlayer.stop()
-        videoPlayer.visible = false
-        mainItem.visible = true
+        Keys.onEscapePressed: {
+            videoPlayer.stop()
+            videoPlayer.visible = false
+            mainItem.visible = true
+        }
     }
 }
