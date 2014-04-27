@@ -99,13 +99,13 @@ QString Feeder::filterFileName(const QString& fileName)
     // Stupid hueristic
     QStringList fillers;
     fillers << allowedVideoTypes;
-    fillers << "hdtv" << "x264" << "LOL" << "720p" << "1080p"
+    fillers << "hdtv" << "x264" << "LOL" << "720p" << "1080p" << "480p"
             << "BluRay" << "BRRIP" << "xvid" << "YIFY" << "VTV" << "KILLERS"
             << "webrip" << "DVDScr" << "EXCELLENCE" << "juggs" << "dvdrip"
             << "MP3" << "RARBG" << "DIMENSION" << "NTb" << "DD5" << "2HD" << "NF"
             << "REMARKABLE" << "PROPER" << "AFG" << "bdrip" << "miguel" << "axxo"
             << "occor" << "1337x" << "noir" << "Hindi" << "ViZNU" << "AAC"
-            << "eng" << "bellatrix" << "hon3y";
+            << "eng" << "bellatrix" << "hon3y" << "vk007";
 
     foreach (const QString& f, fillers) {
         QRegularExpression exp("\\b" + f + "\\b", QRegularExpression::CaseInsensitiveOption);
