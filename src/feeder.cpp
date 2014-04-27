@@ -182,6 +182,9 @@ void Feeder::processNext()
         if (ep.episodeNumber() == episode) {
             ep.setUrl(url);
             m_db->addEpisode(showId, season, ep);
+
+            // Mark the url as processed
+            m_db->addVideo(url);
         }
         qDebug() << fileName.simplified() << season << episode;
         if (!m_files.isEmpty()) {
