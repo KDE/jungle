@@ -18,43 +18,61 @@
  *
  */
 
-#ifndef SHOW_H
-#define SHOW_H
+#include "tvshow.h"
 
-#include "tvseason.h"
-#include <QString>
-#include <QDate>
+using namespace Jungle;
 
-namespace Jungle {
-
-class Show
+TvShow::TvShow()
+    : m_id(0)
 {
-public:
-    Show();
-
-    int id() const;
-    void setId(int id);
-
-    QString title() const;
-    void setTitle(const QString& name);
-
-    QString coverUrl() const;
-    void setCoverUrl(const QString& url);
-
-    QDate firstAired() const;
-    void setFirstAired(const QDate& date);
-
-    QList<TvSeason> seasons() const;
-    void setTvSeasons(const QList<TvSeason>& seasons);
-
-private:
-    int m_id;
-    QString m_title;
-    QString m_coverUrl;
-    QDate m_firstAired;
-
-    QList<TvSeason> m_seasons;
-};
 }
 
-#endif // SHOW_H
+QString TvShow::coverUrl() const
+{
+    return m_coverUrl;
+}
+
+QDate TvShow::firstAired() const
+{
+    return m_firstAired;
+}
+
+int TvShow::id() const
+{
+    return m_id;
+}
+
+void TvShow::setCoverUrl(const QString& url)
+{
+    m_coverUrl = url;
+}
+
+void TvShow::setFirstAired(const QDate& date)
+{
+    m_firstAired = date;
+}
+
+void TvShow::setId(int id)
+{
+    m_id = id;
+}
+
+void TvShow::setTitle(const QString& name)
+{
+    m_title = name;
+}
+
+QString TvShow::title() const
+{
+    return m_title;
+}
+
+QList< TvSeason > TvShow::seasons() const
+{
+    return m_seasons;
+}
+
+void TvShow::setTvSeasons(const QList< TvSeason >& seasons)
+{
+    m_seasons = seasons;
+}

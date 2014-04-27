@@ -282,7 +282,7 @@ int Database::showId(const QString& name)
     return 0;
 }
 
-void Database::addShow(const Show& show)
+void Database::addShow(const TvShow& show)
 {
     QSqlQuery query(m_sqlDb);
     query.prepare("insert into shows (id, title, releaseDate, posterPath) "
@@ -333,18 +333,18 @@ void Database::addEpisode(int showId, int seasonId, const TvEpisode& episode)
     }
 }
 
-QList<Show> Database::allShows() const
+QList<TvShow> Database::allShows() const
 {
     QSqlQuery query(m_sqlDb);
     query.exec("select id, title, releaseDate, posterPath from shows");
     if (query.lastError().isValid()) {
         qDebug() << query.lastError();
-        return QList<Show>();
+        return QList<TvShow>();
     }
 
-    QList<Show> shows;
+    QList<TvShow> shows;
     while (query.next()) {
-        Show show;
+        TvShow show;
         show.setId(query.value("id").toInt());
         show.setTitle(query.value("title").toString());
         show.setFirstAired(query.value("releaseDate").toDate());

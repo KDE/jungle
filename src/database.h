@@ -22,7 +22,7 @@
 
 #include <QSqlDatabase>
 #include "movie.h"
-#include "show.h"
+#include "tvshow.h"
 
 namespace Jungle {
 
@@ -48,9 +48,9 @@ public:
     void addVideo(const QString& url);
 
     int showId(const QString& name);
-    void addShow(const Show& show);
+    void addShow(const TvShow& show);
 
-    QList<Show> allShows() const;
+    QList<TvShow> allShows() const;
 
     bool hasEpisodes(int show, int season);
     void addEpisode(int showId, int seasonId, const TvEpisode& episode);

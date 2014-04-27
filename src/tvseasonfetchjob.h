@@ -25,7 +25,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-#include "show.h"
+#include "tvshow.h"
 #include "tvseason.h"
 #include "tvepisode.h"
 

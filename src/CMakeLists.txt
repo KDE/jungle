@@ -5,7 +5,7 @@ set(SRCS
     movie.cpp
     themoviedbstore.cpp
     moviefetchjob.cpp
-    show.cpp
+    tvshow.cpp
     tvseason.cpp
     tvepisode.cpp
     tvshowfetchjob.cpp
@@ -36,7 +36,7 @@ set(SRC
     tvepisodemodel.cpp
     database.cpp
     movie.cpp
-    show.cpp
+    tvshow.cpp
     tvseason.cpp
     tvepisode.cpp
 )

@@ -56,7 +56,7 @@ QVariant TvShowsModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    Show show = m_shows[index.row()];
+    TvShow show = m_shows[index.row()];
     switch (role) {
         case Qt::DisplayRole:
             return show.title();

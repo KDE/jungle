@@ -251,7 +251,7 @@ int Feeder::fetchOrCreateShow(const QString& showName)
             &loop, SLOT(quit()));
     loop.exec();
 
-    Show show = job->result();
+    TvShow show = job->result();
     if (show.id()) {
         m_db->addShow(show);
     }
