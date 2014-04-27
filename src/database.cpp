@@ -117,7 +117,7 @@ bool Database::init()
                "airDate TEXT NOT NULL, "
                "name TEXT NOT NULL, "
                "overview TEXT NOT NULL, "
-               "stillPath TEXT NOT NULL, "
+               "stillPath TEXT, "
                "PRIMARY KEY(episodeNum, season, show))");
 
     if (query.lastError().isValid()) {

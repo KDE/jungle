@@ -87,10 +87,21 @@ void TvSeasonFetchJob::slotNetworkReply(QNetworkReply* reply)
     QString url = QString::fromLatin1("%1/jungle/tvshow-%2-season%3-ep%4")
                   .arg(dataDir).arg(m_showId).arg(m_seasonNum).arg(episodeNum);
 
-    QFile file(url);
-    file.open(QIODevice::WriteOnly);
-    file.write(reply->readAll());
-    file.close();
+    QByteArray data = reply->readAll();
+
+    bool containsData = !data.isEmpty();
+    if (data.size() < 100 || data.contains("Format not Supported"))
+        containsData = false;
+
+    if (containsData) {
+        QFile file(url);
+        file.open(QIODevice::WriteOnly);
+        file.write(data);
+        file.close();
+    }
+    else {
+        url.clear();
+    }
 
     int index = reply->property("index").toInt();
     m_episodes[index].setStillUrl(url);
