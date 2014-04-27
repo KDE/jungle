@@ -21,6 +21,17 @@ ColumnLayout {
     }
 
     Text {
+        text: "Episode " + episodeNumber
+        color: "white"
+        opacity: 0.5
+
+        Layout.fillWidth: true
+        elide: Text.ElideRight
+
+        font.pointSize: 8
+    }
+
+    Text {
         text: date.toDateString()
         color: "white"
         opacity: 0.5
