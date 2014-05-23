@@ -46,6 +46,7 @@ add_library(jungleqmlplugin SHARED ${SRC})
 target_link_libraries(jungleqmlplugin
     Qt5::Core
     Qt5::Qml
+    Qt5::Sql
     ${BALOO_LIBRARIES}
 )
 
