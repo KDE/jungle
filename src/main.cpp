@@ -18,7 +18,7 @@
  *
  */
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
@@ -30,7 +30,7 @@
 
 int main(int argc, char** argv)
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     app.setApplicationDisplayName("Jungle");
 
     Jungle::Database* db = Jungle::Database::instance();

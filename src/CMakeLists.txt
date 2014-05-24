@@ -20,6 +20,7 @@ target_link_libraries(jungle
     Qt5::Quick
     Qt5::Sql
     Qt5::DBus
+    Qt5::Widgets
     ${BALOO_LIBRARIES}
     TmdbQt::TmdbQt5
 )
