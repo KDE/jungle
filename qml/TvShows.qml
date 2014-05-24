@@ -18,15 +18,18 @@ FocusScope {
         id: tvshows
         model: Jungle.TvShowsModel {}
         delegate: MovieDelegate {
+            function selectTvShows() {
+                epModel.showId = showId
+                tvshows.visible = false
+                tvepisodes.visible = true
+                tvepisodes.focus = true
+            }
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    epModel.showId = showId
-                    tvshows.visible = false
-                    tvepisodes.visible = true
-                    tvepisodes.focus = true
-                }
+                onClicked: selectTvShows()
             }
+            Keys.onReturnPressed: selectTvShows()
+            Keys.onSpacePressed: selectTvShows()
         }
 
         cellWidth: 400
@@ -50,10 +53,10 @@ FocusScope {
         delegate: EpisodeDelegate {
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    topElem.play(url)
-                }
+                onClicked: topElem.play(url)
             }
+            Keys.onReturnPressed: topElem.play(url)
+            Keys.onSpacePressed: topElem.play(url)
         }
 
         cellWidth: 400

@@ -13,10 +13,11 @@ GridView {
     delegate: MovieDelegate {
         MouseArea {
             anchors.fill: parent
-            onClicked: {
-                gridView.play(url)
-            }
+            onClicked: gridView.play(url)
         }
+
+        Keys.onReturnPressed: gridView.play(url)
+        Keys.onSpacePressed: gridView.play(url)
     }
 
     highlightMoveDuration: 0
