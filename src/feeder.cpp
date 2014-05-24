@@ -34,6 +34,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+#include <QDBusConnection>
+
 using namespace Jungle;
 
 Feeder::Feeder(Database* db, QObject* parent)
@@ -43,6 +45,10 @@ Feeder::Feeder(Database* db, QObject* parent)
     m_theMovieDb = new TheMovieDbStore(this);
     connect(m_theMovieDb, SIGNAL(initialized()),
             this, SLOT(fetchFiles()));
+
+    QDBusConnection con = QDBusConnection::sessionBus();
+    con.connect(QString(), QLatin1String("/files"), QLatin1String("org.kde"),
+                QLatin1String("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
 }
 
 Feeder::~Feeder()
@@ -129,6 +135,9 @@ bool Feeder::filterUrl(const QString& url)
 
 void Feeder::processNext()
 {
+    if (m_files.isEmpty())
+        return;
+
     const QString url = m_files.takeLast();
     if (filterUrl(url)) {
         if (!m_files.isEmpty())
@@ -259,3 +268,8 @@ int Feeder::fetchOrCreateShow(const QString& showName)
     return show.id();
 }
 
+void Feeder::slotFileMetaDataChanged(const QStringList& list)
+{
+    m_files << list;
+    QTimer::singleShot(0, this, SLOT(processNext()));
+}

@@ -44,6 +44,7 @@ private Q_SLOTS:
     void processNext();
 
     void slotResult(MovieFetchJob* job);
+    void slotFileMetaDataChanged(const QStringList& list);
 private:
     /**
      * Remove extra crap from the file name
