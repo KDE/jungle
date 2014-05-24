@@ -101,7 +101,7 @@ ApplicationWindow {
         if (applicationWindow.visibility != Window.FullScreen) {
             applicationWindow.visibility = Window.FullScreen
         } else {
-            applicationWindow.visibility = Window.AutomaticVisibility
+            applicationWindow.visibility = Window.Maximized
         }
     }
 }
