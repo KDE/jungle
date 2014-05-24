@@ -38,6 +38,14 @@ Item {
             mediaPlayer.seek(mediaPlayer.position + amount)
         }
 
+        if (event.modifiers & Qt.ControlModifier) {
+            if (event.key == Qt.Key_Up) {
+                mediaPlayer.volume += 0.05
+            }
+            else if (event.key == Qt.Key_Down) {
+                mediaPlayer.volume -= 0.05
+            }
+        }
        toolBox.opacity = 1.0
        toolBoxHideTimer.start()
     }
