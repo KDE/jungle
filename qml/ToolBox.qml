@@ -124,7 +124,7 @@ Item {
             iconName: "view-fullscreen"
             opacity: 0.8
 
-            onClicked: applicationWindow.toogleFullScreen()
+            onClicked: applicationWindow.toggleFullScreen()
         }
     }
 }
