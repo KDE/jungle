@@ -119,5 +119,12 @@ Item {
                 source.volume = percent
             }
         }
+
+        QtControls.Button {
+            iconName: "view-fullscreen"
+            opacity: 0.8
+
+            onClicked: applicationWindow.toogleFullScreen()
+        }
     }
 }

@@ -4,7 +4,7 @@ import QtQuick.Controls 1.1
 import QtQuick.Window 2.1
 
 ApplicationWindow {
-    id: root
+    id: applicationWindow
     color: "black"
     title: "Jungle"
 
@@ -94,12 +94,14 @@ ApplicationWindow {
     MouseArea {
         anchors.fill: parent
         propagateComposedEvents: true
-        onDoubleClicked: {
-            if (root.visibility != Window.FullScreen) {
-                root.visibility = Window.FullScreen
-            } else {
-                root.visibility = Window.AutomaticVisibility
-            }
+        onDoubleClicked: toggleFullScreen()
+    }
+
+    function toggleFullScreen() {
+        if (applicationWindow.visibility != Window.FullScreen) {
+            applicationWindow.visibility = Window.FullScreen
+        } else {
+            applicationWindow.visibility = Window.AutomaticVisibility
         }
     }
 }
