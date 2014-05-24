@@ -5,7 +5,7 @@ import QtQuick.Controls 1.1 as QtControls
 
 import org.kde.jungle 0.1 as Jungle
 
-Item {
+FocusScope {
     id: topElem
     signal play (string url)
 
@@ -24,6 +24,7 @@ Item {
                     epModel.showId = showId
                     tvshows.visible = false
                     tvepisodes.visible = true
+                    tvepisodes.focus = true
                 }
             }
         }
@@ -31,7 +32,12 @@ Item {
         cellWidth: 400
         cellHeight: 600
 
+        focus: true
         anchors.fill: parent
+        highlightMoveDuration: 0
+        highlight: Rectangle {
+            color: "#2874CC"
+        }
     }
 
     GridView {
@@ -54,5 +60,9 @@ Item {
         cellHeight: 350
 
         anchors.fill: parent
+        highlightMoveDuration: 0
+        highlight: Rectangle {
+            color: "#2874CC"
+        }
     }
 }

@@ -16,7 +16,6 @@ Item {
         source: mediaPlayer
     }
 
-    focus: true
     Keys.onSpacePressed: mediaPlayer.playbackState == MediaPlayer.PlayingState ? mediaPlayer.pause() : mediaPlayer.play()
 
     Keys.onPressed: {

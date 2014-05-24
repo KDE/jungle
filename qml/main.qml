@@ -33,12 +33,14 @@ ApplicationWindow {
 
             onMoviesActivated: {
                 movies.visible = true
+                movies.focus = true
                 tvshows.visible = false
             }
 
             onTvShowsActivated: {
                 movies.visible = false
                 tvshows.visible = true
+                tvshows.focus = true
                 tvshows.reset()
             }
         }
@@ -50,9 +52,11 @@ ApplicationWindow {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
 
+            focus: true
             onPlay: {
                 videoPlayer.source = url
                 videoPlayer.visible = true
+                videoPlayer.focus = true
                 mainItem.visible = false
 
                 videoPlayer.play()
@@ -71,6 +75,7 @@ ApplicationWindow {
             onPlay: {
                 videoPlayer.source = url
                 videoPlayer.visible = true
+                videoPlayer.focus = true
                 mainItem.visible = false
 
                 videoPlayer.play()
@@ -88,6 +93,10 @@ ApplicationWindow {
             videoPlayer.stop()
             videoPlayer.visible = false
             mainItem.visible = true
+            if (tvshows.visible)
+                tvshows.focus = true
+            else
+                movies.focus = true
         }
     }
 

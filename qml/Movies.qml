@@ -19,6 +19,11 @@ GridView {
         }
     }
 
+    highlightMoveDuration: 0
+    highlight: Rectangle {
+        color: "#2874CC"
+    }
+
     cellWidth: 400
     cellHeight: 600
 }
