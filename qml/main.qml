@@ -92,6 +92,8 @@ ApplicationWindow {
     }
 
     MouseArea {
+        // Otherwise it intefers with the ToolBox buttons
+        z: -1000
         anchors.fill: parent
         propagateComposedEvents: true
         onDoubleClicked: toggleFullScreen()
