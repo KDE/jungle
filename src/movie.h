@@ -21,12 +21,13 @@
 #ifndef MOVIE_H
 #define MOVIE_H
 
+#include "jungle_export.h"
 #include <QString>
 #include <QDate>
 
 namespace Jungle {
 
-class Movie
+class JUNGLE_EXPORT Movie
 {
 public:
     Movie();

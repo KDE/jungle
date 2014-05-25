@@ -27,7 +27,7 @@
 
 namespace Jungle {
 
-class TvShow
+class JUNGLE_EXPORT TvShow
 {
 public:
     TvShow();

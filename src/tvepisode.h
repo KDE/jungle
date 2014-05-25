@@ -21,12 +21,13 @@
 #ifndef JUNGLE_TVEPISODE_H
 #define JUNGLE_TVEPISODE_H
 
+#include "jungle_export.h"
 #include <QDate>
 #include <QString>
 
 namespace Jungle {
 
-class TvEpisode
+class JUNGLE_EXPORT TvEpisode
 {
 public:
     TvEpisode();

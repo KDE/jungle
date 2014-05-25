@@ -26,7 +26,9 @@
 
 namespace Jungle {
 
-class Database {
+class JUNGLE_EXPORT Database : public QObject
+{
+    Q_OBJECT
 public:
     /**
      * Create a database at path \p path which will contain all of the

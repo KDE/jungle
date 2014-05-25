@@ -26,7 +26,7 @@
 
 namespace Jungle {
 
-class TvSeason
+class JUNGLE_EXPORT TvSeason
 {
 public:
     TvSeason();

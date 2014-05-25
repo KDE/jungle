@@ -1,13 +1,30 @@
-set(SRCS
-    main.cpp
+set(LIB_SRCS
     database.cpp
-    feeder.cpp
     movie.cpp
-    themoviedbstore.cpp
-    moviefetchjob.cpp
     tvshow.cpp
     tvseason.cpp
     tvepisode.cpp
+)
+
+add_library(junglecommon SHARED ${LIB_SRCS})
+target_link_libraries(junglecommon
+    Qt5::Core
+    Qt5::Sql
+)
+
+generate_export_header(junglecommon BASE_NAME JUNGLE EXPORT_FILE_NAME jungle_export.h)
+
+install(TARGETS junglecommon EXPORT JungleLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+
+#
+# Executable
+#
+set(SRCS
+    main.cpp
+    feeder.cpp
+    themoviedbstore.cpp
+    moviefetchjob.cpp
     tvshowfetchjob.cpp
     tvseasonfetchjob.cpp
 )
@@ -23,6 +40,7 @@ target_link_libraries(jungle
     Qt5::Widgets
     ${BALOO_LIBRARIES}
     TmdbQt::TmdbQt5
+    junglecommon
 )
 
 install(TARGETS jungle DESTINATION ${BIN_INSTALL_DIR})
@@ -36,11 +54,6 @@ set(SRC
     moviesmodel.cpp
     tvshowsmodel.cpp
     tvepisodemodel.cpp
-    database.cpp
-    movie.cpp
-    tvshow.cpp
-    tvseason.cpp
-    tvepisode.cpp
 )
 
 add_library(jungleqmlplugin SHARED ${SRC})
@@ -49,6 +62,7 @@ target_link_libraries(jungleqmlplugin
     Qt5::Core
     Qt5::Qml
     Qt5::Sql
+    junglecommon
     ${BALOO_LIBRARIES}
 )
 
