@@ -111,7 +111,7 @@ QString Feeder::filterFileName(const QString& fileName)
             << "MP3" << "RARBG" << "DIMENSION" << "NTb" << "DD5" << "2HD" << "NF"
             << "REMARKABLE" << "PROPER" << "AFG" << "bdrip" << "miguel" << "axxo"
             << "occor" << "1337x" << "noir" << "Hindi" << "ViZNU" << "AAC"
-            << "eng" << "bellatrix" << "hon3y" << "vk007";
+            << "eng" << "bellatrix" << "hon3y" << "vk007" << "KLAXXON";
 
     foreach (const QString& f, fillers) {
         QRegularExpression exp("\\b" + f + "\\b", QRegularExpression::CaseInsensitiveOption);
