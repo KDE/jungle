@@ -59,6 +59,12 @@ public:
 
     TvEpisode episode(int showId, int season, int epNum);
     QList<TvEpisode> allEpisodes(int showId, int season = -1);
+
+signals:
+    void movieAdded(const Movie& movie);
+    void tvShowAdded(const TvShow& show);
+    void tvEpisodeAdded(const TvEpisode& episode);
+
 private:
     int fileId(const QString& url);
     QString fileUrl(int fid);

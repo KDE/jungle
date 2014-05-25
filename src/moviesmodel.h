@@ -45,6 +45,7 @@ public:
 
 private slots:
     void slotPopulate();
+    void slotNewMovie(const Movie& movie);
 
 private:
     QList<Movie> m_movies;

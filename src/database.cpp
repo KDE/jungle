@@ -181,6 +181,8 @@ void Database::addMovie(const Movie& movie)
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
+
+    emit movieAdded(movie);
 }
 
 QList<Movie> Database::allMovies() const
@@ -311,6 +313,8 @@ void Database::addShow(const TvShow& show)
             qDebug() << "SEASON" << query.lastError();
         }
     }
+
+    emit tvShowAdded(show);
 }
 
 void Database::addEpisode(int showId, int seasonId, const TvEpisode& episode)
@@ -331,6 +335,8 @@ void Database::addEpisode(int showId, int seasonId, const TvEpisode& episode)
     if (!query.exec()) {
         qDebug() << "EP" << query.lastError();
     }
+
+    emit tvEpisodeAdded(episode);
 }
 
 QList<TvShow> Database::allShows() const

@@ -56,6 +56,9 @@ public:
      */
     void setSeason(int season);
 
+private slots:
+    void slotNewTvEpisode(const TvEpisode& episode);
+
 private:
     QList<TvEpisode> m_episodes;
     int m_showId;

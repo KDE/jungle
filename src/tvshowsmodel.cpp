@@ -41,6 +41,9 @@ TvShowsModel::TvShowsModel(QObject* parent)
     names.insert(ReleaseDateRole, "date");
     names.insert(ShowIdRole, "showId");
     setRoleNames(names);
+
+    connect(Database::instance(), SIGNAL(tvShowAdded(TvShow)),
+            this, SLOT(slotNewTvShow(TvShow)));
 }
 
 void TvShowsModel::slotPopulate()
@@ -48,6 +51,13 @@ void TvShowsModel::slotPopulate()
     beginResetModel();
     m_shows = Database::instance()->allShows();
     endResetModel();
+}
+
+void TvShowsModel::slotNewTvShow(const TvShow& show)
+{
+    beginInsertRows(QModelIndex(), m_shows.size(), m_shows.size());
+    m_shows << show;
+    endInsertRows();
 }
 
 QVariant TvShowsModel::data(const QModelIndex& index, int role) const

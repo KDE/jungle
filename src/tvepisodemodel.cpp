@@ -35,6 +35,9 @@ TvEpisodeModel::TvEpisodeModel(QObject* parent)
     names.insert(SeasonRole, "season");
     names.insert(EpisodeNumberRole, "episodeNumber");
     setRoleNames(names);
+
+    connect(Database::instance(), SIGNAL(tvEpisodeAdded(TvEpisode)),
+            this, SLOT(slotNewTvEpisode(TvEpisode)));
 }
 
 int TvEpisodeModel::rowCount(const QModelIndex& parent) const
@@ -86,6 +89,14 @@ void TvEpisodeModel::setShowId(int id)
     beginResetModel();
     m_episodes = Database::instance()->allEpisodes(m_showId);
     endResetModel();
+}
+
+void TvEpisodeModel::slotNewTvEpisode(const TvEpisode& episode)
+{
+    // FIXME: This does not check for the correct show id
+    beginInsertRows(QModelIndex(), m_episodes.size(), m_episodes.size());
+    m_episodes << episode;
+    endInsertRows();
 }
 
 void TvEpisodeModel::setSeason(int season)

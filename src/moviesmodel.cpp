@@ -41,6 +41,9 @@ MoviesModel::MoviesModel(QObject* parent)
     names.insert(CoverRole, "cover");
     names.insert(ReleaseDateRole, "date");
     setRoleNames(names);
+
+    connect(Database::instance(), SIGNAL(movieAdded(Movie)),
+            this, SLOT(slotNewMovie(Movie)));
 }
 
 void MoviesModel::slotPopulate()
@@ -48,6 +51,13 @@ void MoviesModel::slotPopulate()
     beginResetModel();
     m_movies = Database::instance()->allMovies();
     endResetModel();
+}
+
+void MoviesModel::slotNewMovie(const Movie& movie)
+{
+    beginInsertRows(QModelIndex(), m_movies.size(), m_movies.size());
+    m_movies << movie;
+    endInsertRows();
 }
 
 QVariant MoviesModel::data(const QModelIndex& index, int role) const

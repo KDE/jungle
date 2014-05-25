@@ -45,6 +45,7 @@ public:
 
 private slots:
     void slotPopulate();
+    void slotNewTvShow(const TvShow& show);
 
 private:
     QList<TvShow> m_shows;
