@@ -183,14 +183,14 @@ void Feeder::processNext()
 
             TvSeason tvseason = job->result();
             foreach (const TvEpisode& ep, tvseason.episodes()) {
-                m_db->addEpisode(showId, season, ep);
+                m_db->addEpisode(ep);
             }
         }
 
         TvEpisode ep = m_db->episode(showId, season, episode);
         if (ep.episodeNumber() == episode) {
             ep.setUrl(url);
-            m_db->addEpisode(showId, season, ep);
+            m_db->addEpisode(ep);
 
             // Mark the url as processed
             m_db->addVideo(url);

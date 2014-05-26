@@ -98,3 +98,12 @@ void TvEpisode::setSeason(int s)
     m_season = s;
 }
 
+int TvEpisode::show() const
+{
+    return m_show;
+}
+
+void TvEpisode::setShow(int show)
+{
+    m_show = show;
+}

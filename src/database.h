@@ -55,7 +55,7 @@ public:
     QList<TvShow> allShows() const;
 
     bool hasEpisodes(int show, int season);
-    void addEpisode(int showId, int seasonId, const TvEpisode& episode);
+    void addEpisode(const TvEpisode& episode);
 
     TvEpisode episode(int showId, int season, int epNum);
     QList<TvEpisode> allEpisodes(int showId, int season = -1);

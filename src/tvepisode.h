@@ -53,6 +53,9 @@ public:
     int season() const;
     void setSeason(int s);
 
+    int show() const;
+    void setShow(int show);
+
 private:
     int m_episodeNum;
     QDate m_airDate;
@@ -61,6 +64,7 @@ private:
     QString m_stillUrl;
     QString m_url;
     int m_season;
+    int m_show;
 };
 }
 

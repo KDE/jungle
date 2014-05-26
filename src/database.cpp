@@ -317,15 +317,15 @@ void Database::addShow(const TvShow& show)
     emit tvShowAdded(show);
 }
 
-void Database::addEpisode(int showId, int seasonId, const TvEpisode& episode)
+void Database::addEpisode(const TvEpisode& episode)
 {
     QSqlQuery query(m_sqlDb);
     query.prepare("insert or replace into tvepisodes "
                   "(episodeNum, season, show, fid, airDate, name, overview, stillPath) "
                   "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     query.addBindValue(episode.episodeNumber());
-    query.addBindValue(seasonId);
-    query.addBindValue(showId);
+    query.addBindValue(episode.season());
+    query.addBindValue(episode.show());
     query.addBindValue(fileId(episode.url()));
     query.addBindValue(episode.airDate());
     query.addBindValue(episode.name());
@@ -383,6 +383,8 @@ TvEpisode Database::episode(int showId, int season, int epNum)
         ep.setOverview(query.value("overview").toString());
         ep.setStillUrl(query.value("stillPath").toString());
         ep.setEpisodeNumber(query.value("episodeNum").toInt());
+        ep.setSeason(season);
+        ep.setShow(showId);
 
         int fid = query.value("fid").toInt();
         ep.setUrl(fileUrl(fid));
@@ -419,6 +421,7 @@ QList<TvEpisode> Database::allEpisodes(int showId, int season)
         ep.setEpisodeNumber(query.value("episodeNum").toInt());
         ep.setUrl(query.value("url").toString());
         ep.setSeason(query.value("season").toInt());
+        ep.setShow(showId);
 
         epList << ep;
     }

@@ -67,6 +67,8 @@ void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
         episode.setEpisodeNumber(ep.episodeNumber());
         episode.setName(ep.name());
         episode.setOverview(ep.overview());
+        episode.setSeason(m_seasonNum);
+        episode.setShow(m_showId);
 
         m_episodes << episode;
 
