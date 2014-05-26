@@ -49,6 +49,10 @@ public:
     bool hasVideo(int fileId);
     void addVideo(const QString& url);
 
+    bool isWatched(const QString& url);
+    bool isWatched(int fileId);
+    void markWatched(const QString& url);
+
     int showId(const QString& name);
     void addShow(const TvShow& show);
 

@@ -148,6 +148,17 @@ bool Database::init()
     }
 
     //
+    // Watched
+    //
+    query.exec("CREATE TABLE IF NOT EXISTS watched("
+               "fid INTEGER NOT NULL PRIMARY KEY)");
+
+    if (query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    //
     // Attach the file mapping db
     //
     query.prepare("ATTACH DATABASE ? AS fileMap");
@@ -444,4 +455,33 @@ bool Database::hasEpisodes(int show, int season)
     }
 
     return query.next();
+}
+
+bool Database::isWatched(const QString& url)
+{
+    return isWatched(fileId(url));
+}
+
+bool Database::isWatched(int fileId)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("select 1 from watched where fid = ?");
+    query.addBindValue(fileId);
+
+    if (!query.exec()) {
+        qDebug() << "isWatched:" << query.lastError();
+        return false;
+    }
+
+    return query.next();
+}
+
+void Database::markWatched(const QString& url)
+{
+    QSqlQuery query(m_sqlDb);
+    query.prepare("insert into watched VALUES (?)");
+    query.addBindValue(fileId(url));
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
 }
