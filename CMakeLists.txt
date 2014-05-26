@@ -11,6 +11,7 @@ find_package(Baloo REQUIRED)
 
 find_package(TmdbQt5 REQUIRED)
 
+include(ECMAddTests)
 include(ECMSetupVersion)
 include(ECMAddTests)
 

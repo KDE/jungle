@@ -18,66 +18,20 @@
  *
  */
 
-#include "movie.h"
+#ifndef DATABASETEST_H
+#define DATABASETEST_H
 
-using namespace Jungle;
+#include <QObject>
 
-Movie::Movie()
+class DatabaseTest : public QObject
 {
-}
+    Q_OBJECT
+private Q_SLOTS:
+    void testMovies();
 
-int Movie::id() const
-{
-    return m_id;
-}
+private:
+    bool createFileMapDb(const QString& url);
+    int createFile(const QString& url);
+};
 
-void Movie::setId(int id)
-{
-    m_id = id;
-}
-
-QString Movie::url() const
-{
-    return m_url;
-}
-
-void Movie::setUrl(const QString& url)
-{
-    m_url = url;
-}
-
-QString Movie::title() const
-{
-    return m_title;
-}
-
-void Movie::setTitle(const QString& title)
-{
-    m_title = title;
-}
-
-void Movie::setReleaseDate(const QDate& date)
-{
-    m_releaseDate = date;
-}
-
-QDate Movie::releaseDate() const
-{
-    return m_releaseDate;
-}
-
-void Movie::setPosterUrl(const QString& url)
-{
-    m_posterUrl = url;
-}
-
-QString Movie::posterUrl() const
-{
-    return m_posterUrl;
-}
-
-bool Movie::operator==(const Movie& rhs) const
-{
-    return m_id == rhs.m_id && m_url == rhs.m_url && m_title == rhs.m_title
-           && m_releaseDate == rhs.m_releaseDate && m_posterUrl == rhs.m_posterUrl;
-}
+#endif // DATABASETEST_H

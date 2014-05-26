@@ -57,6 +57,8 @@ public:
     QString posterUrl() const;
     void setPosterUrl(const QString& url);
 
+    bool operator ==(const Movie& rhs) const;
+
 private:
     int m_id;
     QString m_url;
@@ -66,4 +68,7 @@ private:
 };
 
 }
+
+Q_DECLARE_METATYPE(Jungle::Movie)
+
 #endif // MOVIE_H
