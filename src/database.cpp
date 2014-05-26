@@ -180,6 +180,7 @@ void Database::addMovie(const Movie& movie)
 
     if (!query.exec()) {
         qDebug() << query.lastError();
+        return;
     }
 
     emit movieAdded(movie);
@@ -334,6 +335,7 @@ void Database::addEpisode(const TvEpisode& episode)
 
     if (!query.exec()) {
         qDebug() << "EP" << query.lastError();
+        return;
     }
 
     emit tvEpisodeAdded(episode);
