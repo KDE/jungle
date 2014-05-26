@@ -23,6 +23,7 @@
 #include <QQmlContext>
 #include <QQmlComponent>
 
+#include <QIcon>
 #include <QStandardPaths>
 
 #include "database.h"
@@ -32,6 +33,7 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     app.setApplicationDisplayName("Jungle");
+    app.setWindowIcon(QIcon::fromTheme("nepomuk"));
 
     Jungle::Database* db = Jungle::Database::instance();
     if (!db->initialized()) {
