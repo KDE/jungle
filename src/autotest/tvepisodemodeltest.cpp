@@ -18,10 +18,12 @@
  */
 
 #include "tvepisodemodel.h"
+#include "database.h"
 #include "modeltest.h"
 
 #include <QObject>
 #include <QTest>
+#include <QSignalSpy>
 #include <QDir>
 #include <QFile>
 #include <QProcess>
@@ -30,6 +32,7 @@
 #include <QDebug>
 
 static int gameOfThronesId = 1399;
+
 using namespace Jungle;
 class TvEpisodeModelTest : public QObject
 {
@@ -38,6 +41,7 @@ class TvEpisodeModelTest : public QObject
 private Q_SLOTS:
     void initTestCase();
     void testGettingEpisodes();
+    void testNewEpisodeAdded();
 
 private:
     void createMockDatabase(const QString path, const QString &name, const QString &mockData);
@@ -96,6 +100,27 @@ void TvEpisodeModelTest::testGettingEpisodes()
     delete model;
 }
 
+void TvEpisodeModelTest::testNewEpisodeAdded()
+{
+    TvEpisode newEpisode;
+    newEpisode.setName(QStringLiteral("Everybody dies, the end"));
+    newEpisode.setAirDate(QDate::fromString(QStringLiteral("2015-05-05"), Qt::ISODate));
+    newEpisode.setShow(gameOfThronesId + 1); //Not game of thrones showId
+    newEpisode.setOverview(QString("a"));
+
+    auto model = new TvEpisodeModel(this);
+    model->setShowId(gameOfThronesId); //Not game of trhones
+
+    QSignalSpy spy(model, SIGNAL(rowsInserted(QModelIndex,int,int)));
+    Database::instance()->addEpisode(newEpisode);
+    //The episode is not gameOfThrones, so it should not be added to the model
+    QCOMPARE(spy.count(), 0);
+
+    //Now the episode becomes a gameOfThrones episode
+    newEpisode.setShow(gameOfThronesId);
+    Database::instance()->addEpisode(newEpisode);
+    //Now it should be added
+    QCOMPARE(spy.count(), 1);
 }
 
 QTEST_MAIN(TvEpisodeModelTest);
