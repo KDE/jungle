@@ -18,6 +18,7 @@
  */
 
 #include "tvepisodemodel.h"
+#include "modeltest.h"
 
 #include <QObject>
 #include <QTest>
@@ -76,6 +77,7 @@ void TvEpisodeModelTest::testGettingEpisodes()
 {
     auto model = new TvEpisodeModel(this);
     model->setShowId(1399); // 1399 Game of thrones
+    new ModelTest(model, this);
 
     QCOMPARE(model->rowCount(), 5);
     QList<QPair<QString, QDate> > episodes;
