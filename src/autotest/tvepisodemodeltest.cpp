@@ -93,6 +93,8 @@ void TvEpisodeModelTest::testGettingEpisodes()
         QCOMPARE(model->data(index, TvEpisodeModel::NameRole).toString(), episodes.at(x).first);
         QCOMPARE(model->data(index, TvEpisodeModel::AirDateRole).toDate(), episodes.at(x).second);
     }
+    delete model;
+}
 
 }
 
