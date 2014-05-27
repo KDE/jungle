@@ -55,7 +55,7 @@ QVariant TvEpisodeModel::data(const QModelIndex& index, int role) const
 
     TvEpisode ep = m_episodes.at(index.row());
     switch (role) {
-        case Qt::DisplayRole:
+        case Qt::DisplayRole || NameRole:
             return ep.name();
 
         case UrlRole:

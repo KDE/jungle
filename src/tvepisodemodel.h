@@ -35,6 +35,7 @@ public:
     explicit TvEpisodeModel(QObject* parent = 0);
 
     enum Roles {
+        NameRole = Qt::DisplayRole,
         UrlRole = Qt::UserRole + 1,
         CoverRole,
         AirDateRole,
