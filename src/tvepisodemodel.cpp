@@ -93,7 +93,11 @@ void TvEpisodeModel::setShowId(int id)
 
 void TvEpisodeModel::slotNewTvEpisode(const TvEpisode& episode)
 {
-    // FIXME: This does not check for the correct show id
+    //If the added episode is not of this tvshow, skip it.
+    if (episode.show() != m_showId) {
+        return;
+    }
+
     beginInsertRows(QModelIndex(), m_episodes.size(), m_episodes.size());
     m_episodes << episode;
     endInsertRows();
