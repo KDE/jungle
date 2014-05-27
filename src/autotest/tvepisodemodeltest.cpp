@@ -29,6 +29,7 @@
 
 #include <QDebug>
 
+static int gameOfThronesId = 1399;
 using namespace Jungle;
 class TvEpisodeModelTest : public QObject
 {
@@ -76,7 +77,7 @@ void TvEpisodeModelTest::initTestCase()
 void TvEpisodeModelTest::testGettingEpisodes()
 {
     auto model = new TvEpisodeModel(this);
-    model->setShowId(1399); // 1399 Game of thrones
+    model->setShowId(gameOfThronesId);
     new ModelTest(model, this);
 
     QCOMPARE(model->rowCount(), 5);
