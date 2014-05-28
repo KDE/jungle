@@ -38,7 +38,8 @@ target_link_libraries(jungle
     Qt5::Sql
     Qt5::DBus
     Qt5::Widgets
-    ${BALOO_LIBRARIES}
+    ${BALOO_CORE_LIBRARY}
+    ${BALOO_FILE_LIBRARY}
     TmdbQt::TmdbQt5
     junglecommon
 )
@@ -63,7 +64,8 @@ target_link_libraries(jungleqmlplugin
     Qt5::Qml
     Qt5::Sql
     junglecommon
-    ${BALOO_LIBRARIES}
+    ${BALOO_CORE_LIBRARY}
+    ${BALOO_FILE_LIBRARY}
 )
 
 install(TARGETS jungleqmlplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
