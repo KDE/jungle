@@ -64,12 +64,8 @@ Item {
             }
         }
 
-        KCoreAddons.Formats {
-            id: formats
-        }
-
         Text {
-            text: formats.formatDuration(source.position)
+            text: KCoreAddons.Format.formatDuration(source.position)
             color: "white"
         }
 
