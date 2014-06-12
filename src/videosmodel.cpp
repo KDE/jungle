@@ -21,8 +21,8 @@
 
 #include <QTimer>
 
-#include <baloo/query.h>
-#include <baloo/resultiterator.h>
+#include <Baloo/query.h>
+#include <Baloo/resultiterator.h>
 
 using namespace Jungle;
 

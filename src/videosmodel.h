@@ -21,7 +21,7 @@
 #define JUNGLE_VIDEOSMODEL_H
 
 #include <QAbstractListModel>
-#include <baloo/result.h>
+#include <Baloo/result.h>
 
 namespace Jungle {
 
