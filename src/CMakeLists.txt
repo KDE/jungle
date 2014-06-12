@@ -39,6 +39,7 @@ target_link_libraries(jungle
     Qt5::DBus
     Qt5::Widgets
     KF5::BalooCore
+    KF5::BalooFiles
     TmdbQt::TmdbQt5
     junglecommon
 )
@@ -63,6 +64,7 @@ target_link_libraries(jungleqmlplugin
     Qt5::Qml
     Qt5::Sql
     KF5::BalooCore
+    KF5::BalooFiles
     junglecommon
 )
 
