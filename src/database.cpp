@@ -38,23 +38,24 @@ Database::Database(const QString& path, const QString& fileMapDb)
 Database::~Database()
 {
     const QString name = m_sqlDb.connectionName();
-
+    m_sqlDb.close();
     m_sqlDb = QSqlDatabase();
+
     QSqlDatabase::removeDatabase(name);
 }
+
+static QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
+static QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
+Q_GLOBAL_STATIC_WITH_ARGS(Database, s_database, (dataDir, fileMapDb));
 
 // static
 Database* Database::instance()
 {
-    static QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-    static QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
-    static Database db(dataDir, fileMapDb);
-
-    if (!db.initialized()) {
+    if (!s_database->initialized()) {
         QDir().mkpath(dataDir);
-        db.init();
+        s_database->init();
     }
-    return &db;
+    return &(*s_database);
 }
 
 bool Database::initialized()
