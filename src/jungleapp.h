@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Àlex Fiestas <afiestas@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,22 +18,23 @@
  *
  */
 
-#ifndef INITIATOR_H
-#define INITIATOR_H
+#ifndef JUNGLEAPP_H
+#define JUNGLEAPP_H
 
-class AbstractInitator {
-public:
-    virtual ~AbstractInitator() {}
-    virtual bool test() = 0;
-};
+#include "abstractapp.h"
 
-/**
- * This class decides which the starting class should be
- */
-class Initiator : public AbstractInitator
+class KConfig;
+class AbstractInitiator;
+class JungleApp : public AbstractApp
 {
 public:
-    bool test() { return true; }
+    JungleApp(KConfig *config, AbstractInitiator *initiator);
+    virtual ~JungleApp();
+
+    virtual void init();
+
+    KConfig *m_config;
+    AbstractInitiator *m_initiator;
 };
 
-#endif // INITIATOR_H
+#endif // JUNGLEAPP_H

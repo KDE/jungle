@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Àlex Fiestas <afiestas@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,4 +17,15 @@
  *
  */
 
-#include "initiator.h"
+#ifndef ABSTRACT_INITIATOR_H
+#define ABSTRACT_INITIATOR_H
+
+class KConfig;
+class AbstractInitiator
+{
+public:
+    virtual ~AbstractInitiator() {}
+    virtual void init(KConfig *config) = 0;
+};
+
+#endif //ABSTRACT_INITIATOR_H
