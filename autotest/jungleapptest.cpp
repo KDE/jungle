@@ -18,8 +18,8 @@
  *
  */
 
-#include "../abstractinitiator.h"
-#include "../jungleapp.h"
+#include "../src/abstractinitiator.h"
+#include "../src/jungleapp.h"
 
 #include "gmock/gmock.h"
 

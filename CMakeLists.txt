@@ -5,7 +5,7 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH})
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Core Test Sql DBus Qml Quick Widgets)
-find_package(KF5 REQUIRED COMPONENTS KDE4Support I18n Service Baloo)
+find_package(KF5 REQUIRED COMPONENTS I18n Service Baloo Config)
 find_package(TmdbQt5 REQUIRED)
 find_package(GTest REQUIRED)
 find_package(GMock REQUIRED)
@@ -24,8 +24,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src
 )
 
-add_subdirectory(src)
-add_subdirectory(qml)
+# add_subdirectory(src)
+add_subdirectory(autotest)
+# add_subdirectory(qml)
 
 feature_summary(WHAT ALL
     INCLUDE_QUIET_PACKAGES
