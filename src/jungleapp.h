@@ -33,6 +33,7 @@ public:
 
     virtual void init();
 
+private:
     AbstractInitiator *m_initiator;
 };
 
