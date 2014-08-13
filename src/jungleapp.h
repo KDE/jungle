@@ -28,12 +28,11 @@ class AbstractInitiator;
 class JungleApp : public AbstractApp
 {
 public:
-    JungleApp(KConfig *config, AbstractInitiator *initiator);
+    JungleApp(AbstractInitiator *initiator);
     virtual ~JungleApp();
 
     virtual void init();
 
-    KConfig *m_config;
     AbstractInitiator *m_initiator;
 };
 

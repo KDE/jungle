@@ -25,10 +25,8 @@
 #include <QDebug>
 #include <KConfig>
 
-JungleApp::JungleApp(KConfig* config, AbstractInitiator* initiator)
+JungleApp::JungleApp(AbstractInitiator* initiator)
 {
-    qDebug() << "OVER HERE!";
-    m_config = config ? config : new KConfig();
     m_initiator = initiator ? initiator : new JungleInitiator();
 }
 
@@ -39,6 +37,5 @@ JungleApp::~JungleApp()
 
 void JungleApp::init()
 {
-    qDebug() << "DEBUG STATEMENT";
-    m_initiator->init(m_config);
+    m_initiator->init();
 }

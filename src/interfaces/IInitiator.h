@@ -25,7 +25,7 @@ class AbstractInitiator
 {
 public:
     virtual ~AbstractInitiator() {}
-    virtual void init(KConfig *config) = 0;
+    virtual void init() = 0;
 };
 
 #endif //ABSTRACT_INITIATOR_H

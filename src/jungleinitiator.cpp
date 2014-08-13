@@ -22,7 +22,7 @@
 
 #include <KConfig>
 
-JungleInitiator::JungleInitiator()
+JungleInitiator::JungleInitiator(IRun* appRun, JungleConfig* config)
 {
 
 }
@@ -32,7 +32,7 @@ JungleInitiator::~JungleInitiator()
 
 }
 
-void JungleInitiator::init(KConfig* config)
+void JungleInitiator::init()
 {
-
+    
 }

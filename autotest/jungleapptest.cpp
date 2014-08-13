@@ -28,12 +28,10 @@
 #include <QTest>
 #include <QDebug>
 
-#include <KConfig>
-
 class MockInitiator : public AbstractInitiator
 {
 public:
-    MOCK_METHOD1(init, void(KConfig *));
+    MOCK_METHOD0(init, void());
 };
 
 class JungleAppTest : public QObject
@@ -46,11 +44,10 @@ private Q_SLOTS:
 
 void JungleAppTest::initTest()
 {
-    KConfig *config = new KConfig();
     MockInitiator initiator;
-    EXPECT_CALL(initiator, init(config)).Times(1);
+    EXPECT_CALL(initiator, init()).Times(1);
 
-    JungleApp app(config, &initiator);
+    JungleApp app(&initiator);
 
     app.init();
 }
