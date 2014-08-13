@@ -37,6 +37,11 @@ void JungleConfig::setSharedConfig(KSharedConfigPtr& config)
     m_global = m_config->group(QStringLiteral("global"));
 }
 
+void JungleConfig::setFirstRun(bool isFirstRun)
+{
+    m_global.writeEntry(QStringLiteral("firstRun"), isFirstRun);
+}
+
 bool JungleConfig::isFirstRun() const
 {
     return m_global.readEntry(QStringLiteral("firstRun"), true);

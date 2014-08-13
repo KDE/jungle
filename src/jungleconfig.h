@@ -32,6 +32,7 @@ public:
 
     void setSharedConfig(KSharedConfigPtr &config);
 
+    void setFirstRun(bool isFirstRun);
     bool isFirstRun() const;
 
 private:

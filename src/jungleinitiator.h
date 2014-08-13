@@ -22,17 +22,22 @@
 #define JUNGLEINITIATOR_H
 
 #include "interfaces/IInitiator.h"
-#include "interfaces/irun.h"
 
+class IRun;
 class KConfig;
 class JungleConfig;
 class JungleInitiator : public AbstractInitiator
 {
 public:
-    JungleInitiator(IRun *appRun = 0, JungleConfig *config = 0);
+    JungleInitiator(IRun* firstRun = 0, IRun* normalRun = 0, JungleConfig* config = 0);
     ~JungleInitiator();
 
     virtual void init();
+
+private:
+    IRun *m_firstRun;
+    IRun *m_normalRun;
+    JungleConfig *m_config;
 };
 
 #endif // JUNGLEINITIATOR_H

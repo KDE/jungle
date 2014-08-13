@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Àlex Fiestas <afiestas@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,30 +17,15 @@
  *
  */
 
-#include "jungleinitiator.h"
-#include "jungleconfig.h"
-#include "interfaces/irun.h"
+#ifndef IRUN_H
+#define IRUN_H
 
-#include <KConfig>
-
-JungleInitiator::JungleInitiator(IRun *firstRun, IRun *normalRun, JungleConfig* config)
+class IRun
 {
-    m_firstRun = firstRun;
-    m_normalRun = normalRun;
-    m_config = config ? config : new JungleConfig();
-}
+public:
+    virtual ~IRun() {}
 
-JungleInitiator::~JungleInitiator()
-{
+    virtual void start() = 0;
+};
 
-}
-
-void JungleInitiator::init()
-{
-    if (m_config->isFirstRun()) {
-        m_firstRun->start();
-        return;
-    }
-
-    m_normalRun->start();
-}
+#endif // IRUN_H
