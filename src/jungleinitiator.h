@@ -21,7 +21,7 @@
 #ifndef JUNGLEINITIATOR_H
 #define JUNGLEINITIATOR_H
 
-#include "abstractinitiator.h"
+#include "interfaces/IInitiator.h"
 
 class KConfig;
 class JungleInitiator : public AbstractInitiator

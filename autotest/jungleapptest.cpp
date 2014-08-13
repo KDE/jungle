@@ -18,7 +18,7 @@
  *
  */
 
-#include "../src/abstractinitiator.h"
+#include "../src/interfaces/IInitiator.h"
 #include "../src/jungleapp.h"
 
 #include "gmock/gmock.h"

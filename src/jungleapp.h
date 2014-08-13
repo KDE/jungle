@@ -21,7 +21,7 @@
 #ifndef JUNGLEAPP_H
 #define JUNGLEAPP_H
 
-#include "abstractapp.h"
+#include "interfaces/IApp.h"
 
 class KConfig;
 class AbstractInitiator;

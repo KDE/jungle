@@ -16,7 +16,6 @@
 
 ecm_add_test(jungleapptest.cpp
     ../src/jungleapp.cpp
-    ../src/abstractapp.cpp
     ../src/jungleinitiator.cpp
 
     TEST_NAME "jungleAppTest"

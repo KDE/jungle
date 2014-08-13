@@ -19,7 +19,7 @@
  */
 
 #include "jungleapp.h"
-#include "abstractinitiator.h"
+#include "interfaces/IInitiator.h"
 #include "jungleinitiator.h"
 
 #include <QDebug>
