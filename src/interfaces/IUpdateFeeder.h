@@ -17,26 +17,16 @@
  *
  */
 
-#ifndef JUNGLENORMALRUN_H
-#define JUNGLENORMALRUN_H
+#ifndef IUPDATEFEEDER_H
+#define IUPDATEFEEDER_H
 
-#include "interfaces/irun.h"
-
-#include <qglobal.h>
-
-class IInitGui;
-class IUpdateFeeder;
-class JungleNormalRun : public IRun
+#include <QObject>
+class IUpdateFeeder : public QObject
 {
 public:
-    JungleNormalRun(IInitGui *gui, IUpdateFeeder *feeder);
-    ~JungleNormalRun();
+    virtual ~IUpdateFeeder() {}
 
-    virtual void start() Q_DECL_OVERRIDE;
-
-private:
-    IInitGui *m_gui;
-    IUpdateFeeder *m_feeder;
+    virtual void start() = 0;
 };
 
-#endif // JUNGLENORMALRUN_H
+#endif // IUPDATEFEEDER_H

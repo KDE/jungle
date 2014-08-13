@@ -20,12 +20,20 @@
 #ifndef IINITGUI_H
 #define IINITGUI_H
 
-class IInitGui
+#include <QObject>
+
+class IInitGui : public QObject
 {
+    Q_OBJECT
 public:
     virtual ~IInitGui() {}
 
     virtual void start() = 0;
+
+Q_SIGNALS:
+    void finished();
 };
 
 #endif // IINITGUI_H
+
+// #include "moc_IInitGui.h"

@@ -20,10 +20,12 @@
 
 #include "junglenormalrun.h"
 #include "interfaces/IInitGui.h"
+#include "interfaces/IUpdateFeeder.h"
 
-JungleNormalRun::JungleNormalRun(IInitGui* gui)
+JungleNormalRun::JungleNormalRun(IInitGui* gui, IUpdateFeeder *feeder)
 {
     m_gui = gui;
+    m_feeder = feeder;
 }
 
 JungleNormalRun::~JungleNormalRun()
@@ -34,4 +36,5 @@ JungleNormalRun::~JungleNormalRun()
 void JungleNormalRun::start()
 {
     m_gui->start();
+    QObject::connect(m_gui, &IInitGui::finished, m_feeder, &IUpdateFeeder::start);
 }

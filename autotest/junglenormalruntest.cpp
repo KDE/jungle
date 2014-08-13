@@ -20,6 +20,7 @@
 #include "shared.h"
 
 #include "../src/interfaces/IInitGui.h"
+#include "../src/interfaces/IUpdateFeeder.h"
 #include "../src/junglenormalrun.h"
 
 #include "gmock/gmock.h"
@@ -29,8 +30,15 @@
 
 #include <KConfig>
 
+class MockIUpdateFeeder : public IUpdateFeeder
+{
+public:
+    MOCK_METHOD0(start, void());
+};
+
 class MockiInitGui : public IInitGui
 {
+    Q_OBJECT
 public:
     MOCK_METHOD0(start, void());
 };
@@ -46,12 +54,17 @@ private Q_SLOTS:
 void JungleNormalRunTest::start()
 {
     MockiInitGui iInitGui;
+    MockIUpdateFeeder feeder;
 
-    JungleNormalRun sut(&iInitGui);
+    JungleNormalRun sut(&iInitGui, &feeder);
 
     EXPECT_CALL(iInitGui, start()).Times(1);
 
     sut.start();
+
+    EXPECT_CALL(feeder, start()).Times(1);
+    iInitGui.finished();
+
 }
 
 QTEST_GMOCK_MAIN(JungleNormalRunTest)
