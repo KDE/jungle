@@ -19,11 +19,11 @@
  */
 
 #include "jungleconfig.h"
-#include <KConfigGroup>
 
 JungleConfig::JungleConfig()
 {
-    m_config = KSharedConfig::openConfig("jungle");
+    KSharedConfigPtr config = KSharedConfig::openConfig(QStringLiteral("jungle"));
+    setSharedConfig(config);
 }
 
 JungleConfig::~JungleConfig()
@@ -34,9 +34,10 @@ JungleConfig::~JungleConfig()
 void JungleConfig::setSharedConfig(KSharedConfigPtr& config)
 {
     m_config = config;
+    m_global = m_config->group(QStringLiteral("global"));
 }
 
 bool JungleConfig::isFirstRun() const
 {
-    return m_config->group(QStringLiteral("global")).readEntry(QStringLiteral("firstRun"), true);
+    return m_global.readEntry(QStringLiteral("firstRun"), true);
 }

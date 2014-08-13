@@ -22,6 +22,7 @@
 #define JUNGLECONFIG_H
 
 #include <KSharedConfig>
+#include <KConfigGroup>
 
 class JungleConfig
 {
@@ -34,6 +35,7 @@ public:
     bool isFirstRun() const;
 
 private:
+    KConfigGroup m_global;
     KSharedConfigPtr m_config;
 };
 
