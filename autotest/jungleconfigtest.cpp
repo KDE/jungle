@@ -26,6 +26,7 @@
 
 #include <KConfig>
 #include <KSharedConfig>
+#include <KConfigGroup>
 
 class JungleConfigTest : public QObject
 {
@@ -38,7 +39,16 @@ private Q_SLOTS:
 void JungleConfigTest::testIsFirstRun()
 {
     JungleConfig *config = new JungleConfig();
+    KSharedConfigPtr kconf = KSharedConfig::openConfig(QStringLiteral("test"));
+    config->setSharedConfig(kconf);
+
+    //By default (first time) it should be true
     QCOMPARE(config->isFirstRun(), true);
+
+    //Now if we change the config file to false, it should return false
+    kconf->group(QStringLiteral("global")).writeEntry("firstRun", false);
+
+    QCOMPARE(config->isFirstRun(), false);
 }
 
 QTEST_MAIN(JungleConfigTest)

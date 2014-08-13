@@ -19,6 +19,7 @@
  */
 
 #include "jungleconfig.h"
+#include <KConfigGroup>
 
 JungleConfig::JungleConfig()
 {
@@ -37,5 +38,5 @@ void JungleConfig::setSharedConfig(KSharedConfigPtr& config)
 
 bool JungleConfig::isFirstRun() const
 {
-    return true;
+    return m_config->group(QStringLiteral("global")).readEntry(QStringLiteral("firstRun"), true);
 }
