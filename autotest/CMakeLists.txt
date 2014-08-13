@@ -37,3 +37,11 @@ ecm_add_test(jungleinitiatortest.cpp
     TEST_NAME "jungleInitiatorTest"
     LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread KF5::ConfigCore
 )
+
+ecm_add_test(junglefirstruntest.cpp
+    ../src/junglefirstrun.cpp
+    ../src/jungleconfig.cpp
+
+    TEST_NAME "jungleFirstRunTest"
+    LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread KF5::ConfigCore
+)
