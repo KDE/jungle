@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Àlex Fiestas <afiestas@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,28 +17,16 @@
  *
  */
 
-#ifndef JUNGLECONFIG_H
-#define JUNGLECONFIG_H
+#ifndef ICONFIG_H
+#define ICONFIG_H
 
-#include "interfaces/IConfig.h"
-
-#include <KSharedConfig>
-#include <KConfigGroup>
-
-class JungleConfig : public IConfig
+class IConfig
 {
 public:
-    explicit JungleConfig();
-    virtual ~JungleConfig();
+    virtual ~IConfig() {}
 
-    void setSharedConfig(KSharedConfigPtr &config);
-
-    void setFirstRun(bool isFirstRun) Q_DECL_OVERRIDE;
-    bool isFirstRun() const Q_DECL_OVERRIDE;
-
-private:
-    KConfigGroup m_global;
-    KSharedConfigPtr m_config;
+    virtual void setFirstRun(bool isFirstRun) = 0;
+    virtual bool isFirstRun() const = 0;
 };
 
-#endif // JUNGLECONFIG_H
+#endif // ICONFIG_H
