@@ -17,16 +17,16 @@
  *
  */
 
-#include "gmock/gmock.h"
+#ifndef DATAQUEUEINTERFACE_H
+#define DATAQUEUEINTERFACE_H
 
-#define QTEST_GMOCK_MAIN(TestObject) \
-int main(int argc, char *argv[]) \
-{ \
-    QCoreApplication app(argc, argv); \
-    app.setApplicationName("jungle"); \
-    app.setAttribute(Qt::AA_Use96Dpi, true); \
-    ::testing::GTEST_FLAG(throw_on_failure) = true; \
-    ::testing::InitGoogleMock(&argc, argv); \
-    TestObject tc; \
-    return QTest::qExec(&tc, argc, argv); \
-}
+#include <QVariantMap>
+
+class DataQueueInterface
+{
+public:
+    virtual ~DataQueueInterface() {}
+    virtual void add(const QVariantMap& map) = 0;
+};
+
+#endif // DATAQUEUEINTERFACE_H

@@ -54,3 +54,10 @@ ecm_add_test(junglenormalruntest.cpp
     TEST_NAME "jungleNormalRunTest"
     LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread KF5::ConfigCore
 )
+
+ecm_add_test(guessitjobtest.cpp
+    ../src/guessitjob.cpp
+
+    TEST_NAME "guessItJobTest"
+    LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread
+)

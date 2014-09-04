@@ -17,16 +17,34 @@
  *
  */
 
-#include "gmock/gmock.h"
+#ifndef JUNGLE_GUESSITJOB_H
+#define JUNGLE_GUESSITJOB_H
 
-#define QTEST_GMOCK_MAIN(TestObject) \
-int main(int argc, char *argv[]) \
-{ \
-    QCoreApplication app(argc, argv); \
-    app.setApplicationName("jungle"); \
-    app.setAttribute(Qt::AA_Use96Dpi, true); \
-    ::testing::GTEST_FLAG(throw_on_failure) = true; \
-    ::testing::InitGoogleMock(&argc, argv); \
-    TestObject tc; \
-    return QTest::qExec(&tc, argc, argv); \
+#include <QObject>
+#include <QVariantMap>
+#include <QProcess>
+
+class DataQueueInterface;
+
+namespace Jungle {
+
+class GuessItJob : public QObject
+{
+    Q_OBJECT
+public:
+    GuessItJob(const QString& filePath, const QList<DataQueueInterface*>& queues);
+
+    void start();
+
+private Q_SLOTS:
+    void slotProcessFinished(int exitCode);
+
+private:
+    QString m_filePath;
+    QProcess m_process;
+
+    QList<DataQueueInterface*> m_queues;
+};
 }
+
+#endif // JUNGLE_GUESSITJOB_H
