@@ -61,3 +61,11 @@ ecm_add_test(guessitjobtest.cpp
     TEST_NAME "guessItJobTest"
     LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread
 )
+
+ecm_add_test(tvdbjobtest.cpp
+    ../src/tvdbjob.cpp
+
+    TEST_NAME "tvDbJobTest"
+    LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread
+                   TmdbQt::TmdbQt5
+)
