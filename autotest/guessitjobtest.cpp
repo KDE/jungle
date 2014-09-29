@@ -40,6 +40,8 @@ public:
 
 void GuessItJobTest::test()
 {
+    const QString url("/home/vishesh/Outlander.S01E05.HDTV.x264-KILLERS.mp4");
+
     QVariantMap data;
     data["type"] = "episode";
     data["releaseGroup"] = "KILLERS";
@@ -50,14 +52,13 @@ void GuessItJobTest::test()
     data["format"] = "HDTV";
     data["season"] = 1;
     data["container"] = "mp4";
+    data["filePath"] = url;
 
     MockDataQueue dataQueue;
     EXPECT_CALL(dataQueue, add(data)).Times(1);
 
     QList<DataQueueInterface*> queues;
     queues << &dataQueue;
-
-    const QString url("/home/vishesh/Outlander.S01E05.HDTV.x264-KILLERS.mp4");
 
     Jungle::GuessItJob guessItJob(url, queues);
     guessItJob.start();
