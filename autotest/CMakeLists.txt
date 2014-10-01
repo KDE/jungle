@@ -69,3 +69,11 @@ ecm_add_test(tvdbjobtest.cpp
     LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread
                    TmdbQt::TmdbQt5
 )
+
+ecm_add_test(databasetest.cpp
+    ../src/database.cpp
+
+    TEST_NAME "databaseTest"
+    LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread
+                   ${EJDB_LIBRARIES}
+)
