@@ -28,8 +28,8 @@
 #include <QFileInfo>
 #include <qeventloop.h>
 
-#include <Baloo/query.h>
-#include <Baloo/resultiterator.h>
+#include <Baloo/Query>
+#include <Baloo/ResultIterator>
 
 #include <QSqlQuery>
 #include <QSqlError>
