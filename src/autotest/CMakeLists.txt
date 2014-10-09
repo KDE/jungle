@@ -13,8 +13,3 @@ ecm_add_test(${TVEPISODEMODEL_SRC}
     TEST_NAME "tvepisodemodeltest"
     LINK_LIBRARIES Qt5::Test junglecommon
 )
-
-ecm_add_test(initiatortest.cpp ../initiator.cpp
-    TEST_NAME "initiatortest"
-    LINK_LIBRARIES ${GMOCK_LIBRARIES} ${GTEST_LIBRARIES} Qt5::Test pthread
-)
