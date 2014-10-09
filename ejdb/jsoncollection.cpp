@@ -26,6 +26,11 @@
 #include <QFile>
 #include <QDebug>
 
+JsonCollection::JsonCollection()
+    : m_db(0)
+{
+}
+
 JsonCollection::JsonCollection(EJDB* db, const QString& name)
     : m_db(db)
     , m_collectionName(name)
@@ -57,7 +62,7 @@ QByteArray JsonCollection::insert(const QVariantMap& map)
     return id;
 }
 
-QVariantMap JsonCollection::fetch(const QByteArray& id)
+QVariantMap JsonCollection::fetch(const QByteArray& id) const
 {
     bson_oid_t oid;
     bson_oid_from_string(&oid, id.constData());
@@ -74,7 +79,7 @@ QVariantMap JsonCollection::fetch(const QByteArray& id)
     return map;
 }
 
-JsonQuery JsonCollection::execute(const QVariantMap& map)
+JsonQuery JsonCollection::execute(const QVariantMap& map) const
 {
     bson* rec = mapToBson(map);
 

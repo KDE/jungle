@@ -25,10 +25,6 @@
 #include <QTimer>
 #include <QDir>
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-
 using namespace Jungle;
 
 MoviesModel::MoviesModel(QObject* parent)

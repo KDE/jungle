@@ -9,7 +9,6 @@ set(JSON_LIB_SRCS
 add_library(kjsondatabase SHARED ${JSON_LIB_SRCS})
 target_link_libraries(kjsondatabase
     Qt5::Core
-    Qt5::Sql
     ${EJDB_LIBRARIES}
 )
 

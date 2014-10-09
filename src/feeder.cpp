@@ -31,9 +31,6 @@
 #include <Baloo/Query>
 #include <Baloo/ResultIterator>
 
-#include <QSqlQuery>
-#include <QSqlError>
-
 #include <QDBusConnection>
 
 using namespace Jungle;
@@ -63,11 +60,11 @@ void Feeder::fetchFiles()
 
     auto it = query.exec();
     while (it.next()) {
-        int id = it.id().mid(QByteArray("file:").size()).toInt();
-
-        if (!m_db->hasVideo(id)) {
+        //int id = it.id().mid(QByteArray("file:").size()).toInt();
+        // FIXME: Do not process all the videos each time!!
+        //if (!m_db->hasVideo(id)) {
             m_files << it.url().toLocalFile();
-        }
+        //}
     }
 
     if (!m_files.isEmpty()) {

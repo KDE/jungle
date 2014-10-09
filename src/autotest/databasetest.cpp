@@ -81,7 +81,7 @@ void DatabaseTest::testMovies()
     const QString fileMap = dir.path() + "/fileMap.sqlite3";
     QVERIFY(createFileMapDb(fileMap));
 
-    Database db(dir.path(), fileMap);
+    Database db(dir.path());
     QVERIFY(db.init());
 
     const QString posterUrl = dir.path() + "/poster";

@@ -20,9 +20,11 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include <QSqlDatabase>
 #include "movie.h"
 #include "tvshow.h"
+
+#include "jsondatabase.h"
+#include "jsoncollection.h"
 
 namespace Jungle {
 
@@ -30,12 +32,7 @@ class JUNGLE_EXPORT Database : public QObject
 {
     Q_OBJECT
 public:
-    /**
-     * Create a database at path \p path which will contain all of the
-     * data. The parameter \p fileMapDb should be the path to a sqlite
-     * db which maps an integer to a file.
-     */
-    Database(const QString& path, const QString& fileMapDb);
+    Database(const QString& path);
     ~Database();
 
     static Database* instance();
@@ -46,7 +43,6 @@ public:
     void addMovie(const Movie& movie);
     QList<Movie> allMovies() const;
 
-    bool hasVideo(int fileId);
     void addVideo(const QString& url);
 
     bool isWatched(const QString& url);
@@ -70,14 +66,11 @@ signals:
     void tvEpisodeAdded(const TvEpisode& episode);
 
 private:
-    int fileId(const QString& url);
-    QString fileUrl(int fid);
-
     QString m_path;
-    QString m_fileMapDb;
     bool m_initialized;
 
-    QSqlDatabase m_sqlDb;
+    JsonDatabase m_jdb;
+    JsonCollection m_coll;
 };
 
 }

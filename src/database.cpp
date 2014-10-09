@@ -18,9 +18,9 @@
  */
 
 #include "database.h"
+#include "jsonquery.h"
 
-#include <QSqlQuery>
-#include <QSqlError>
+#include <QVariantMap>
 #include <QDebug>
 
 #include <QStandardPaths>
@@ -28,31 +28,26 @@
 
 using namespace Jungle;
 
-Database::Database(const QString& path, const QString& fileMapDb)
+Database::Database(const QString& path)
     : m_path(path)
-    , m_fileMapDb(fileMapDb)
     , m_initialized(false)
 {
 }
 
 Database::~Database()
 {
-    const QString name = m_sqlDb.connectionName();
-    m_sqlDb.close();
-    m_sqlDb = QSqlDatabase();
-
-    QSqlDatabase::removeDatabase(name);
 }
 
-static QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
-static QString fileMapDb = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/fileMap.sqlite3";
-Q_GLOBAL_STATIC_WITH_ARGS(Database, s_database, (dataDir, fileMapDb));
+static QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle/db";
+Q_GLOBAL_STATIC_WITH_ARGS(Database, s_database, (dataDir));
 
 // static
 Database* Database::instance()
 {
     if (!s_database->initialized()) {
-        QDir().mkpath(dataDir);
+        QString jungleDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
+        QDir().mkpath(jungleDir);
+
         s_database->init();
     }
     return &(*s_database);
@@ -65,157 +60,44 @@ bool Database::initialized()
 
 bool Database::init()
 {
-    m_sqlDb = QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
-    m_sqlDb.setDatabaseName(m_path + "/webdata.sqlite3");
-
-    if (!m_sqlDb.open()) {
-        qDebug() << "Failed to open db" << m_sqlDb.lastError().text();
+    m_jdb.setPath(m_path);
+    if (!m_jdb.open()) {
         return false;
     }
 
-    //
-    // Movies table
-    //
-    QSqlQuery query(m_sqlDb);
-    query.exec("CREATE TABLE IF NOT EXISTS movies("
-               "fid INTEGER NOT NULL PRIMARY KEY, "
-               "mid INTEGER, "
-               "title TEXT NOT NULL, "
-               "releaseDate TEXT NOT NULL, "
-               "posterPath TEXT)");
-
-    if (query.lastError().isValid()) {
-        qDebug() << query.lastError();
-        return false;
-    }
-
-    // Videos table
-    // This is used to check if a video has been processed
-    query.exec("CREATE TABLE IF NOT EXISTS videos("
-               "fid INTEGER NOT NULL PRIMARY KEY)");
-
-    if (query.lastError().isValid()) {
-        qDebug() << query.lastError();
-        return false;
-    }
-
-    //
-    // Tv shows
-    //
-    query.exec("CREATE TABLE IF NOT EXISTS shows("
-               "id INTEGER NOT NULL PRIMARY KEY, "
-               "title TEXT NOT NULL, "
-               "releaseDate TEXT NOT NULL, "
-               "posterPath TEXT)");
-
-    if (query.lastError().isValid()) {
-        qDebug() << query.lastError();
-        return false;
-    }
-
-    //
-    // Tv Seasons
-    //
-    query.exec("CREATE TABLE IF NOT EXISTS tvseasons("
-               "id INTEGER NOT NULL, "
-               "show INTEGER NOT NULL, "
-               "seasonNum INTEGER NOT NULL, "
-               "airDate TEXT NOT NULL, "
-               "posterPath TEXT NOT NULL,"
-               "PRIMARY KEY(show, seasonNum))");
-
-    if (query.lastError().isValid()) {
-        qDebug() << query.lastError();
-        return false;
-    }
-
-    //
-    // Tv episodes
-    //
-    query.exec("CREATE TABLE IF NOT EXISTS tvepisodes("
-               "episodeNum INTEGER NOT NULL, "
-               "season INTEGER NOT NULL, "
-               "show INTEGER NOT NULL, "
-               "fid INTEGER, "
-               "airDate TEXT NOT NULL, "
-               "name TEXT NOT NULL, "
-               "overview TEXT NOT NULL, "
-               "stillPath TEXT, "
-               "PRIMARY KEY(episodeNum, season, show))");
-
-    if (query.lastError().isValid()) {
-        qDebug() << "TV EP" << query.lastError();
-        return false;
-    }
-
-    //
-    // Watched
-    //
-    query.exec("CREATE TABLE IF NOT EXISTS watched("
-               "fid INTEGER NOT NULL PRIMARY KEY)");
-
-    if (query.lastError().isValid()) {
-        qDebug() << query.lastError();
-        return false;
-    }
-
-    //
-    // Attach the file mapping db
-    //
-    query.prepare("ATTACH DATABASE ? AS fileMap");
-    query.addBindValue(m_fileMapDb);
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-        return false;
-    }
-
+    m_coll = m_jdb.collection("videos");
     m_initialized = true;
     return true;
 }
 
 void Database::addMovie(const Movie& movie)
 {
-    int id = fileId(movie.url());
-    if (id == 0) {
-        qDebug() << "Could not find an id for" << movie.url();
-        return;
-    }
+    QVariantMap map;
+    map["type"] = "movie";
+    map["url"] = movie.url();
+    map["mid"] = movie.id();
+    map["title"] = movie.title();
+    map["releaseDate"] = movie.releaseDate();
+    map["posterUrl"] = movie.posterUrl();
 
-    QSqlQuery query(m_sqlDb);
-    query.prepare("insert into movies (fid, mid, title, releaseDate, posterPath) "
-                  "VALUES (?, ?, ?, ?, ?)");
-    query.addBindValue(id);
-    query.addBindValue(movie.id());
-    query.addBindValue(movie.title());
-    query.addBindValue(movie.releaseDate());
-    query.addBindValue(movie.posterUrl());
-
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-        return;
-    }
-
+    m_coll.insert(map);
     emit movieAdded(movie);
 }
 
 QList<Movie> Database::allMovies() const
 {
-    QSqlQuery query(m_sqlDb);
-    query.exec("select files.url, mid, title, releaseDate, posterPath from files, "
-               "movies where files.id = movies.fid ORDER BY title");
-    if (query.lastError().isValid()) {
-        qDebug() << query.lastError();
-        return QList<Movie>();
-    }
+    QVariantMap queryMap = {{"type", "movie"}};
+    JsonQuery query = m_coll.execute(queryMap);
 
     QList<Movie> movies;
     while (query.next()) {
+        QVariantMap map = query.result();
         Movie movie;
-        movie.setUrl(query.value("url").toString());
-        movie.setId(query.value("mid").toInt());
-        movie.setTitle(query.value("title").toString());
-        movie.setReleaseDate(query.value("releaseDate").toDate());
-        movie.setPosterUrl(query.value("posterPath").toString());
+        movie.setUrl(map["url"].toString());
+        movie.setId(map["mid"].toInt());
+        movie.setTitle(map["title"].toString());
+        movie.setReleaseDate(map["releaseDate"].toDate());
+        movie.setPosterUrl(map["posterPath"].toString());
 
         movies << movie;
     }
@@ -223,75 +105,28 @@ QList<Movie> Database::allMovies() const
     return movies;
 }
 
-bool Database::hasVideo(int fileId)
-{
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select 1 from videos where fid = ?");
-    query.addBindValue(fileId);
-
-    if (!query.exec()) {
-        qDebug() << "hasVideo:" << query.lastError();
-        return false;
-    }
-
-    return query.next();
-}
-
-
 void Database::addVideo(const QString& url)
 {
+    /*
     QSqlQuery query(m_sqlDb);
     query.prepare("insert into videos VALUES (?)");
     query.addBindValue(fileId(url));
     if (!query.exec()) {
         qDebug() << query.lastError();
-    }
-}
-
-int Database::fileId(const QString& url)
-{
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select id from files where url = ? LIMIT 1");
-    query.addBindValue(url);
-    query.exec();
-
-    int id = 0;
-    while (query.next()) {
-        id = query.value(0).toInt();
-    }
-
-    return id;
-}
-
-QString Database::fileUrl(int fid)
-{
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select url from files where id = ? LIMIT 1");
-    query.addBindValue(fid);
-    query.exec();
-
-    QString url;
-    while (query.next()) {
-        url = query.value(0).toString();
-    }
-
-    return url;
+    }*/
 }
 
 int Database::showId(const QString& name)
 {
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select id from shows where lower(title) = lower(?)");
-    query.addBindValue(name);
-    query.exec();
+    // FIXME: This needs to be done in lowercase!
+    QVariantMap queryMap;
+    queryMap["type"] = "tvshow";
+    queryMap["title"] = name;
 
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-        return 0;
-    }
-
+    JsonQuery query = m_coll.execute(queryMap);
     if (query.next()) {
-        return query.value(0).toInt();
+        QVariantMap map = query.result();
+        return map["id"].toInt();
     }
 
     return 0;
@@ -299,32 +134,25 @@ int Database::showId(const QString& name)
 
 void Database::addShow(const TvShow& show)
 {
-    QSqlQuery query(m_sqlDb);
-    query.prepare("insert into shows (id, title, releaseDate, posterPath) "
-                  "VALUES (?, ?, ?, ?)");
-    query.addBindValue(show.id());
-    query.addBindValue(show.title());
-    query.addBindValue(show.firstAired());
-    query.addBindValue(show.coverUrl());
+    QVariantMap map;
+    map["type"] = "tvshow";
+    map["id"] = show.id();
+    map["title"] = show.title();
+    map["releaseDate"] = show.firstAired();
+    map["posterPath"] = show.coverUrl();
 
-    if (!query.exec()) {
-        qDebug() << "SHOW" << query.lastError();
-    }
+    m_coll.insert(map);
 
     foreach (const TvSeason& s, show.seasons()) {
-        QSqlQuery query(m_sqlDb);
-        query.prepare("insert into tvseasons (id, show, seasonNum, airDate, posterPath) "
-                      "VALUES (?, ?, ?, ?, ?)");
-        query.addBindValue(s.id());
-        query.addBindValue(show.id());
-        query.addBindValue(s.seasonNumber());
-        query.addBindValue(s.airDate());
-        query.addBindValue(s.posterUrl());
+        QVariantMap map;
+        map["type"] = "tvseason";
+        map["id"] = s.id();
+        map["show"] = show.id();
+        map["seasonNumber"] = s.seasonNumber();
+        map["airDate"] = s.airDate();
+        map["posterPath"] = s.posterUrl();
 
-        if (!query.exec()) {
-            qDebug() << s.id() << show.id();
-            qDebug() << "SEASON" << query.lastError();
-        }
+        m_coll.insert(map);
     }
 
     emit tvShowAdded(show);
@@ -332,43 +160,35 @@ void Database::addShow(const TvShow& show)
 
 void Database::addEpisode(const TvEpisode& episode)
 {
-    QSqlQuery query(m_sqlDb);
-    query.prepare("insert or replace into tvepisodes "
-                  "(episodeNum, season, show, fid, airDate, name, overview, stillPath) "
-                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    query.addBindValue(episode.episodeNumber());
-    query.addBindValue(episode.season());
-    query.addBindValue(episode.show());
-    query.addBindValue(fileId(episode.url()));
-    query.addBindValue(episode.airDate());
-    query.addBindValue(episode.name());
-    query.addBindValue(episode.overview());
-    query.addBindValue(episode.stillUrl());
+    // FIXME: Should be insert or replace!!
+    QVariantMap map;
+    map["type"] = "tvepisode";
+    map["episodeNum"] = episode.episodeNumber();
+    map["season"] = episode.season();
+    map["show"] = episode.show();
+    map["url"] = episode.url();
+    map["airDate"] = episode.airDate();
+    map["name"] = episode.name();
+    map["stillPath"] = episode.stillUrl();
 
-    if (!query.exec()) {
-        qDebug() << "EP" << query.lastError();
-        return;
-    }
-
+    m_coll.insert(map);
     emit tvEpisodeAdded(episode);
 }
 
 QList<TvShow> Database::allShows() const
 {
-    QSqlQuery query(m_sqlDb);
-    query.exec("select id, title, releaseDate, posterPath from shows");
-    if (query.lastError().isValid()) {
-        qDebug() << query.lastError();
-        return QList<TvShow>();
-    }
+    QVariantMap queryMap = {{"type", "tvshow"}};
+    JsonQuery query = m_coll.execute(queryMap);
 
     QList<TvShow> shows;
     while (query.next()) {
+        QVariantMap map = query.result();
+
         TvShow show;
-        show.setId(query.value("id").toInt());
-        show.setTitle(query.value("title").toString());
-        show.setFirstAired(query.value("releaseDate").toDate());
-        show.setCoverUrl(query.value("posterPath").toString());
+        show.setId(map.value("id").toInt());
+        show.setTitle(map.value("title").toString());
+        show.setFirstAired(map.value("releaseDate").toDate());
+        show.setCoverUrl(map.value("posterPath").toString());
 
         shows << show;
     }
@@ -378,30 +198,23 @@ QList<TvShow> Database::allShows() const
 
 TvEpisode Database::episode(int showId, int season, int epNum)
 {
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select * from tvepisodes "
-                  "where show = ? AND season = ? AND episodeNum = ?");
-    query.addBindValue(showId);
-    query.addBindValue(season);
-    query.addBindValue(epNum);
-
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-        return TvEpisode();
-    }
+    QVariantMap queryMap = {{"type", "tvepisode"},
+                            {"show", showId},
+                            {"season", season},
+                            {"episodeNum", epNum}};
+    JsonQuery query = m_coll.execute(queryMap);
 
     TvEpisode ep;
     if (query.next()) {
-        ep.setAirDate(query.value("airDate").toDate());
-        ep.setName(query.value("name").toString());
-        ep.setOverview(query.value("overview").toString());
-        ep.setStillUrl(query.value("stillPath").toString());
-        ep.setEpisodeNumber(query.value("episodeNum").toInt());
+        QVariantMap map = query.result();
+        ep.setAirDate(map.value("airDate").toDate());
+        ep.setName(map.value("name").toString());
+        ep.setOverview(map.value("overview").toString());
+        ep.setStillUrl(map.value("stillPath").toString());
+        ep.setEpisodeNumber(map.value("episodeNum").toInt());
         ep.setSeason(season);
         ep.setShow(showId);
-
-        int fid = query.value("fid").toInt();
-        ep.setUrl(fileUrl(fid));
+        ep.setUrl(map.value("url").toString());
     }
 
     return ep;
@@ -409,32 +222,26 @@ TvEpisode Database::episode(int showId, int season, int epNum)
 
 QList<TvEpisode> Database::allEpisodes(int showId, int season)
 {
-    QString queryStr("select * from tvepisodes, files where show = ? ");
-    if (season != -1)
-        queryStr.append("AND season = ? ");
-    queryStr.append("AND fid = files.id ORDER BY episodeNum");
+    QVariantMap queryMap = {{"type", "tvepisode"},
+                            {"show", showId}};
 
-    QSqlQuery query(m_sqlDb);
-    query.prepare(queryStr);
-    query.addBindValue(showId);
-    if (season != -1)
-        query.addBindValue(season);
-
-    if (!query.exec()) {
-        qDebug() << "EE" << query.lastError();
-        return QList<TvEpisode>();
+    if (season != -1) {
+        queryMap.insert("season", season);
     }
+    JsonQuery query = m_coll.execute(queryMap);
 
     QList<TvEpisode> epList;
     while (query.next()) {
+        QVariantMap map = query.result();
+
         TvEpisode ep;
-        ep.setAirDate(query.value("airDate").toDate());
-        ep.setName(query.value("name").toString());
-        ep.setOverview(query.value("overview").toString());
-        ep.setStillUrl(query.value("stillPath").toString());
-        ep.setEpisodeNumber(query.value("episodeNum").toInt());
-        ep.setUrl(query.value("url").toString());
-        ep.setSeason(query.value("season").toInt());
+        ep.setAirDate(map.value("airDate").toDate());
+        ep.setName(map.value("name").toString());
+        ep.setOverview(map.value("overview").toString());
+        ep.setStillUrl(map.value("stillPath").toString());
+        ep.setEpisodeNumber(map.value("episodeNum").toInt());
+        ep.setUrl(map.value("url").toString());
+        ep.setSeason(map.value("season").toInt());
         ep.setShow(showId);
 
         epList << ep;
@@ -446,43 +253,30 @@ QList<TvEpisode> Database::allEpisodes(int showId, int season)
 
 bool Database::hasEpisodes(int show, int season)
 {
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select 1 from tvepisodes where show = ? AND season = ?");
-    query.addBindValue(show);
-    query.addBindValue(season);
+    QVariantMap queryMap = {{"type", "tvepisode"},
+                            {"show", show}};
 
-    if (!query.exec()) {
-        return false;
+    if (season != -1) {
+        queryMap.insert("season", season);
     }
-
-    return query.next();
+    JsonQuery query = m_coll.execute(queryMap);
+    return query.totalCount();
 }
 
 bool Database::isWatched(const QString& url)
 {
-    return isWatched(fileId(url));
-}
-
-bool Database::isWatched(int fileId)
-{
-    QSqlQuery query(m_sqlDb);
-    query.prepare("select 1 from watched where fid = ?");
-    query.addBindValue(fileId);
-
-    if (!query.exec()) {
-        qDebug() << "isWatched:" << query.lastError();
-        return false;
-    }
-
-    return query.next();
+    return false;
 }
 
 void Database::markWatched(const QString& url)
 {
+    // FIXME: Implement me!
+    /*
     QSqlQuery query(m_sqlDb);
     query.prepare("insert into watched VALUES (?)");
     query.addBindValue(fileId(url));
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
+    */
 }

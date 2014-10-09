@@ -23,10 +23,6 @@
 
 #include <QModelIndex>
 #include <QTimer>
-
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDebug>
 
 using namespace Jungle;

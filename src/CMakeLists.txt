@@ -9,7 +9,7 @@ set(LIB_SRCS
 add_library(junglecommon SHARED ${LIB_SRCS})
 target_link_libraries(junglecommon
     Qt5::Core
-    Qt5::Sql
+    kjsondatabase
 )
 
 generate_export_header(junglecommon BASE_NAME JUNGLE EXPORT_FILE_NAME jungle_export.h)
@@ -35,12 +35,12 @@ target_link_libraries(jungle
     Qt5::Qml
     Qt5::Gui
     Qt5::Quick
-    Qt5::Sql
     Qt5::DBus
     Qt5::Widgets
     KF5::BalooCore
     KF5::BalooFiles
     TmdbQt::TmdbQt5
+    kjsondatabase
     junglecommon
 )
 
@@ -61,7 +61,6 @@ add_library(jungleqmlplugin SHARED ${SRC})
 target_link_libraries(jungleqmlplugin
     Qt5::Core
     Qt5::Qml
-    Qt5::Sql
     KF5::BalooCore
     KF5::BalooFiles
     junglecommon

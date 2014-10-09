@@ -31,14 +31,15 @@ class JsonQuery;
 class JUNGLE_EXPORT JsonCollection
 {
 public:
+    JsonCollection();
     ~JsonCollection();
 
     QString collectionName() const;
 
     QByteArray insert(const QVariantMap& map);
-    QVariantMap fetch(const QByteArray& id);
+    QVariantMap fetch(const QByteArray& id) const;
 
-    JsonQuery execute(const QVariantMap& query);
+    JsonQuery execute(const QVariantMap& query) const;
 private:
     JsonCollection(EJDB* db, const QString& name);
 
