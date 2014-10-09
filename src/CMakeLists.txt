@@ -51,7 +51,6 @@ install(TARGETS jungle DESTINATION ${BIN_INSTALL_DIR})
 #
 set(SRC
     qmlplugins.cpp
-    videosmodel.cpp
     moviesmodel.cpp
     tvshowsmodel.cpp
     tvepisodemodel.cpp

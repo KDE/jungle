@@ -20,7 +20,6 @@
  */
 
 #include "qmlplugins.h"
-#include "videosmodel.h"
 #include "moviesmodel.h"
 #include "tvshowsmodel.h"
 #include "tvepisodemodel.h"
@@ -31,7 +30,6 @@ void QmlPlugins::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("org.kde.jungle"));
 
-    qmlRegisterType<Jungle::VideosModel> (uri, 0, 1, "VideosModel");
     qmlRegisterType<Jungle::MoviesModel> (uri, 0, 1, "MoviesModel");
     qmlRegisterType<Jungle::TvShowsModel> (uri, 0, 1, "TvShowsModel");
     qmlRegisterType<Jungle::TvEpisodeModel> (uri, 0, 1, "TvEpisodeModel");
