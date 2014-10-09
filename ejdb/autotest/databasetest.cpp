@@ -17,7 +17,8 @@
  *
  */
 
-#include "../jsondatabase.h"
+#include "jsondatabase.h"
+#include "jsoncollection.h"
 
 #include <QTest>
 #include <QVariantMap>
@@ -40,10 +41,13 @@ void DatabaseTest::test()
     data["episodeNumber"] = 5;
 
     QTemporaryDir dir;
-    JsonDatabase db(dir.path() + "/db");
+    JsonDatabase db;
+    db.setPath(dir.path() + "/db");
+    QVERIFY(db.open());
 
-    QByteArray id = db.add(data);
-    QVariantMap output = db.fetch(id);
+    JsonCollection col = db.collection("testCol");
+    QByteArray id = col.add(data);
+    QVariantMap output = col.fetch(id);
 
     data["_id"] = QString::fromUtf8(id);
     QCOMPARE(output, data);

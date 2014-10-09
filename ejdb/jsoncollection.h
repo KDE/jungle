@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ * <one line to give the library's name and an idea of what it does.>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,32 +18,33 @@
  *
  */
 
-#ifndef EJDB_DATABASE_H
-#define EJDB_DATABASE_H
+#ifndef JSONCOLLECTION_H
+#define JSONCOLLECTION_H
 
 #include "kjsondatabase_export.h"
 #include <QVariantMap>
 #include <tcejdb/ejdb.h>
 
-class JsonCollection;
+class JsonDatabase;
 
-class JUNGLE_EXPORT JsonDatabase
+class JUNGLE_EXPORT JsonCollection
 {
 public:
-    JsonDatabase();
-    ~JsonDatabase();
+    ~JsonCollection();
 
-    void setPath(const QString& filePath);
-    QString filePath() const;
+    QString collectionName() const;
 
-    bool open();
-
-    JsonCollection collection(const QString& name);
+    QByteArray add(const QVariantMap& map);
+    QVariantMap fetch(const QByteArray& id);
 
 private:
-    EJDB* m_jdb;
+    JsonCollection(EJDB* db, const QString& name);
 
-    QString m_filePath;
+    EJDB* m_db;
+    EJCOLL* m_coll;
+    QString m_collectionName;
+
+    friend class JsonDatabase;
 };
 
-#endif
+#endif // JSONCOLLECTION_H

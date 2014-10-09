@@ -18,27 +18,47 @@
  */
 
 #include "jsondatabase.h"
+#include "jsoncollection.h"
 
 #include <QDateTime>
 #include <QFile>
 #include <QDebug>
 
-#include <QJsonDocument>
-#include <QJsonObject>
-
-JsonDatabase::JsonDatabase(const QString& dbPath)
+JsonDatabase::JsonDatabase()
 {
     m_jdb = ejdbnew();
-    if (!ejdbopen(m_jdb, QFile::encodeName(dbPath).constData(), JBOWRITER | JBOCREAT)) {
-        qDebug() << "Could not open db" << dbPath;
-    }
-    m_coll = ejdbcreatecoll(m_jdb, "default", 0);
 }
 
 JsonDatabase::~JsonDatabase()
 {
     ejdbclose(m_jdb);
     ejdbdel(m_jdb);
+}
+
+QString JsonDatabase::filePath() const
+{
+    return m_filePath;
+}
+
+void JsonDatabase::setPath(const QString& filePath)
+{
+    m_filePath = filePath;
+}
+
+bool JsonDatabase::open()
+{
+    QByteArray path = QFile::encodeName(m_filePath);
+    if (!ejdbopen(m_jdb, path.constData(), JBOWRITER | JBOCREAT)) {
+        qDebug() << "Could not open db" << m_filePath;
+        return false;
+    }
+
+    return true;
+}
+
+JsonCollection JsonDatabase::collection(const QString& name)
+{
+    return JsonCollection(m_jdb, name);
 }
 
 /*
@@ -72,112 +92,3 @@ static void addVariant(bson &rec, const QVariant& variant)
 }
 */
 
-QByteArray JsonDatabase::add(const QVariantMap& map)
-{
-    bson rec;
-    bson_init(&rec);
-
-    QMapIterator<QString, QVariant> it(map);
-    while (it.hasNext()) {
-        it.next();
-
-        const QByteArray key = it.key().toUtf8();
-        const QVariant &var = it.value();
-
-        switch (var.type()) {
-            case QVariant::Double: {
-                bson_append_double(&rec, key.constData(), var.toDouble());
-                break;
-            }
-
-            case QVariant::String: {
-                QByteArray val = var.toString().toUtf8();
-                bson_append_string(&rec, key.constData(), val.constData());
-                break;
-            }
-
-            case QVariant::Map: {
-                Q_ASSERT(0);
-            }
-
-            case QVariant::List: {
-                Q_ASSERT(0);
-            }
-
-            case QVariant::Bool: {
-                bson_append_bool(&rec, key.constData(), var.toBool());
-                break;
-            }
-
-            case QVariant::Date: {
-                bson_date_t date = var.toDateTime().toTime_t();
-                bson_append_date(&rec, key.constData(), date);
-                break;
-            }
-
-            case QVariant::RegExp: {
-                Q_ASSERT(0);
-            }
-
-            case QVariant::Int: {
-                bson_append_int(&rec, key.constData(), var.toInt());
-                break;
-            }
-
-            case QVariant::DateTime: {
-                bson_date_t date = var.toDateTime().toTime_t();
-                bson_append_time_t(&rec, key.constData(), date);
-                break;
-            }
-
-            case QVariant::LongLong: {
-                // FIXME: Data is being lost?
-                bson_append_long(&rec, key.constData(), var.toLongLong());
-                break;
-            }
-
-            default: {
-                Q_ASSERT(0);
-            }
-        }
-    }
-
-    bson_finish(&rec);
-
-    bson_oid_t oid;
-    ejdbsavebson(m_coll, &rec, &oid);
-
-    char str[26];
-    bson_oid_to_string(&oid, str);
-    QByteArray id(str);
-
-    bson_destroy(&rec);
-
-    return id;
-}
-
-QVariantMap JsonDatabase::fetch(const QByteArray& id)
-{
-    bson_oid_t oid;
-    bson_oid_from_string(&oid, id.constData());
-
-    bson* rec = ejdbloadbson(m_coll, &oid);
-    if (!rec) {
-        qDebug() << "Record not found" << id;
-        return QVariantMap();
-    }
-
-    char* buf;
-    int length;
-
-    bson2json(bson_data(rec), &buf, &length);
-
-    QByteArray arr = QByteArray::fromRawData(buf, length);
-    QJsonDocument doc = QJsonDocument::fromJson(arr);
-    QVariantMap map = doc.object().toVariantMap();
-
-    free(buf);
-    bson_del(rec);
-
-    return map;
-}
