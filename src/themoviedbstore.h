@@ -22,7 +22,6 @@
 #define THEMOVIEDBSTORE_H
 
 #include <QObject>
-#include "movie.h"
 #include "moviefetchjob.h"
 #include "tvshowfetchjob.h"
 #include "tvseasonfetchjob.h"

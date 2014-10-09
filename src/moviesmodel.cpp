@@ -24,6 +24,7 @@
 #include <QModelIndex>
 #include <QTimer>
 #include <QDir>
+#include <QDebug>
 
 using namespace Jungle;
 
@@ -39,8 +40,8 @@ MoviesModel::MoviesModel(QObject* parent)
     names.insert(WatchedRole, "watched");
     setRoleNames(names);
 
-    connect(Database::instance(), SIGNAL(movieAdded(Movie)),
-            this, SLOT(slotNewMovie(Movie)));
+    connect(Database::instance(), SIGNAL(movieAdded(QVariantMap)),
+            this, SLOT(slotNewMovie(QVariantMap)));
 }
 
 void MoviesModel::slotPopulate()
@@ -50,7 +51,7 @@ void MoviesModel::slotPopulate()
     endResetModel();
 }
 
-void MoviesModel::slotNewMovie(const Movie& movie)
+void MoviesModel::slotNewMovie(const QVariantMap& movie)
 {
     beginInsertRows(QModelIndex(), m_movies.size(), m_movies.size());
     m_movies << movie;
@@ -63,23 +64,24 @@ QVariant MoviesModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    Movie movie = m_movies[index.row()];
+    QVariantMap movie = m_movies[index.row()];
     switch (role) {
         case Qt::DisplayRole:
-            return movie.title();
+            return movie["title"].toString();
 
         case UrlRole:
-            return movie.url();
+            return movie["url"].toString();
 
         case CoverRole:
-            return movie.posterUrl();
+            qDebug() << movie["posterPath"].toString();
+            return movie["posterPath"].toString();
 
         case ReleaseDateRole:
-            return movie.releaseDate();
+            return movie["releaseDate"].toDate();
 
         case WatchedRole:
             // FIXME: Urgh! This is going to be so slow!!
-            return Database::instance()->isWatched(movie.url());
+            return false;// Database::instance()->isWatched(movie.url());
     }
 
     return QVariant();

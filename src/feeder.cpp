@@ -223,21 +223,15 @@ void Feeder::slotResult(MovieFetchJob* job)
     m_db->addVideo(job->url());
 
     // Add data if there is any
-    if (job->id() == 0) {
+    if (job->data().isEmpty()) {
         if (!m_files.isEmpty())
             QTimer::singleShot(0, this, SLOT(processNext()));
         return;
     }
     job->deleteLater();
 
-    Movie movie;
-    movie.setId(job->id());
-    movie.setUrl(job->url());
-    movie.setTitle(job->title());
-    movie.setReleaseDate(job->releaseDate());
-    movie.setPosterUrl(job->posterUrl());
-
-    m_db->addMovie(movie);
+    QVariantMap data = job->data();
+    m_db->addMovie(data);
 
     if (!m_files.isEmpty()) {
         QTimer::singleShot(0, this, SLOT(processNext()));

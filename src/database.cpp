@@ -70,36 +70,24 @@ bool Database::init()
     return true;
 }
 
-void Database::addMovie(const Movie& movie)
+void Database::addMovie(const QVariantMap& movie)
 {
-    QVariantMap map;
+    QVariantMap map = movie;
     map["type"] = "movie";
-    map["url"] = movie.url();
-    map["mid"] = movie.id();
-    map["title"] = movie.title();
-    map["releaseDate"] = movie.releaseDate();
-    map["posterUrl"] = movie.posterUrl();
 
     m_coll.insert(map);
-    emit movieAdded(movie);
+    emit movieAdded(map);
 }
 
-QList<Movie> Database::allMovies() const
+QList<QVariantMap> Database::allMovies() const
 {
     QVariantMap queryMap = {{"type", "movie"}};
     JsonQuery query = m_coll.execute(queryMap);
 
-    QList<Movie> movies;
+    QList<QVariantMap> movies;
     while (query.next()) {
         QVariantMap map = query.result();
-        Movie movie;
-        movie.setUrl(map["url"].toString());
-        movie.setId(map["mid"].toInt());
-        movie.setTitle(map["title"].toString());
-        movie.setReleaseDate(map["releaseDate"].toDate());
-        movie.setPosterUrl(map["posterPath"].toString());
-
-        movies << movie;
+        movies << map;
     }
 
     return movies;

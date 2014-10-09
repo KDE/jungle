@@ -1,6 +1,5 @@
 set(LIB_SRCS
     database.cpp
-    movie.cpp
     tvshow.cpp
     tvseason.cpp
     tvepisode.cpp

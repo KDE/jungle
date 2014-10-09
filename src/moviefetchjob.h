@@ -34,12 +34,8 @@ public:
     MovieFetchJob(TmdbQt::SearchJob* job, const QString& url,
                   const QString& searchTerm, int year, QObject* parent = 0);
 
+    QVariantMap data() const { return m_data; }
     QString url() const { return m_url; }
-
-    int id() const { return m_id; }
-    QString title() const { return m_title; }
-    QDate releaseDate() const { return m_date; }
-    QString posterUrl() const { return m_posterUrl; }
 
 signals:
     void result(MovieFetchJob* job);
@@ -55,10 +51,7 @@ private:
     QString m_searchTerm;
     int m_year;
 
-    int m_id;
-    QString m_title;
-    QDate m_date;
-    QString m_posterUrl;
+    QVariantMap m_data;
 };
 
 }

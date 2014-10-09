@@ -41,7 +41,6 @@ MovieFetchJob::MovieFetchJob(TmdbQt::SearchJob* job, const QString& url,
     , m_url(url)
     , m_searchTerm(searchTerm)
     , m_year(year)
-    , m_id(0)
 {
     qDebug() << url << searchTerm << year;
     connect(job, SIGNAL(result(TmdbQt::SearchJob*)),
@@ -81,9 +80,10 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
         }
     }
 
-    m_id = movie.id();
-    m_title = movie.title();
-    m_date = movie.releaseDate();
+    m_data["id"] = movie.id();
+    m_data["title"] = movie.title();
+    m_data["releaseDate"] = movie.releaseDate();
+    m_data["url"] = m_url;
 
     QUrl posterUrl = movie.posterUrl(QLatin1String("w342"));
     m_network.get(QNetworkRequest(posterUrl));
@@ -92,13 +92,14 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
 void MovieFetchJob::slotNetworkReply(QNetworkReply* reply)
 {
     const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    m_posterUrl = dataDir + "/jungle/movie-" + QString::number(m_id);
+    QString posterPath = dataDir + "/jungle/movie-" + m_data["id"].toString();
 
-    QFile file(m_posterUrl);
+    QFile file(posterPath);
     file.open(QIODevice::WriteOnly);
     file.write(reply->readAll());
     file.close();
 
+    m_data["posterPath"] = posterPath;
     emit result(this);
 }
 

@@ -20,7 +20,6 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include "movie.h"
 #include "tvshow.h"
 
 #include "jsondatabase.h"
@@ -40,8 +39,8 @@ public:
     bool init();
     bool initialized();
 
-    void addMovie(const Movie& movie);
-    QList<Movie> allMovies() const;
+    void addMovie(const QVariantMap& movie);
+    QList<QVariantMap> allMovies() const;
 
     void addVideo(const QString& url);
 
@@ -61,7 +60,7 @@ public:
     QList<TvEpisode> allEpisodes(int showId, int season = -1);
 
 signals:
-    void movieAdded(const Movie& movie);
+    void movieAdded(const QVariantMap& movie);
     void tvShowAdded(const TvShow& show);
     void tvEpisodeAdded(const TvEpisode& episode);
 

@@ -21,7 +21,7 @@
 #ifndef JUNGLE_MOVIESMODEL_H
 #define JUNGLE_MOVIESMODEL_H
 
-#include "movie.h"
+#include <QVariant>
 #include <QAbstractListModel>
 #include <QDate>
 
@@ -46,10 +46,10 @@ public:
 
 private slots:
     void slotPopulate();
-    void slotNewMovie(const Movie& movie);
+    void slotNewMovie(const QVariantMap& movie);
 
 private:
-    QList<Movie> m_movies;
+    QList<QVariantMap> m_movies;
 };
 }
 
