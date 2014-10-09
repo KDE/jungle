@@ -18,35 +18,34 @@
  *
  */
 
-#ifndef JSONCOLLECTION_H
-#define JSONCOLLECTION_H
+#ifndef JSONQUERY_H
+#define JSONQUERY_H
 
 #include "kjsondatabase_export.h"
 #include <QVariantMap>
 #include <tcejdb/ejdb.h>
 
-class JsonDatabase;
-class JsonQuery;
+class JsonCollection;
 
-class JUNGLE_EXPORT JsonCollection
+class JUNGLE_EXPORT JsonQuery
 {
 public:
-    ~JsonCollection();
+    ~JsonQuery();
 
-    QString collectionName() const;
+    int totalCount();
 
-    QByteArray insert(const QVariantMap& map);
-    QVariantMap fetch(const QByteArray& id);
+    bool next();
+    QVariantMap result();
 
-    JsonQuery execute(const QVariantMap& query);
 private:
-    JsonCollection(EJDB* db, const QString& name);
+    JsonQuery(EJQ* q, EJCOLL* coll);
 
-    EJDB* m_db;
-    EJCOLL* m_coll;
-    QString m_collectionName;
+    EJQ* m_ejq;
+    EJQRESULT m_result;
+    uint32_t m_count;
+    int m_pos;
 
-    friend class JsonDatabase;
+    friend class JsonCollection;
 };
 
-#endif // JSONCOLLECTION_H
+#endif // JSONQUERY_H

@@ -18,35 +18,32 @@
  *
  */
 
-#ifndef JSONCOLLECTION_H
-#define JSONCOLLECTION_H
-
-#include "kjsondatabase_export.h"
-#include <QVariantMap>
 #include <tcejdb/ejdb.h>
 
-class JsonDatabase;
-class JsonQuery;
+#include <QVariantMap>
+#include <QJsonDocument>
+#include <QJsonObject>
 
-class JUNGLE_EXPORT JsonCollection
+// The bson must be destroyed on your own
+inline bson* mapToBson(const QVariantMap& map)
 {
-public:
-    ~JsonCollection();
+    QJsonDocument doc = QJsonDocument::fromVariant(map);
+    QByteArray arr = doc.toJson();
 
-    QString collectionName() const;
+    return json2bson(arr.constData());
+}
 
-    QByteArray insert(const QVariantMap& map);
-    QVariantMap fetch(const QByteArray& id);
+inline QVariantMap bsonToMap(bson* rec)
+{
+    char* buf;
+    int length;
 
-    JsonQuery execute(const QVariantMap& query);
-private:
-    JsonCollection(EJDB* db, const QString& name);
+    bson2json(bson_data(rec), &buf, &length);
 
-    EJDB* m_db;
-    EJCOLL* m_coll;
-    QString m_collectionName;
+    QByteArray arr = QByteArray::fromRawData(buf, length);
+    QJsonDocument doc = QJsonDocument::fromJson(arr);
+    QVariantMap map = doc.object().toVariantMap();
 
-    friend class JsonDatabase;
-};
-
-#endif // JSONCOLLECTION_H
+    free(buf);
+    return map;
+}

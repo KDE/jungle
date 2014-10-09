@@ -17,8 +17,9 @@
  *
  */
 
-#include "jsondatabase.h"
-#include "jsoncollection.h"
+#include "../jsondatabase.h"
+#include "../jsoncollection.h"
+#include "../jsonquery.h"
 
 #include <QTest>
 #include <QVariantMap>
@@ -29,28 +30,63 @@ class DatabaseTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test();
+    void testInsertAndFetch();
+    void testInsertAndQuery();
 };
 
-void DatabaseTest::test()
+void DatabaseTest::testInsertAndFetch()
 {
+    QTemporaryDir dir;
+    JsonDatabase db;
+    db.setPath(dir.path() + "/db");
+    QVERIFY(db.open());
+
     QVariantMap data;
     data["type"] = "episode";
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
     data["episodeNumber"] = 5;
 
+    JsonCollection col = db.collection("testCol");
+    QByteArray id = col.insert(data);
+    QVariantMap output = col.fetch(id);
+
+    data["_id"] = QString::fromUtf8(id);
+    QCOMPARE(output, data);
+}
+
+void DatabaseTest::testInsertAndQuery()
+{
     QTemporaryDir dir;
     JsonDatabase db;
     db.setPath(dir.path() + "/db");
     QVERIFY(db.open());
 
-    JsonCollection col = db.collection("testCol");
-    QByteArray id = col.add(data);
-    QVariantMap output = col.fetch(id);
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "Outlander";
+    data["episodeNumber"] = 5;
 
-    data["_id"] = QString::fromUtf8(id);
-    QCOMPARE(output, data);
+    JsonCollection col = db.collection("testCol");
+    QByteArray id1 = col.insert(data);
+
+    data["episodeNumber"] = 6;
+    QByteArray id2 = col.insert(data);
+
+    QVariantMap queryMap = {{"type", "episode"}};
+    JsonQuery query = col.execute(queryMap);
+
+    QCOMPARE(query.totalCount(), 2);
+    QVERIFY(query.next());
+    data["_id"] = QString::fromUtf8(id1);
+    data["episodeNumber"] = 5;
+    QCOMPARE(query.result(), data);
+    QVERIFY(query.next());
+    data["_id"] = QString::fromUtf8(id2);
+    data["episodeNumber"] = 6;
+    QCOMPARE(query.result(), data);
+    QVERIFY(!query.next());
 }
 
 QTEST_MAIN(DatabaseTest);

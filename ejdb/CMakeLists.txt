@@ -3,6 +3,7 @@ add_subdirectory(autotest)
 set(JSON_LIB_SRCS
     jsondatabase.cpp
     jsoncollection.cpp
+    jsonquery.cpp
 )
 
 add_library(kjsondatabase SHARED ${JSON_LIB_SRCS})

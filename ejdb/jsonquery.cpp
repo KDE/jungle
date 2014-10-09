@@ -18,35 +18,46 @@
  *
  */
 
-#ifndef JSONCOLLECTION_H
-#define JSONCOLLECTION_H
+#include "jsonquery.h"
+#include "tools.h"
 
-#include "kjsondatabase_export.h"
-#include <QVariantMap>
-#include <tcejdb/ejdb.h>
+#include <QDebug>
 
-class JsonDatabase;
-class JsonQuery;
-
-class JUNGLE_EXPORT JsonCollection
+JsonQuery::JsonQuery(EJQ* q, EJCOLL* coll)
+    : m_ejq(q)
+    , m_pos(-1)
 {
-public:
-    ~JsonCollection();
+    m_result = ejdbqryexecute(coll, q, &m_count, 0, 0);
+}
 
-    QString collectionName() const;
+JsonQuery::~JsonQuery()
+{
+    ejdbqresultdispose(m_result);
+//    ejdbquerydel(m_ejq);
+}
 
-    QByteArray insert(const QVariantMap& map);
-    QVariantMap fetch(const QByteArray& id);
+int JsonQuery::totalCount()
+{
+    return m_count;
+}
 
-    JsonQuery execute(const QVariantMap& query);
-private:
-    JsonCollection(EJDB* db, const QString& name);
+bool JsonQuery::next()
+{
+    m_pos++;
+    return m_pos < m_count;
+}
 
-    EJDB* m_db;
-    EJCOLL* m_coll;
-    QString m_collectionName;
+QVariantMap JsonQuery::result()
+{
+    int size;
+    const void* data = ejdbqresultbsondata(m_result, m_pos, &size);
+    if (!data) {
+        return QVariantMap();
+    }
 
-    friend class JsonDatabase;
-};
+    bson* rec = bson_create_from_buffer(data, size);
+    QVariantMap map = bsonToMap(rec);
+    bson_del(rec);
 
-#endif // JSONCOLLECTION_H
+    return map;
+}

@@ -19,13 +19,12 @@
  */
 
 #include "jsoncollection.h"
+#include "jsonquery.h"
+#include "tools.h"
 
 #include <QDateTime>
 #include <QFile>
 #include <QDebug>
-
-#include <QJsonDocument>
-#include <QJsonObject>
 
 JsonCollection::JsonCollection(EJDB* db, const QString& name)
     : m_db(db)
@@ -43,87 +42,18 @@ QString JsonCollection::collectionName() const
     return m_collectionName;
 }
 
-QByteArray JsonCollection::add(const QVariantMap& map)
+QByteArray JsonCollection::insert(const QVariantMap& map)
 {
-    bson rec;
-    bson_init(&rec);
-
-    QMapIterator<QString, QVariant> it(map);
-    while (it.hasNext()) {
-        it.next();
-
-        const QByteArray key = it.key().toUtf8();
-        const QVariant &var = it.value();
-
-        switch (var.type()) {
-            case QVariant::Double: {
-                bson_append_double(&rec, key.constData(), var.toDouble());
-                break;
-            }
-
-            case QVariant::String: {
-                QByteArray val = var.toString().toUtf8();
-                bson_append_string(&rec, key.constData(), val.constData());
-                break;
-            }
-
-            case QVariant::Map: {
-                Q_ASSERT(0);
-            }
-
-            case QVariant::List: {
-                Q_ASSERT(0);
-            }
-
-            case QVariant::Bool: {
-                bson_append_bool(&rec, key.constData(), var.toBool());
-                break;
-            }
-
-            case QVariant::Date: {
-                bson_date_t date = var.toDateTime().toTime_t();
-                bson_append_date(&rec, key.constData(), date);
-                break;
-            }
-
-            case QVariant::RegExp: {
-                Q_ASSERT(0);
-            }
-
-            case QVariant::Int: {
-                bson_append_int(&rec, key.constData(), var.toInt());
-                break;
-            }
-
-            case QVariant::DateTime: {
-                bson_date_t date = var.toDateTime().toTime_t();
-                bson_append_time_t(&rec, key.constData(), date);
-                break;
-            }
-
-            case QVariant::LongLong: {
-                // FIXME: Data is being lost?
-                bson_append_long(&rec, key.constData(), var.toLongLong());
-                break;
-            }
-
-            default: {
-                Q_ASSERT(0);
-            }
-        }
-    }
-
-    bson_finish(&rec);
+    bson* rec = mapToBson(map);
 
     bson_oid_t oid;
-    ejdbsavebson(m_coll, &rec, &oid);
+    ejdbsavebson(m_coll, rec, &oid);
 
     char str[26];
     bson_oid_to_string(&oid, str);
     QByteArray id(str);
 
-    bson_destroy(&rec);
-
+    bson_destroy(rec);
     return id;
 }
 
@@ -138,17 +68,22 @@ QVariantMap JsonCollection::fetch(const QByteArray& id)
         return QVariantMap();
     }
 
-    char* buf;
-    int length;
-
-    bson2json(bson_data(rec), &buf, &length);
-
-    QByteArray arr = QByteArray::fromRawData(buf, length);
-    QJsonDocument doc = QJsonDocument::fromJson(arr);
-    QVariantMap map = doc.object().toVariantMap();
-
-    free(buf);
+    QVariantMap map = bsonToMap(rec);
     bson_del(rec);
 
     return map;
+}
+
+JsonQuery JsonCollection::execute(const QVariantMap& map)
+{
+    bson* rec = mapToBson(map);
+
+    EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, 0);
+    JsonQuery query(q, m_coll);
+
+    ejdbquerydel(q);
+
+    bson_destroy(rec);
+
+    return query;
 }
