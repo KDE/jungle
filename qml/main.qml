@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 import QtQuick 2.1
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.1
@@ -5,80 +23,63 @@ import QtQuick.Window 2.1
 
 ApplicationWindow {
     id: applicationWindow
-    color: "black"
     title: "Jungle"
+    color: "black"
 
     width: 1800
     height: 1600
 
-    visible: true
+    StackView {
+        id: globalView
+        initialItem: RowLayout {
+            Sidebar {
+                id: sidebar
 
-    Item {
-        id: mainItem
-        anchors.fill: parent
+                Layout.minimumWidth: 400
+                Layout.maximumWidth: 400
+                Layout.fillHeight: true
 
-        Sidebar {
-            id: sidebar
+                onMoviesActivated: {
+                    stackView.pop(movies)
+                }
 
-            width: 400
-            anchors {
-                left: parent.left
-                top: parent.top
-                bottom: parent.bottom
-
-                topMargin: 50
-                leftMargin: 20
-                rightMargin: 20
+                onTvShowsActivated: {
+                    stackView.push(tvshows);
+                }
             }
 
-            onMoviesActivated: {
-                movies.visible = true
-                movies.focus = true
-                tvshows.visible = false
+            StackView {
+                id: stackView
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                initialItem: Movies {
+                    id: movies
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    focus: true
+                    onPlay: {
+                        videoPlayer.source = url
+                        videoPlayer.focus = true
+                        globalView.push(videoPlayer)
+
+                        videoPlayer.play()
+                    }
+                }
             }
 
-            onTvShowsActivated: {
-                movies.visible = false
-                tvshows.visible = true
-                tvshows.focus = true
-                tvshows.reset()
-            }
-        }
+            TvShows {
+                id: tvshows
+                visible: false
 
-        Movies {
-            id: movies
-            anchors.left: sidebar.right
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+                onPlay: {
+                    videoPlayer.source = url
+                    videoPlayer.focus = true
+                    globalView.push(videoPlayer)
 
-            focus: true
-            onPlay: {
-                videoPlayer.source = url
-                videoPlayer.visible = true
-                videoPlayer.focus = true
-                mainItem.visible = false
-
-                videoPlayer.play()
-            }
-        }
-
-        TvShows {
-            id: tvshows
-            visible: false
-
-            anchors.left: sidebar.right
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-
-            onPlay: {
-                videoPlayer.source = url
-                videoPlayer.visible = true
-                videoPlayer.focus = true
-                mainItem.visible = false
-
-                videoPlayer.play()
+                    videoPlayer.play()
+                }
             }
         }
     }
@@ -87,16 +88,12 @@ ApplicationWindow {
         id: videoPlayer
         visible: false
 
-        anchors.fill: parent
+        Layout.fillWidth: true
+        Layout.fillHeight: true
 
         Keys.onEscapePressed: {
             videoPlayer.stop()
-            videoPlayer.visible = false
-            mainItem.visible = true
-            if (tvshows.visible)
-                tvshows.focus = true
-            else
-                movies.focus = true
+            globalView.pop()
         }
     }
 
