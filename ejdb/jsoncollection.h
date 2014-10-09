@@ -36,8 +36,8 @@ public:
 
     QString collectionName() const;
 
-    QByteArray insert(const QVariantMap& map);
-    QVariantMap fetch(const QByteArray& id) const;
+    QString insert(const QVariantMap& map);
+    QVariantMap fetch(const QString& id) const;
 
     JsonQuery execute(const QVariantMap& query) const;
 private:

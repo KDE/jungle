@@ -25,65 +25,100 @@
 #include <QVariantMap>
 #include <QDebug>
 #include <QTemporaryDir>
+#include <QUuid>
 
 class DatabaseTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
+    void init()
+    {
+        db.reset(new JsonDatabase);
+        db->setPath(m_tempDir.path() + QUuid::createUuid().toString());
+        QVERIFY(db->open());
+    }
+
     void testInsertAndFetch();
+    void testInsertWithId();
+    void testDoubleInsert();
     void testInsertAndQuery();
+private:
+    QTemporaryDir m_tempDir;
+    QScopedPointer<JsonDatabase> db;
 };
 
 void DatabaseTest::testInsertAndFetch()
 {
-    QTemporaryDir dir;
-    JsonDatabase db;
-    db.setPath(dir.path() + "/db");
-    QVERIFY(db.open());
-
     QVariantMap data;
     data["type"] = "episode";
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
     data["episodeNumber"] = 5;
 
-    JsonCollection col = db.collection("testCol");
-    QByteArray id = col.insert(data);
+    JsonCollection col = db->collection("testCol");
+    QString id = col.insert(data);
     QVariantMap output = col.fetch(id);
 
-    data["_id"] = QString::fromUtf8(id);
+    data["_id"] = id;
     QCOMPARE(output, data);
+}
+
+void DatabaseTest::testInsertWithId()
+{
+    QString id("50fe106b35cf1e0300000006");
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["_id"] = id;
+
+    JsonCollection col = db->collection("testCol");
+    QString newId = col.insert(data);
+    QCOMPARE(newId, id);
+}
+
+void DatabaseTest::testDoubleInsert()
+{
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+
+    JsonCollection col = db->collection("testCol");
+    QString id = col.insert(data);
+    qDebug();
+
+    data["_id"] = id;
+    QCOMPARE(col.fetch(id), data);
+
+    data["type"] = "fire";
+    QString id2 = col.insert(data);
+    QCOMPARE(id, id2);
+    QCOMPARE(col.fetch(id), data);
 }
 
 void DatabaseTest::testInsertAndQuery()
 {
-    QTemporaryDir dir;
-    JsonDatabase db;
-    db.setPath(dir.path() + "/db");
-    QVERIFY(db.open());
-
     QVariantMap data;
     data["type"] = "episode";
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
     data["episodeNumber"] = 5;
 
-    JsonCollection col = db.collection("testCol");
-    QByteArray id1 = col.insert(data);
+    JsonCollection col = db->collection("testCol");
+    QString id1 = col.insert(data);
 
     data["episodeNumber"] = 6;
-    QByteArray id2 = col.insert(data);
+    QString id2 = col.insert(data);
 
     QVariantMap queryMap = {{"type", "episode"}};
     JsonQuery query = col.execute(queryMap);
 
     QCOMPARE(query.totalCount(), 2);
     QVERIFY(query.next());
-    data["_id"] = QString::fromUtf8(id1);
+    data["_id"] = id1;
     data["episodeNumber"] = 5;
     QCOMPARE(query.result(), data);
     QVERIFY(query.next());
-    data["_id"] = QString::fromUtf8(id2);
+    data["_id"] = id2;
     data["episodeNumber"] = 6;
     QCOMPARE(query.result(), data);
     QVERIFY(!query.next());

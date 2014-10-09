@@ -47,7 +47,7 @@ QString JsonCollection::collectionName() const
     return m_collectionName;
 }
 
-QByteArray JsonCollection::insert(const QVariantMap& map)
+QString JsonCollection::insert(const QVariantMap& map)
 {
     bson* rec = mapToBson(map);
 
@@ -56,16 +56,17 @@ QByteArray JsonCollection::insert(const QVariantMap& map)
 
     char str[26];
     bson_oid_to_string(&oid, str);
-    QByteArray id(str);
+    QByteArray id = QByteArray::fromRawData(str, 25);
 
     bson_destroy(rec);
-    return id;
+
+    return QString::fromUtf8(id);
 }
 
-QVariantMap JsonCollection::fetch(const QByteArray& id) const
+QVariantMap JsonCollection::fetch(const QString& id) const
 {
     bson_oid_t oid;
-    bson_oid_from_string(&oid, id.constData());
+    bson_oid_from_string(&oid, id.toUtf8().constData());
 
     bson* rec = ejdbloadbson(m_coll, &oid);
     if (!rec) {
