@@ -17,7 +17,7 @@
  *
  */
 
-#include "database.h"
+#include "jsondatabase.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -26,9 +26,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-using namespace Jungle;
-
-Database::Database(const QString& dbPath)
+JsonDatabase::JsonDatabase(const QString& dbPath)
 {
     m_jdb = ejdbnew();
     if (!ejdbopen(m_jdb, QFile::encodeName(dbPath).constData(), JBOWRITER | JBOCREAT)) {
@@ -37,7 +35,7 @@ Database::Database(const QString& dbPath)
     m_coll = ejdbcreatecoll(m_jdb, "default", 0);
 }
 
-Database::~Database()
+JsonDatabase::~JsonDatabase()
 {
     ejdbclose(m_jdb);
     ejdbdel(m_jdb);
@@ -74,7 +72,7 @@ static void addVariant(bson &rec, const QVariant& variant)
 }
 */
 
-QByteArray Database::add(const QVariantMap& map)
+QByteArray JsonDatabase::add(const QVariantMap& map)
 {
     bson rec;
     bson_init(&rec);
@@ -158,7 +156,7 @@ QByteArray Database::add(const QVariantMap& map)
     return id;
 }
 
-QVariantMap Database::fetch(const QByteArray& id)
+QVariantMap JsonDatabase::fetch(const QByteArray& id)
 {
     bson_oid_t oid;
     bson_oid_from_string(&oid, id.constData());

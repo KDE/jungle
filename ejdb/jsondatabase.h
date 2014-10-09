@@ -23,13 +23,11 @@
 #include <QVariantMap>
 #include <tcejdb/ejdb.h>
 
-namespace Jungle {
-
-class Database
+class JsonDatabase
 {
 public:
-    Database(const QString& dbPath);
-    virtual ~Database();
+    JsonDatabase(const QString& dbPath);
+    virtual ~JsonDatabase();
 
     QByteArray add(const QVariantMap& map);
 
@@ -39,6 +37,5 @@ private:
     EJDB* m_jdb;
     EJCOLL* m_coll;
 };
-}
 
 #endif

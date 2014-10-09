@@ -17,7 +17,7 @@
  *
  */
 
-#include "../database.h"
+#include "../jsondatabase.h"
 
 #include <QTest>
 #include <QVariantMap>
@@ -31,8 +31,6 @@ private Q_SLOTS:
     void test();
 };
 
-using namespace Jungle;
-
 void DatabaseTest::test()
 {
     QVariantMap data;
@@ -42,7 +40,7 @@ void DatabaseTest::test()
     data["episodeNumber"] = 5;
 
     QTemporaryDir dir;
-    Database db(dir.path() + "/db");
+    JsonDatabase db(dir.path() + "/db");
 
     QByteArray id = db.add(data);
     QVariantMap output = db.fetch(id);
