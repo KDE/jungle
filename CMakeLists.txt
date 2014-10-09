@@ -9,6 +9,7 @@ find_package(KF5 REQUIRED COMPONENTS KDE4Support I18n Service Baloo)
 find_package(TmdbQt5 REQUIRED)
 find_package(GTest REQUIRED)
 find_package(GMock REQUIRED)
+find_package(Ejdb REQUIRED)
 
 include(ECMAddTests)
 include(ECMSetupVersion)
@@ -22,9 +23,11 @@ include(KDECompilerSettings)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src
+  ${EJDB_INCLUDE_DIRS}
 )
 
 add_subdirectory(src)
+add_subdirectory(ejdb)
 add_subdirectory(qml)
 
 feature_summary(WHAT ALL
