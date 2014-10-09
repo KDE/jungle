@@ -1,59 +1,56 @@
+/*
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
-import QtGraphicalEffects 1.0
 import QtMultimedia 5.0
 
 import QtQuick.Controls 1.1 as QtControls
 import QtQuick.Controls.Styles 1.1
 
 import org.kde.kcoreaddons 1.0 as KCoreAddons
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
-// TODO: Some important things to implement - Nice progress bar
-// Simple play / pause buttons
-// Volume Control
-// Show duration
-Item {
-    id: container
+ColumnLayout {
+    id: root
 
     property MediaPlayer source: MediaPlayer {}
-    height: childrenRect.height
-
-    Rectangle {
-        color: "black"
-        anchors.fill: parent
-        z: -10
-    }
 
     ProgressBar {
         id: progressBar
-        width: parent.width - (anchors.leftMargin + anchors.rightMargin)
-        height: 20
+
+        Layout.fillWidth: true
+        Layout.minimumHeight: 20
+        Layout.maximumHeight: 20
 
         value: source.position
         maximum: source.duration
 
         backgroundShown: true
 
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-
-        onClicked: {
-            source.seek(source.duration * percent)
-        }
+        onClicked: source.seek(source.duration * percent)
     }
 
     RowLayout {
-        id: rowLayout
-        anchors.top: progressBar.bottom
-
-        QtControls.Button {
+        PlasmaComponents.ToolButton {
             id: button
 
             iconName: source.playbackState == MediaPlayer.PlayingState ? "media-playback-pause" : "media-playback-start"
-            opacity: 0.8
 
             onClicked: {
                 if (source.playbackState == MediaPlayer.PlayingState) {
@@ -75,19 +72,17 @@ Item {
         }
 
         Text {
-            text: formats.formatDuration(source.duration)
+            text: KCoreAddons.Format.formatDuration(source.duration)
             color: "white"
         }
-    }
 
-    RowLayout {
-        anchors.top: rowLayout.top
-        anchors.bottom: rowLayout.bottom
-        anchors.right: parent.right
+        // Spacer
+        Item {
+            Layout.fillWidth: true
+        }
 
-        QtControls.Button {
+        PlasmaComponents.ToolButton {
             iconName: "audio-volume-high"
-            opacity: 0.8
             property double previousVolume
 
             onClicked: {
@@ -102,24 +97,21 @@ Item {
 
         ProgressBar {
             id: volumeBar
-            width: 300
-            height: rowLayout.height / 4
+
+            Layout.minimumWidth: 300
+            Layout.minimumHeight: parent.height / 4
 
             value: source.volume * 100
             maximum: 100
-
             backgroundShown: true
 
-            anchors.verticalCenter: parent.verticalCenter
             onClicked: {
                 source.volume = percent
             }
         }
 
-        QtControls.Button {
+        PlasmaComponents.ToolButton {
             iconName: "view-fullscreen"
-            opacity: 0.8
-
             onClicked: applicationWindow.toggleFullScreen()
         }
     }
