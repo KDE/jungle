@@ -178,7 +178,7 @@ void Feeder::processNext()
                     &loop, SLOT(quit()));
             loop.exec();
 
-            TvSeason tvseason = job->result();
+            //QVariantMap tvseason = job->seasonData();
             foreach (const QVariantMap& ep, job->episodes()) {
                 m_db->addEpisode(ep);
             }
@@ -254,6 +254,10 @@ int Feeder::fetchOrCreateShow(const QString& showName)
     TvShow show = job->result();
     if (show.id()) {
         m_db->addShow(show);
+    }
+
+    for (const QVariantMap& season: job->seasons()) {
+        m_db->addSeason(season);
     }
 
     return show.id();

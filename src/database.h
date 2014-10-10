@@ -50,6 +50,7 @@ public:
 
     int showId(const QString& name);
     void addShow(const TvShow& show);
+    void addSeason(const QVariantMap& season);
 
     QList<TvShow> allShows() const;
 

@@ -25,9 +25,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-#include "tvshow.h"
-#include "tvseason.h"
-
 #include <tmdbqt/themoviedbapi.h>
 
 namespace Jungle {
@@ -38,7 +35,7 @@ class TvSeasonFetchJob : public QObject
 public:
     TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int season, QObject* parent = 0);
 
-    TvSeason result() const;
+    QVariantMap seasonData() const;
     QList<QVariantMap> episodes() const;
 
 signals:
@@ -56,7 +53,7 @@ private:
     int m_seasonNum;
     int m_pendingJobs;
 
-    TvSeason m_season;
+    QVariantMap m_season;
     QList<QVariantMap> m_episodes;
 };
 

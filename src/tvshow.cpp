@@ -66,13 +66,3 @@ QString TvShow::title() const
 {
     return m_title;
 }
-
-QList< TvSeason > TvShow::seasons() const
-{
-    return m_seasons;
-}
-
-void TvShow::setTvSeasons(const QList< TvSeason >& seasons)
-{
-    m_seasons = seasons;
-}

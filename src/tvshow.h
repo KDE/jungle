@@ -21,7 +21,7 @@
 #ifndef SHOW_H
 #define SHOW_H
 
-#include "tvseason.h"
+#include "jungle_export.h"
 #include <QString>
 #include <QDate>
 
@@ -44,16 +44,11 @@ public:
     QDate firstAired() const;
     void setFirstAired(const QDate& date);
 
-    QList<TvSeason> seasons() const;
-    void setTvSeasons(const QList<TvSeason>& seasons);
-
 private:
     int m_id;
     QString m_title;
     QString m_coverUrl;
     QDate m_firstAired;
-
-    QList<TvSeason> m_seasons;
 };
 }
 

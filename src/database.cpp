@@ -130,20 +130,15 @@ void Database::addShow(const TvShow& show)
     map["posterPath"] = show.coverUrl();
 
     m_coll.insert(map);
-
-    foreach (const TvSeason& s, show.seasons()) {
-        QVariantMap map;
-        map["type"] = "tvseason";
-        map["id"] = s.id();
-        map["show"] = show.id();
-        map["seasonNumber"] = s.seasonNumber();
-        map["airDate"] = s.airDate();
-        map["posterPath"] = s.posterUrl();
-
-        m_coll.insert(map);
-    }
-
     emit tvShowAdded(show);
+}
+
+void Database::addSeason(const QVariantMap& season)
+{
+    QVariantMap map = season;
+    map["type"] = "tvseason";
+
+    m_coll.insert(map);
 }
 
 void Database::addEpisode(const QVariantMap& episode)

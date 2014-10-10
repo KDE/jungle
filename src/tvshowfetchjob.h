@@ -38,6 +38,7 @@ public:
     virtual ~TvShowFetchJob();
 
     TvShow result() { return m_show; }
+    QList<QVariantMap> seasons() const { return m_seasons; }
 
 signals:
     void result(TvShowFetchJob* job);
@@ -53,7 +54,7 @@ private:
     QString m_name;
 
     TvShow m_show;
-    QList<TvSeason> m_seasons;
+    QList<QVariantMap> m_seasons;
 
     int m_pendingJobs;
 };

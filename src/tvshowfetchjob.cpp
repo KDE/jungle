@@ -19,7 +19,6 @@
  */
 
 #include "tvshowfetchjob.h"
-#include "tvseason.h"
 
 #include <tmdbqt/tvsearchjob.h>
 #include <tmdbqt/tvshowdblist.h>
@@ -77,18 +76,19 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
 
     TmdbQt::TvSeasonDbList seasons = tvshow.seasons();
     for (int i = 0; i < seasons.size(); i++) {
-        TmdbQt::TvSeasonDb season = seasons[i];
+        TmdbQt::TvSeasonDb sdb = seasons[i];
 
-        TvSeason s;
-        s.setAirDate(season.airDate());
-        s.setId(season.id());
-        s.setSeasonNumber(season.seasonNumber());
+        QVariantMap season;
+        season["airDate"] = sdb.airDate();
+        season["id"] = sdb.id();
+        season["seasonNumber"] = sdb.seasonNumber();
+        season["show"] = tvshow.id();
 
-        m_seasons << s;
+        m_seasons << season;
 
-        QUrl posterUrl = season.posterUrl(QLatin1String("w342"));
+        QUrl posterUrl = sdb.posterUrl(QLatin1String("w342"));
         QNetworkReply* reply = m_network.get(QNetworkRequest(posterUrl));
-        reply->setProperty("seasonNum", s.seasonNumber());
+        reply->setProperty("seasonNum", sdb.seasonNumber());
         reply->setProperty("index", i);
     }
 
@@ -124,12 +124,11 @@ void TvShowFetchJob::slotNetworkReply(QNetworkReply* reply)
         file.close();
 
         int index = reply->property("index").toInt();
-        m_seasons[index].setPosterUrl(url);
+        m_seasons[index]["posterPath"] = url;
     }
 
     m_pendingJobs--;
     if (!m_pendingJobs) {
-        m_show.setTvSeasons(m_seasons);
         emit result(this);
     }
 }
