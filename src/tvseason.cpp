@@ -32,11 +32,6 @@ QDate TvSeason::airDate() const
     return m_airDate;
 }
 
-QList< TvEpisode > TvSeason::episodes() const
-{
-    return m_episodes;
-}
-
 QString TvSeason::overview()
 {
     return m_overview;
@@ -60,11 +55,6 @@ int TvSeason::id() const
 void TvSeason::setAirDate(const QDate& date)
 {
     m_airDate = date;
-}
-
-void TvSeason::setEpisodes(const QList< TvEpisode >& episodes)
-{
-    m_episodes = episodes;
 }
 
 void TvSeason::setId(int id)

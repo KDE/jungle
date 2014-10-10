@@ -146,18 +146,11 @@ void Database::addShow(const TvShow& show)
     emit tvShowAdded(show);
 }
 
-void Database::addEpisode(const TvEpisode& episode)
+void Database::addEpisode(const QVariantMap& episode)
 {
     // FIXME: Should be insert or replace!!
-    QVariantMap map;
+    QVariantMap map = episode;
     map["type"] = "tvepisode";
-    map["episodeNum"] = episode.episodeNumber();
-    map["season"] = episode.season();
-    map["show"] = episode.show();
-    map["url"] = episode.url();
-    map["airDate"] = episode.airDate();
-    map["name"] = episode.name();
-    map["stillPath"] = episode.stillUrl();
 
     m_coll.insert(map);
     emit tvEpisodeAdded(episode);
@@ -184,7 +177,7 @@ QList<TvShow> Database::allShows() const
     return shows;
 }
 
-TvEpisode Database::episode(int showId, int season, int epNum)
+QVariantMap Database::episode(int showId, int season, int epNum)
 {
     QVariantMap queryMap = {{"type", "tvepisode"},
                             {"show", showId},
@@ -192,23 +185,15 @@ TvEpisode Database::episode(int showId, int season, int epNum)
                             {"episodeNum", epNum}};
     JsonQuery query = m_coll.execute(queryMap);
 
-    TvEpisode ep;
     if (query.next()) {
         QVariantMap map = query.result();
-        ep.setAirDate(map.value("airDate").toDate());
-        ep.setName(map.value("name").toString());
-        ep.setOverview(map.value("overview").toString());
-        ep.setStillUrl(map.value("stillPath").toString());
-        ep.setEpisodeNumber(map.value("episodeNum").toInt());
-        ep.setSeason(season);
-        ep.setShow(showId);
-        ep.setUrl(map.value("url").toString());
+        return map;
     }
 
-    return ep;
+    return QVariantMap();
 }
 
-QList<TvEpisode> Database::allEpisodes(int showId, int season)
+QList<QVariantMap> Database::allEpisodes(int showId, int season)
 {
     QVariantMap queryMap = {{"type", "tvepisode"},
                             {"show", showId}};
@@ -218,21 +203,10 @@ QList<TvEpisode> Database::allEpisodes(int showId, int season)
     }
     JsonQuery query = m_coll.execute(queryMap);
 
-    QList<TvEpisode> epList;
+    QList<QVariantMap> epList;
     while (query.next()) {
         QVariantMap map = query.result();
-
-        TvEpisode ep;
-        ep.setAirDate(map.value("airDate").toDate());
-        ep.setName(map.value("name").toString());
-        ep.setOverview(map.value("overview").toString());
-        ep.setStillUrl(map.value("stillPath").toString());
-        ep.setEpisodeNumber(map.value("episodeNum").toInt());
-        ep.setUrl(map.value("url").toString());
-        ep.setSeason(map.value("season").toInt());
-        ep.setShow(showId);
-
-        epList << ep;
+        epList << map;
     }
 
     return epList;

@@ -179,14 +179,14 @@ void Feeder::processNext()
             loop.exec();
 
             TvSeason tvseason = job->result();
-            foreach (const TvEpisode& ep, tvseason.episodes()) {
+            foreach (const QVariantMap& ep, job->episodes()) {
                 m_db->addEpisode(ep);
             }
         }
 
-        TvEpisode ep = m_db->episode(showId, season, episode);
-        if (ep.episodeNumber() == episode) {
-            ep.setUrl(url);
+        QVariantMap ep = m_db->episode(showId, season, episode);
+        if (ep.value("episodeNumber").toInt() == episode) {
+            ep["url"] = url;
             m_db->addEpisode(ep);
 
             // Mark the url as processed

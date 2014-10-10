@@ -20,7 +20,6 @@
 
 #include "tvshowfetchjob.h"
 #include "tvseason.h"
-#include "tvepisode.h"
 
 #include <tmdbqt/tvsearchjob.h>
 #include <tmdbqt/tvshowdblist.h>

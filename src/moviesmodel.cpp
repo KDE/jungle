@@ -73,7 +73,6 @@ QVariant MoviesModel::data(const QModelIndex& index, int role) const
             return movie["url"].toString();
 
         case CoverRole:
-            qDebug() << movie["posterPath"].toString();
             return movie["posterPath"].toString();
 
         case ReleaseDateRole:

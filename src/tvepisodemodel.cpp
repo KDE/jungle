@@ -61,25 +61,25 @@ QVariant TvEpisodeModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    TvEpisode ep = m_episodes.at(index.row());
+    QVariantMap ep = m_episodes.at(index.row());
     switch (role) {
-        case Qt::DisplayRole || NameRole:
-            return ep.name();
+        case Qt::DisplayRole:
+            return ep["name"].toString();
 
         case UrlRole:
-            return ep.url();
+            return ep["url"].toString();
 
         case CoverRole:
-            return ep.stillUrl();
+            return ep["stillPath"].toString();
 
         case AirDateRole:
-            return ep.airDate();
+            return ep["airDate"].toDate();
 
         case SeasonRole:
-            return ep.season();
+            return ep["season"].toInt();
 
         case EpisodeNumberRole:
-            return ep.episodeNumber();
+            return ep["episodeNumber"].toInt();
     }
 
     return QVariant();
@@ -99,10 +99,10 @@ void TvEpisodeModel::setShowId(int id)
     endResetModel();
 }
 
-void TvEpisodeModel::slotNewTvEpisode(const TvEpisode& episode)
+void TvEpisodeModel::slotNewTvEpisode(const QVariantMap& episode)
 {
     //If the added episode is not of this tvshow, skip it.
-    if (episode.show() != m_showId) {
+    if (episode["showId"].toInt() != m_showId) {
         return;
     }
 

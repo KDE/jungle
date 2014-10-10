@@ -27,7 +27,6 @@
 
 #include "tvshow.h"
 #include "tvseason.h"
-#include "tvepisode.h"
 
 #include <tmdbqt/themoviedbapi.h>
 
@@ -40,6 +39,7 @@ public:
     TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int season, QObject* parent = 0);
 
     TvSeason result() const;
+    QList<QVariantMap> episodes() const;
 
 signals:
     void result(TvSeasonFetchJob* job);
@@ -57,7 +57,7 @@ private:
     int m_pendingJobs;
 
     TvSeason m_season;
-    QList<TvEpisode> m_episodes;
+    QList<QVariantMap> m_episodes;
 };
 
 }

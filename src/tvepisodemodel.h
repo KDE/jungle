@@ -22,7 +22,6 @@
 #define JUNGLE_EPISODEMODEL_H
 
 #include <QAbstractListModel>
-#include "tvepisode.h"
 
 namespace Jungle {
 
@@ -58,10 +57,10 @@ public:
     void setSeason(int season);
 
 private slots:
-    void slotNewTvEpisode(const TvEpisode& episode);
+    void slotNewTvEpisode(const QVariantMap& episode);
 
 private:
-    QList<TvEpisode> m_episodes;
+    QList<QVariantMap> m_episodes;
     int m_showId;
     int m_season;
 };

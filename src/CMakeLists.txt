@@ -2,7 +2,6 @@ set(LIB_SRCS
     database.cpp
     tvshow.cpp
     tvseason.cpp
-    tvepisode.cpp
 )
 
 add_library(junglecommon SHARED ${LIB_SRCS})

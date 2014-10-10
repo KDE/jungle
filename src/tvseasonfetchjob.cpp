@@ -62,13 +62,13 @@ void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
     for (int i = 0; i < epList.size(); i++) {
         TmdbQt::TvEpisodeDb ep = epList[i];
 
-        TvEpisode episode;
-        episode.setAirDate(ep.airDate());
-        episode.setEpisodeNumber(ep.episodeNumber());
-        episode.setName(ep.name());
-        episode.setOverview(ep.overview());
-        episode.setSeason(m_seasonNum);
-        episode.setShow(m_showId);
+        QVariantMap episode;
+        episode["airDate"] = ep.airDate();
+        episode["episodeNumber"] = ep.episodeNumber();
+        episode["name"] = ep.name();
+        episode["overview"] = ep.overview();
+        episode["season"] = m_seasonNum;
+        episode["show"] = m_showId;
 
         m_episodes << episode;
 
@@ -106,13 +106,16 @@ void TvSeasonFetchJob::slotNetworkReply(QNetworkReply* reply)
     }
 
     int index = reply->property("index").toInt();
-    m_episodes[index].setStillUrl(url);
+    m_episodes[index]["stillPath"] = url;
 
     m_pendingJobs--;
     if (m_pendingJobs == 0) {
-        m_season.setEpisodes(m_episodes);
         emit result(this);
     }
 }
 
+QList<QVariantMap> TvSeasonFetchJob::episodes() const
+{
+    return m_episodes;
+}
 

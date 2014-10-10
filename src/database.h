@@ -54,15 +54,15 @@ public:
     QList<TvShow> allShows() const;
 
     bool hasEpisodes(int show, int season);
-    void addEpisode(const TvEpisode& episode);
+    void addEpisode(const QVariantMap& episode);
 
-    TvEpisode episode(int showId, int season, int epNum);
-    QList<TvEpisode> allEpisodes(int showId, int season = -1);
+    QVariantMap episode(int showId, int season, int epNum);
+    QList<QVariantMap> allEpisodes(int showId, int season = -1);
 
 signals:
     void movieAdded(const QVariantMap& movie);
     void tvShowAdded(const TvShow& show);
-    void tvEpisodeAdded(const TvEpisode& episode);
+    void tvEpisodeAdded(const QVariantMap& episode);
 
 private:
     QString m_path;

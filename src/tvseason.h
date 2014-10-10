@@ -20,7 +20,7 @@
 #ifndef JUNGLE_TVSEASON_H
 #define JUNGLE_TVSEASON_H
 
-#include "tvepisode.h"
+#include "jungle_export.h"
 #include <QString>
 #include <QDate>
 
@@ -46,16 +46,12 @@ public:
     QString overview();
     void setOverview(const QString& overview);
 
-    QList<TvEpisode> episodes() const;
-    void setEpisodes(const QList<TvEpisode>& episodes);
-
 private:
     int m_id;
     int m_seasonNum;
     QDate m_airDate;
     QString m_posterUrl;
     QString m_overview;
-    QList<TvEpisode> m_episodes;
 };
 }
 
