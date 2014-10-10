@@ -42,6 +42,7 @@ private Q_SLOTS:
     void testInsertWithId();
     void testDoubleInsert();
     void testInsertAndQuery();
+    void testAndQuery();
 private:
     QTemporaryDir m_tempDir;
     QScopedPointer<JsonDatabase> db;
@@ -123,6 +124,32 @@ void DatabaseTest::testInsertAndQuery()
     QCOMPARE(query.result(), data);
     QVERIFY(!query.next());
 }
+
+void DatabaseTest::testAndQuery()
+{
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "Outlander";
+    data["episodeNumber"] = 5;
+
+    JsonCollection col = db->collection("testCol");
+    QString id = col.insert(data);
+
+    QVariantMap data2 = data;
+    data2["series"] = "Batman";
+    col.insert(data2);
+
+    QVariantMap queryMap = {{"type", "episode"},
+                            {"series", "Outlander"}};
+    JsonQuery query = col.execute(queryMap);
+    QCOMPARE(query.totalCount(), 1);
+    QVERIFY(query.next());
+    data["_id"] = id;
+    QCOMPARE(query.result(), data);
+    QVERIFY(!query.next());
+}
+
 
 QTEST_MAIN(DatabaseTest);
 
