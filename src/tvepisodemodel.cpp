@@ -36,8 +36,8 @@ TvEpisodeModel::TvEpisodeModel(QObject* parent)
     names.insert(EpisodeNumberRole, "episodeNumber");
     setRoleNames(names);
 
-    connect(Database::instance(), SIGNAL(tvEpisodeAdded(TvEpisode)),
-            this, SLOT(slotNewTvEpisode(TvEpisode)));
+    connect(Database::instance(), SIGNAL(tvEpisodeAdded(QVariantMap)),
+            this, SLOT(slotNewTvEpisode(QVariantMap)));
 }
 
 int TvEpisodeModel::rowCount(const QModelIndex& parent) const
