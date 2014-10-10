@@ -244,8 +244,8 @@ int Feeder::fetchOrCreateShow(const QString& showName)
             &loop, SLOT(quit()));
     loop.exec();
 
-    TvShow show = job->result();
-    if (show.id()) {
+    QVariantMap show = job->result();
+    if (!show.isEmpty()) {
         m_db->addShow(show);
     }
 
@@ -253,7 +253,7 @@ int Feeder::fetchOrCreateShow(const QString& showName)
         m_db->addSeason(season);
     }
 
-    return show.id();
+    return show.value("id").toInt();
 }
 
 void Feeder::slotFileMetaDataChanged(const QStringList& list)

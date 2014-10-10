@@ -21,7 +21,6 @@
 #ifndef JUNGLE_TVSHOWSMODEL_H
 #define JUNGLE_TVSHOWSMODEL_H
 
-#include "tvshow.h"
 #include <QAbstractListModel>
 #include <QDate>
 
@@ -45,10 +44,10 @@ public:
 
 private slots:
     void slotPopulate();
-    void slotNewTvShow(const TvShow& show);
+    void slotNewTvShow(const QVariantMap& show);
 
 private:
-    QList<TvShow> m_shows;
+    QList<QVariantMap> m_shows;
 };
 }
 

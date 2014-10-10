@@ -117,17 +117,13 @@ int Database::showId(const QString& name)
     return 0;
 }
 
-void Database::addShow(const TvShow& show)
+void Database::addShow(const QVariantMap& show)
 {
-    QVariantMap map;
+    QVariantMap map = show;
     map["type"] = "tvshow";
-    map["id"] = show.id();
-    map["title"] = show.title();
-    map["releaseDate"] = show.firstAired();
-    map["posterPath"] = show.coverUrl();
 
     m_coll.insert(map);
-    emit tvShowAdded(show);
+    emit tvShowAdded(map);
 }
 
 void Database::addSeason(const QVariantMap& season)
@@ -145,25 +141,18 @@ void Database::addEpisode(const QVariantMap& episode)
     map["type"] = "tvepisode";
 
     m_coll.insert(map);
-    emit tvEpisodeAdded(episode);
+    emit tvEpisodeAdded(map);
 }
 
-QList<TvShow> Database::allShows() const
+QList<QVariantMap> Database::allShows() const
 {
     QVariantMap queryMap = {{"type", "tvshow"}};
     JsonQuery query = m_coll.execute(queryMap);
 
-    QList<TvShow> shows;
+    QList<QVariantMap> shows;
     while (query.next()) {
         QVariantMap map = query.result();
-
-        TvShow show;
-        show.setId(map.value("id").toInt());
-        show.setTitle(map.value("title").toString());
-        show.setFirstAired(map.value("releaseDate").toDate());
-        show.setCoverUrl(map.value("posterPath").toString());
-
-        shows << show;
+        shows << map;
     }
 
     return shows;

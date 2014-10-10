@@ -21,6 +21,8 @@
 #include "tvepisodemodel.h"
 #include "database.h"
 
+#include <QDate>
+
 using namespace Jungle;
 
 TvEpisodeModel::TvEpisodeModel(QObject* parent)

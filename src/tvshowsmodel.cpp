@@ -38,8 +38,8 @@ TvShowsModel::TvShowsModel(QObject* parent)
     names.insert(ShowIdRole, "showId");
     setRoleNames(names);
 
-    connect(Database::instance(), SIGNAL(tvShowAdded(TvShow)),
-            this, SLOT(slotNewTvShow(TvShow)));
+    connect(Database::instance(), SIGNAL(tvShowAdded(QVariantMap)),
+            this, SLOT(slotNewTvShow(QVariantMap)));
 }
 
 void TvShowsModel::slotPopulate()
@@ -49,7 +49,7 @@ void TvShowsModel::slotPopulate()
     endResetModel();
 }
 
-void TvShowsModel::slotNewTvShow(const TvShow& show)
+void TvShowsModel::slotNewTvShow(const QVariantMap& show)
 {
     beginInsertRows(QModelIndex(), m_shows.size(), m_shows.size());
     m_shows << show;
@@ -62,19 +62,19 @@ QVariant TvShowsModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    TvShow show = m_shows[index.row()];
+    QVariantMap show = m_shows[index.row()];
     switch (role) {
         case Qt::DisplayRole:
-            return show.title();
+            return show.value("title").toString();
 
         case CoverRole:
-            return show.coverUrl();
+            return show.value("posterPath").toString();
 
         case ReleaseDateRole:
-            return show.firstAired();
+            return show.value("releaseDate").toDate();
 
         case ShowIdRole:
-            return show.id();
+            return show.value("id").toInt();
     }
 
     return QVariant();
