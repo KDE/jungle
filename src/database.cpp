@@ -177,7 +177,7 @@ QVariantMap Database::episode(int showId, int season, int epNum)
     QVariantMap queryMap = {{"type", "tvepisode"},
                             {"show", showId},
                             {"season", season},
-                            {"episodeNum", epNum}};
+                            {"episodeNumber", epNum}};
     JsonQuery query = m_coll.execute(queryMap);
 
     if (query.next()) {
