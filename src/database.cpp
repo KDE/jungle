@@ -205,21 +205,3 @@ bool Database::hasEpisodes(int show, int season)
     JsonQuery query = m_coll.execute(queryMap);
     return query.totalCount();
 }
-
-bool Database::isWatched(const QString& url)
-{
-    return false;
-}
-
-void Database::markWatched(const QString& url)
-{
-    // FIXME: Implement me!
-    /*
-    QSqlQuery query(m_sqlDb);
-    query.prepare("insert into watched VALUES (?)");
-    query.addBindValue(fileId(url));
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-    }
-    */
-}

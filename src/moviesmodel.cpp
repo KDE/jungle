@@ -37,7 +37,6 @@ MoviesModel::MoviesModel(QObject* parent)
     names.insert(UrlRole, "url");
     names.insert(CoverRole, "cover");
     names.insert(ReleaseDateRole, "date");
-    names.insert(WatchedRole, "watched");
     setRoleNames(names);
 
     connect(Database::instance(), SIGNAL(movieAdded(QVariantMap)),
@@ -77,10 +76,6 @@ QVariant MoviesModel::data(const QModelIndex& index, int role) const
 
         case ReleaseDateRole:
             return movie["releaseDate"].toDate();
-
-        case WatchedRole:
-            // FIXME: Urgh! This is going to be so slow!!
-            return false;// Database::instance()->isWatched(movie.url());
     }
 
     return QVariant();

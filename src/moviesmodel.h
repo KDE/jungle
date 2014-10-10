@@ -41,7 +41,6 @@ public:
         UrlRole = Qt::UserRole + 1,
         CoverRole,
         ReleaseDateRole,
-        WatchedRole
     };
 
 private slots:

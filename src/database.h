@@ -42,10 +42,6 @@ public:
 
     bool hasVideo(const QString& url);
 
-    bool isWatched(const QString& url);
-    bool isWatched(int fileId);
-    void markWatched(const QString& url);
-
     int showId(const QString& name);
     void addShow(const QVariantMap& show);
     void addSeason(const QVariantMap& season);

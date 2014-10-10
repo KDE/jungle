@@ -8,18 +8,6 @@ ColumnLayout {
         source: cover
 
         fillMode: Image.PreserveAspectFit
-
-        KQuickControlsAddons.QIconItem {
-            icon: "checkmark"
-            visible: watched
-            smooth: true
-
-            height: 20
-            width: 20
-
-            anchors.right: img.right
-            anchors.top: img.top
-        }
     }
 
     Text {
