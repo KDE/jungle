@@ -21,15 +21,13 @@
 #include "feeder.h"
 #include "moviefetchjob.h"
 #include "tvshowfetchjob.h"
+#include "baloovideosfetcher.h"
 
 #include <QTimer>
 #include <QDebug>
 #include <QRegularExpression>
 #include <QFileInfo>
 #include <qeventloop.h>
-
-#include <Baloo/Query>
-#include <Baloo/ResultIterator>
 
 #include <QDBusConnection>
 
@@ -55,14 +53,12 @@ Feeder::~Feeder()
 
 void Feeder::fetchFiles()
 {
-    Baloo::Query query;
-    query.setType("Video");
+    BalooVideosFetcher videoFetcher;
+    QStringList videos = videoFetcher.allVideos();
 
-    auto it = query.exec();
-    while (it.next()) {
-        const QString url = it.url().toLocalFile();
-        if (!m_db->hasVideo(url)) {
-            m_files << url;
+    for (const QString& filePath : videos) {
+        if (!m_db->hasVideo(filePath)) {
+            m_files << filePath;
         }
     }
 

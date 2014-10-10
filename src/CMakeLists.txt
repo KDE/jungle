@@ -18,6 +18,7 @@ install(TARGETS junglecommon EXPORT JungleLibraryTargets ${INSTALL_TARGETS_DEFAU
 #
 set(SRCS
     main.cpp
+    baloovideosfetcher.cpp
     feeder.cpp
     themoviedbstore.cpp
     moviefetchjob.cpp
@@ -34,7 +35,6 @@ target_link_libraries(jungle
     Qt5::DBus
     Qt5::Widgets
     KF5::BalooCore
-    KF5::BalooFiles
     TmdbQt::TmdbQt5
     kjsondatabase
     junglecommon
