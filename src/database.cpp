@@ -93,15 +93,12 @@ QList<QVariantMap> Database::allMovies() const
     return movies;
 }
 
-void Database::addVideo(const QString& url)
+bool Database::hasVideo(const QString& url)
 {
-    /*
-    QSqlQuery query(m_sqlDb);
-    query.prepare("insert into videos VALUES (?)");
-    query.addBindValue(fileId(url));
-    if (!query.exec()) {
-        qDebug() << query.lastError();
-    }*/
+    QVariantMap queryMap = {{"url", url}};
+    JsonQuery query = m_coll.execute(queryMap);
+
+    return query.totalCount();
 }
 
 int Database::showId(const QString& name)

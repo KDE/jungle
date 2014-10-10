@@ -60,11 +60,10 @@ void Feeder::fetchFiles()
 
     auto it = query.exec();
     while (it.next()) {
-        //int id = it.id().mid(QByteArray("file:").size()).toInt();
-        // FIXME: Do not process all the videos each time!!
-        //if (!m_db->hasVideo(id)) {
-            m_files << it.url().toLocalFile();
-        //}
+        const QString url = it.url().toLocalFile();
+        if (!m_db->hasVideo(url)) {
+            m_files << url;
+        }
     }
 
     if (!m_files.isEmpty()) {
@@ -188,9 +187,6 @@ void Feeder::processNext()
         if (ep.value("episodeNumber").toInt() == episode) {
             ep["url"] = url;
             m_db->addEpisode(ep);
-
-            // Mark the url as processed
-            m_db->addVideo(url);
         }
         qDebug() << fileName.simplified() << season << episode;
         if (!m_files.isEmpty()) {
@@ -219,9 +215,6 @@ void Feeder::processNext()
 
 void Feeder::slotResult(MovieFetchJob* job)
 {
-    // Mark the url as processed
-    m_db->addVideo(job->url());
-
     // Add data if there is any
     if (job->data().isEmpty()) {
         if (!m_files.isEmpty())

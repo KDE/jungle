@@ -42,7 +42,7 @@ public:
     void addMovie(const QVariantMap& movie);
     QList<QVariantMap> allMovies() const;
 
-    void addVideo(const QString& url);
+    bool hasVideo(const QString& url);
 
     bool isWatched(const QString& url);
     bool isWatched(int fileId);
