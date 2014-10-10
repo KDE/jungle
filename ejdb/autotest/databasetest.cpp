@@ -75,6 +75,7 @@ void DatabaseTest::testInsertWithId()
     JsonCollection col = db->collection("testCol");
     QString newId = col.insert(data);
     QCOMPARE(newId, id);
+    QCOMPARE(col.fetch(id), data);
 }
 
 void DatabaseTest::testDoubleInsert()
@@ -85,7 +86,6 @@ void DatabaseTest::testDoubleInsert()
 
     JsonCollection col = db->collection("testCol");
     QString id = col.insert(data);
-    qDebug();
 
     data["_id"] = id;
     QCOMPARE(col.fetch(id), data);

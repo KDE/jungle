@@ -23,14 +23,110 @@
 #include <QVariantMap>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMapIterator>
+#include <QDateTime>
+#include <QDebug>
 
 // The bson must be destroyed on your own
 inline bson* mapToBson(const QVariantMap& map)
 {
+    /*
     QJsonDocument doc = QJsonDocument::fromVariant(map);
-    QByteArray arr = doc.toJson();
+    bson* bs = json2bson(doc.toJson().constData());
 
-    return json2bson(arr.constData());
+    if (map.contains("_id")) {
+        bson* bs2 = bson_dup(bs);
+        bs2->finished = false;
+        bson_del(bs);
+
+        QByteArray id = map.value("_id").toString().toUtf8();
+        bson_oid_t oid;
+        bson_oid_from_string(&oid, id.constData());
+        bson_append_oid(bs2, "_id", &oid);
+
+        bson_finish(bs2);
+        return bs2;
+    }
+
+    return bs;
+    */
+    bson* rec = new bson();
+    bson_init(rec);
+
+    QMapIterator<QString, QVariant> it(map);
+    while (it.hasNext()) {
+        it.next();
+
+        const QByteArray key = it.key().toUtf8();
+        const QVariant &var = it.value();
+
+        switch (var.type()) {
+            case QVariant::Double: {
+                bson_append_double(rec, key.constData(), var.toDouble());
+                break;
+            }
+
+            case QVariant::String: {
+                QByteArray val = var.toString().toUtf8();
+                if (key == "_id") {
+                    bson_oid_t oid;
+                    bson_oid_from_string(&oid, val.constData());
+                    bson_append_oid(rec, key.constData(), &oid);
+                } else {
+                    bson_append_string(rec, key.constData(), val.constData());
+                }
+                break;
+            }
+
+            case QVariant::Map: {
+                Q_ASSERT(0);
+            }
+
+            case QVariant::List: {
+                Q_ASSERT(0);
+            }
+
+            case QVariant::Bool: {
+                bson_append_bool(rec, key.constData(), var.toBool());
+                break;
+            }
+
+            case QVariant::Date: {
+                bson_date_t date = var.toDateTime().toTime_t();
+                bson_append_date(rec, key.constData(), date);
+                break;
+            }
+
+            case QVariant::RegExp: {
+                Q_ASSERT(0);
+            }
+
+            case QVariant::Int: {
+                bson_append_int(rec, key.constData(), var.toInt());
+                break;
+            }
+
+            case QVariant::DateTime: {
+                bson_date_t date = var.toDateTime().toTime_t();
+                bson_append_time_t(rec, key.constData(), date);
+                break;
+            }
+
+            case QVariant::LongLong: {
+                // FIXME: Data is being lost?
+                bson_append_long(rec, key.constData(), var.toLongLong());
+                break;
+            }
+
+            default: {
+                Q_ASSERT(0);
+            }
+        }
+    }
+
+    bson_finish(rec);
+
+    return rec;
 }
 
 inline QVariantMap bsonToMap(bson* rec)
