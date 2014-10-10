@@ -24,24 +24,28 @@ import org.kde.jungle 0.1 as Jungle
 
 FocusScope {
     id: topElem
-    signal showSelected (int showId)
+    signal play (string url)
+
+    property alias showId: epModel.showId
 
     GridView {
-        id: tvshows
-        model: Jungle.TvShowsModel {}
-        delegate: MovieDelegate {
+        id: tvepisodes
+        model: Jungle.TvEpisodeModel {
+            id: epModel
+        }
+
+        delegate: EpisodeDelegate {
             MouseArea {
                 anchors.fill: parent
-                onClicked: showSelected(model.showId)
+                onClicked: topElem.play(url)
             }
-            Keys.onReturnPressed: showSelected(model.showId)
-            Keys.onSpacePressed: showSelected(model.showId)
+            Keys.onReturnPressed: topElem.play(url)
+            Keys.onSpacePressed: topElem.play(url)
         }
 
         cellWidth: 400
-        cellHeight: 600
+        cellHeight: 350
 
-        focus: true
         anchors.fill: parent
         highlightMoveDuration: 0
         highlight: Rectangle {

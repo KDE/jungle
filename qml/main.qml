@@ -92,6 +92,16 @@ ApplicationWindow {
                 id: tvshows
                 visible: false
 
+                onShowSelected: {
+                    tvEpisodes.showId = showId
+                    stackView.push(tvEpisodes)
+                }
+            }
+
+            TvEpisodes {
+                id: tvEpisodes
+                visible: false
+
                 onPlay: {
                     videoPlayer.source = url
                     videoPlayer.focus = true
