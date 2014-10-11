@@ -38,7 +38,9 @@ QStringList BalooVideosFetcher::allVideos()
     auto it = query.exec();
     while (it.next()) {
         const QString url = it.url().toLocalFile();
-        videos << url;
+        if (!url.isEmpty()) {
+            videos << url;
+        }
     }
 
     return videos;
