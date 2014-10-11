@@ -24,6 +24,11 @@ set(SRCS
     moviefetchjob.cpp
     tvshowfetchjob.cpp
     tvseasonfetchjob.cpp
+
+    queue.cpp
+    guessitconsumer.cpp
+    databaseconsumer.cpp
+    processor.cpp
 )
 
 add_executable(jungle ${SRCS})
@@ -58,10 +63,10 @@ target_link_libraries(jungleqmlplugin
     Qt5::Core
     Qt5::Qml
     KF5::BalooCore
-    KF5::BalooFiles
     junglecommon
 )
 
+install(FILES guess.py DESTINATION ${DATA_INSTALL_DIR}/jungle)
 install(TARGETS jungleqmlplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
 install(FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
 

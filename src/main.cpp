@@ -28,6 +28,8 @@
 
 #include "database.h"
 #include "feeder.h"
+#include "processor.h"
+#include "baloovideosfetcher.h"
 
 int main(int argc, char** argv)
 {
@@ -40,7 +42,16 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Jungle::Feeder feeder(db);
+    Jungle::Processor processor;
+
+    Jungle::BalooVideosFetcher videoFetcher;
+    QStringList videoList = videoFetcher.allVideos();
+
+    for (const QString& filePath : videoList) {
+        qDebug() << filePath;
+        processor.addFile(filePath);
+    }
+    //Jungle::Feeder feeder(db);
 
     QQmlEngine engine;
     QScopedPointer<QQmlContext> objectContext(new QQmlContext(engine.rootContext()));
