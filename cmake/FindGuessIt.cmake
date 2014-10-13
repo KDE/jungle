@@ -1,0 +1,12 @@
+find_program(GUESSIT_BINARY guessit)
+
+if(GUESSIT_BINARY)
+    exec_program(${GUESSIT_BINARY} ARGS --version OUTPUT_VARIABLE GUESSIT_VERSION_OUTPUT)
+
+    string(REGEX MATCH "GuessIt ([0-9.]+)" GUESSIT_VERSION_MATCHED ${GUESSIT_VERSION_OUTPUT})
+    if (GUESSIT_VERSION_MATCHED)
+        set(GUESSIT_VERSION ${CMAKE_MATCH_1})
+    endif()
+
+    set(GUESSIT_FOUND true)
+endif()

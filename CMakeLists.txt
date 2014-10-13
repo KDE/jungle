@@ -11,6 +11,8 @@ find_package(GTest REQUIRED)
 find_package(GMock REQUIRED)
 find_package(Ejdb REQUIRED)
 
+find_package(GuessIt REQUIRED)
+
 include(ECMAddTests)
 include(ECMSetupVersion)
 include(ECMAddTests)
