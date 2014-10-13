@@ -92,6 +92,14 @@ void GuessItConsumer::slotProcessFinished(int exitCode)
     QVariantMap map = m_input;
     map.unite(doc.toVariant().toMap());
 
+    //
+    // Guess It marks everything as a movie if it cannot determine what it is
+    //
+    QString type = map.value("type").toString();
+    if (!map.contains("year") && type == QStringLiteral("movie")) {
+        map["type"] = QStringLiteral("video");
+    }
+
     for (QueueInterface* queue : m_outputQueues) {
         queue->add(map);
     }
