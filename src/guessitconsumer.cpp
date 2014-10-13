@@ -48,7 +48,7 @@ void GuessItConsumer::itemsAdded(QueueInterface* queue)
     Q_ASSERT(!filePath.isEmpty());
 
     QString guessItPath = QStandardPaths::locate(QStandardPaths::DataLocation, "guess.py");
-    QString pythonPath = QStandardPaths::findExecutable("python3");
+    QString pythonPath = QStandardPaths::findExecutable("python2");
 
     Q_ASSERT(!guessItPath.isEmpty());
     Q_ASSERT(!pythonPath.isEmpty());

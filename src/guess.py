@@ -20,16 +20,18 @@
 
 from guessit import guess_file_info
 from optparse import OptionParser
+import json
 
 def fetchData(filename):
-    filetype = "autodetect"
     info = ['filename']
-    result = guess_file_info(filename, filetype, info)
-    return result
+    guess = guess_file_info(filename, info)
+    guess = dict(guess)
+    guess.pop("unidentified", None)
+    return guess
 
 parser = OptionParser()
 options, args = parser.parse_args()
 
 for filename in args:
     data = fetchData(filename)
-    print(data)
+    print json.dumps(data)
