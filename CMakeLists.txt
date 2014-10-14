@@ -11,7 +11,11 @@ find_package(GTest REQUIRED)
 find_package(GMock REQUIRED)
 find_package(Ejdb REQUIRED)
 
-find_package(GuessIt REQUIRED)
+find_package(GuessIt 0.9.3 REQUIRED) # Remove 'REQUIRED' on release
+set_package_properties(GuessIt PROPERTIES URL https://github.com/wackou/guessit
+                                          DESCRIPTION "GuessIt library for guessing names"
+                                          TYPE RUNTIME
+)
 
 include(ECMAddTests)
 include(ECMSetupVersion)
