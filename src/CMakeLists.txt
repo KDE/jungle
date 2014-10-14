@@ -39,7 +39,7 @@ target_link_libraries(jungle
     Qt5::Quick
     Qt5::DBus
     Qt5::Widgets
-    KF5::BalooCore
+    KF5::Baloo
     TmdbQt::TmdbQt5
     kjsondatabase
     junglecommon
@@ -62,7 +62,6 @@ add_library(jungleqmlplugin SHARED ${SRC})
 target_link_libraries(jungleqmlplugin
     Qt5::Core
     Qt5::Qml
-    KF5::BalooCore
     junglecommon
 )
 
