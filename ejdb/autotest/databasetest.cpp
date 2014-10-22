@@ -40,6 +40,7 @@ private Q_SLOTS:
 
     void testInsertAndFetch();
     void testInsertWithId();
+    void testInsertArray();
     void testDoubleInsert();
     void testInsertAndQuery();
     void testAndQuery();
@@ -76,6 +77,23 @@ void DatabaseTest::testInsertWithId()
     QString newId = col.insert(data);
     QCOMPARE(newId, id);
     QCOMPARE(col.fetch(id), data);
+}
+
+void DatabaseTest::testInsertArray()
+{
+    QStringList list = {"alpha", "beta"};
+
+    QVariantMap data;
+    data["type"] = "episode";
+    data["death"] = QVariant(list);
+    data["mimetype"] = "video/mp4";
+
+    JsonCollection col = db->collection("testCol");
+    QString id = col.insert(data);
+    QVariantMap output = col.fetch(id);
+
+    data["_id"] = id;
+    QCOMPARE(output, data);
 }
 
 void DatabaseTest::testDoubleInsert()

@@ -82,8 +82,20 @@ inline bson* mapToBson(const QVariantMap& map)
                 Q_ASSERT(0);
             }
 
+            case QVariant::StringList:
             case QVariant::List: {
-                Q_ASSERT(0);
+                QList<QString> list = var.toStringList();
+                bson_append_start_array(rec, key.constData());
+
+                char buf[5];
+                int c = 0;
+                for (const QString& str : list) {
+                    QByteArray val = str.toUtf8();
+                    bson_numstrn(buf, 5, c++);
+                    bson_append_string(rec, buf, val.constData());
+                }
+                bson_append_finish_array(rec);
+                break;
             }
 
             case QVariant::Bool: {
