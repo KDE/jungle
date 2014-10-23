@@ -18,38 +18,34 @@
  *
  */
 
-#ifndef MOVIEFETCHJOB_H
-#define MOVIEFETCHJOB_H
+#ifndef JUNGLE_MOVIE_DBCONSUMER_H
+#define JUNGLE_MOVIE_DBCONSUMER_H
 
-#include <QObject>
-#include <QNetworkAccessManager>
-#include <tmdbqt/themoviedbapi.h>
+#include "consumerinterface.h"
+#include "themoviedbstore.h"
 
 namespace Jungle {
 
-class MovieFetchJob : public QObject
+class MovieDbConsumer : public QObject, public ConsumerInterface
 {
     Q_OBJECT
 public:
-    MovieFetchJob(TmdbQt::SearchJob* job, const QString& url,
-                  const QString& searchTerm, int year, QObject* parent = 0);
+    explicit MovieDbConsumer(QList<QueueInterface*> outputQueues, QObject* parent = 0);
 
-    QVariantMap data() const { return m_data; }
-    QString url() const { return m_url; }
-
-signals:
-    void result(MovieFetchJob* job);
+    virtual void itemsAdded(QueueInterface* queue);
 
 private slots:
-    void slotMovieResult(TmdbQt::SearchJob* job);
+    void slotResult(MovieFetchJob* job);
 
 private:
-    QString m_url;
-    QString m_searchTerm;
-    int m_year;
+    QList<QueueInterface*> m_outputQueues;
+    QueueInterface* m_inputQueue;
 
-    QVariantMap m_data;
+    TheMovieDbStore* m_store;
+    MovieFetchJob* m_job;
+
+    QVariantMap m_input;
 };
-
 }
-#endif // MOVIEFETCHJOB_H
+
+#endif

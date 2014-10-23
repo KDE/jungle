@@ -34,6 +34,7 @@ public:
 
 private:
     Queue m_guessItQueue;
+    Queue m_movieDbQueue;
     Queue m_saveQueue;
 };
 }
