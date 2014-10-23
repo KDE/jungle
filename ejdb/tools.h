@@ -150,7 +150,12 @@ inline QVariantMap bsonToMap(bson* rec)
     bson2json(bson_data(rec), &buf, &length);
 
     QByteArray arr = QByteArray::fromRawData(buf, length);
-    QJsonDocument doc = QJsonDocument::fromJson(arr);
+
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(arr, &error);
+    if (error.error) {
+        qDebug() << error.errorString();
+    }
     QVariantMap map = doc.object().toVariantMap();
 
     free(buf);
