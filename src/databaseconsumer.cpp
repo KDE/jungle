@@ -33,7 +33,17 @@ DatabaseConsumer::DatabaseConsumer()
 void DatabaseConsumer::itemsAdded(QueueInterface* queue)
 {
     QVariantMap item = queue->top();
-    qDebug() << item;
+
+    //
+    // Merge based on URL
+    const QString url = item.value("url").toString();
+    QVariantMap prevItem = m_db->item(url);
+    if (!prevItem.isEmpty()) {
+        for (auto it = item.constBegin(); it != item.constEnd(); it++) {
+            prevItem.insert(it.key(), it.value());
+        }
+        item = prevItem;
+    }
 
     const QString type = item.value("type").toString();
     if (type == QStringLiteral("movie")) {

@@ -70,6 +70,17 @@ bool Database::init()
     return true;
 }
 
+QVariantMap Database::item(const QString& url)
+{
+    QVariantMap queryMap = {{"url", url}};
+    JsonQuery query = m_coll.execute(queryMap);
+    if (query.next()) {
+        return query.result();
+    }
+
+    return QVariantMap();
+}
+
 void Database::addMovie(const QVariantMap& movie)
 {
     QVariantMap map = movie;

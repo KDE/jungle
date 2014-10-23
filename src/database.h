@@ -37,6 +37,8 @@ public:
     bool init();
     bool initialized();
 
+    QVariantMap item(const QString& url);
+
     void addMovie(const QVariantMap& movie);
     QList<QVariantMap> allMovies() const;
 
