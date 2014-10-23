@@ -66,6 +66,7 @@ inline bson* mapToBson(const QVariantMap& map)
                 break;
             }
 
+            case QVariant::Url:
             case QVariant::String: {
                 QByteArray val = var.toString().toUtf8();
                 if (key == "_id") {
