@@ -44,7 +44,7 @@ int JsonQuery::totalCount()
 bool JsonQuery::next()
 {
     m_pos++;
-    return m_pos < m_count;
+    return static_cast<uint32_t>(m_pos) < m_count;
 }
 
 QVariantMap JsonQuery::result()
