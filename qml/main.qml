@@ -46,6 +46,10 @@ ApplicationWindow {
                 onTvShowsActivated: {
                     stackView.push(tvshows);
                 }
+
+                onVideosActivated: {
+                    stackView.push(videos);
+                }
             }
 
             StackView {
@@ -100,6 +104,19 @@ ApplicationWindow {
 
             TvEpisodes {
                 id: tvEpisodes
+                visible: false
+
+                onPlay: {
+                    videoPlayer.source = url
+                    videoPlayer.focus = true
+                    globalView.push(videoPlayer)
+
+                    videoPlayer.play()
+                }
+            }
+
+            Videos {
+                id: videos
                 visible: false
 
                 onPlay: {

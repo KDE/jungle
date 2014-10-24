@@ -19,7 +19,7 @@ install(TARGETS junglecommon EXPORT JungleLibraryTargets ${INSTALL_TARGETS_DEFAU
 set(SRCS
     main.cpp
     baloovideosfetcher.cpp
-    feeder.cpp
+#    feeder.cpp
     themoviedbstore.cpp
     moviefetchjob.cpp
     tvshowfetchjob.cpp
@@ -56,6 +56,7 @@ set(SRC
     moviesmodel.cpp
     tvshowsmodel.cpp
     tvepisodemodel.cpp
+    videosmodel.cpp
 )
 
 add_library(jungleqmlplugin SHARED ${SRC})

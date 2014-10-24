@@ -39,23 +39,23 @@ public:
 
     QVariantMap item(const QString& url);
 
-    void addMovie(const QVariantMap& movie);
+    void add(const QVariantMap& item);
+
+
     QList<QVariantMap> allMovies() const;
 
     bool hasVideo(const QString& url);
 
     int showId(const QString& name);
-    void addShow(const QVariantMap& show);
-    void addSeason(const QVariantMap& season);
 
     QList<QVariantMap> allShows() const;
 
     bool hasEpisodes(int show, int season);
-    void addEpisode(const QVariantMap& episode);
 
     QVariantMap episode(int showId, int season, int epNum);
     QList<QVariantMap> allEpisodes(int showId, int season = -1);
 
+    QList<QVariantMap> allVideos() const;
 signals:
     void movieAdded(const QVariantMap& movie);
     void tvShowAdded(const QVariantMap& show);

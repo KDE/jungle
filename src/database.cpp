@@ -81,13 +81,9 @@ QVariantMap Database::item(const QString& url)
     return QVariantMap();
 }
 
-void Database::addMovie(const QVariantMap& movie)
+void Database::add(const QVariantMap& item)
 {
-    QVariantMap map = movie;
-    map["type"] = "movie";
-
-    m_coll.insert(map);
-    emit movieAdded(map);
+    m_coll.insert(item);
 }
 
 QList<QVariantMap> Database::allMovies() const
@@ -102,6 +98,20 @@ QList<QVariantMap> Database::allMovies() const
     }
 
     return movies;
+}
+
+QList<QVariantMap> Database::allVideos() const
+{
+    QVariantMap queryMap = {{"type", "video"}};
+    JsonQuery query = m_coll.execute(queryMap);
+
+    QList<QVariantMap> videos;
+    while (query.next()) {
+        QVariantMap map = query.result();
+        videos << map;
+    }
+
+    return videos;
 }
 
 bool Database::hasVideo(const QString& url)
@@ -126,33 +136,6 @@ int Database::showId(const QString& name)
     }
 
     return 0;
-}
-
-void Database::addShow(const QVariantMap& show)
-{
-    QVariantMap map = show;
-    map["type"] = "tvshow";
-
-    m_coll.insert(map);
-    emit tvShowAdded(map);
-}
-
-void Database::addSeason(const QVariantMap& season)
-{
-    QVariantMap map = season;
-    map["type"] = "tvseason";
-
-    m_coll.insert(map);
-}
-
-void Database::addEpisode(const QVariantMap& episode)
-{
-    // FIXME: Should be insert or replace!!
-    QVariantMap map = episode;
-    map["type"] = "tvepisode";
-
-    m_coll.insert(map);
-    emit tvEpisodeAdded(map);
 }
 
 QList<QVariantMap> Database::allShows() const

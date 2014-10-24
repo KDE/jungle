@@ -25,6 +25,7 @@ ColumnLayout {
     id: root
     signal moviesActivated
     signal tvShowsActivated
+    signal videosActivated
 
     PlasmaComponents.ToolButton {
         text: "Movies"
@@ -37,6 +38,14 @@ ColumnLayout {
     PlasmaComponents.ToolButton {
         text: "TV Shows"
         onClicked: root.tvShowsActivated()
+
+        Layout.fillWidth: true
+        Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
+    }
+
+    PlasmaComponents.ToolButton {
+        text: "Videos"
+        onClicked: root.videosActivated()
 
         Layout.fillWidth: true
         Layout.alignment: Qt.AlignTop | Qt.AlignVCenter

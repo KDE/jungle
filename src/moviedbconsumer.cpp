@@ -64,7 +64,6 @@ void MovieDbConsumer::itemsAdded(QueueInterface* queue)
 void MovieDbConsumer::slotResult(MovieFetchJob* job)
 {
     QVariantMap map = m_input;
-    qDebug() << job->data() << map;
 
     const QVariantMap data = job->data();
     for (auto it = data.begin(); it != data.end(); it++) {

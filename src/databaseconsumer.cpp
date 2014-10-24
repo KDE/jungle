@@ -45,13 +45,8 @@ void DatabaseConsumer::itemsAdded(QueueInterface* queue)
         item = prevItem;
     }
 
-    const QString type = item.value("type").toString();
-    if (type == QStringLiteral("movie")) {
-        m_db->addMovie(item);
-    }
-    else if (type == QStringLiteral("tvepisode")) {
-        m_db->addEpisode(item);
-    }
+    // const QString type = item.value("type").toString();
+    m_db->add(item);
 
     queue->pop();
 }
