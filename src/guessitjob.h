@@ -17,33 +17,34 @@
  *
  */
 
-#ifndef GUESSITCONSUMER_H
-#define GUESSITCONSUMER_H
+#ifndef GUESSITJOB_H
+#define GUESSITJOB_H
 
-#include "consumerinterface.h"
-#include "guessitjob.h"
+#include <QObject>
+#include <QVariantMap>
+#include <QProcess>
 
 namespace Jungle {
 
-class GuessItConsumer : public QObject, public ConsumerInterface
+class GuessItJob : public QObject
 {
     Q_OBJECT
 public:
-    GuessItConsumer(const QList<QueueInterface*> outputQueues);
+    GuessItJob(const QString& filePath);
 
-    virtual void itemsAdded(QueueInterface* queue);
+    QVariantMap data() const;
+
+signals:
+    void finished(GuessItJob* job);
 
 private slots:
-    void slotFinished(GuessItJob* job);
+    void slotProcessFinished(int exitCode);
 
 private:
-    QList<QueueInterface*> m_outputQueues;
-    QueueInterface* m_inputQueue;
-
-    GuessItJob* m_job;
-    QVariantMap m_input;
+    QString m_filePath;
+    QVariantMap m_data;
+    QProcess* m_process;
 };
 
 }
-
-#endif // GUESSITCONSUMER_H
+#endif // GUESSITJOB_H

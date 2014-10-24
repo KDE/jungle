@@ -27,6 +27,7 @@ set(SRCS
 
     queue.cpp
     guessitconsumer.cpp
+    guessitjob.cpp
     moviedbconsumer.cpp
     databaseconsumer.cpp
     processor.cpp
