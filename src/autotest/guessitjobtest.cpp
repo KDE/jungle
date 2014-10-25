@@ -39,7 +39,7 @@ void GuessItJobTest::testEpisode()
     const QString url("/home/vishesh/Outlander.S01E05.HDTV.x264-KILLERS.mp4");
 
     QVariantMap data;
-    data["type"] = "episode";
+    data["type"] = "tvepisode";
     data["releaseGroup"] = "KILLERS";
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
@@ -61,7 +61,7 @@ void GuessItJobTest::testDoubleEpisode()
     const QString url("./How.I.Met.Your.Mother.S09E23-E24.HDTV.x264-EXCELLENCE.mp4");
 
     QVariantMap data;
-    data["type"] = "episode";
+    data["type"] = "tvepisode";
     data["releaseGroup"] = "EXCELLENCE";
     data["mimetype"] = "video/mp4";
     data["series"] = "How I Met Your Mother";

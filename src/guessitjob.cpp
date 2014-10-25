@@ -105,6 +105,10 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
         m_data["type"] = QStringLiteral("video");
     }
 
+    if (type == QString("episode")) {
+        m_data["type"] = "tvepisode";
+    }
+
     emit finished(this);
 }
 
