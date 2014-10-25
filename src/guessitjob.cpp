@@ -41,7 +41,8 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
 
     if (exitCode) {
         qDebug() << "Process crashed for this file" << m_filePath << "with error" << exitCode;
-        Q_ASSERT(0);
+        emit finished(this);
+        return;
     }
 
     QString output = QString::fromUtf8(m_process->readAllStandardOutput());
