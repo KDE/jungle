@@ -25,9 +25,8 @@
 
 #include <QIcon>
 #include <QStandardPaths>
+#include <QDebug>
 
-#include "database.h"
-#include "feeder.h"
 #include "processor.h"
 #include "baloovideosfetcher.h"
 
@@ -36,11 +35,6 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
     app.setApplicationDisplayName("Jungle");
     app.setWindowIcon(QIcon::fromTheme("nepomuk"));
-
-    Jungle::Database* db = Jungle::Database::instance();
-    if (!db->initialized()) {
-        return 1;
-    }
 
     Jungle::Processor processor;
 
@@ -51,8 +45,8 @@ int main(int argc, char** argv)
         qDebug() << filePath;
         processor.addFile(filePath);
     }
-    //Jungle::Feeder feeder(db);
 
+    qDebug() << "Starting QML";
     QQmlEngine engine;
     QScopedPointer<QQmlContext> objectContext(new QQmlContext(engine.rootContext()));
 
