@@ -48,11 +48,11 @@ int main(int argc, char** argv)
 
     qDebug() << "Starting QML";
     QQmlEngine engine;
-    QScopedPointer<QQmlContext> objectContext(new QQmlContext(engine.rootContext()));
+    QQmlContext* objectContext = engine.rootContext();
 
     QString path = QStandardPaths::locate(QStandardPaths::DataLocation, "main.qml");
     QQmlComponent component(&engine, path);
-    QScopedPointer<QObject> object(component.create(objectContext.data()));
+    component.create(objectContext);
 
     return app.exec();
 }
