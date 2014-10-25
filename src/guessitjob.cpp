@@ -35,6 +35,17 @@ Jungle::GuessItJob::GuessItJob(const QString& filePath)
     m_process->start();
 }
 
+static QVariant toVariant(const QString& str)
+{
+    bool okay = false;
+    int intValue = str.toInt(&okay);
+    if (okay) {
+        return intValue;
+    }
+
+    return str;
+}
+
 void Jungle::GuessItJob::slotProcessFinished(int exitCode)
 {
     deleteLater();
@@ -57,17 +68,33 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
     while (!stream.atEnd()) {
         QString line = stream.readLine();
         QStringList list = line.split(':', QString::SkipEmptyParts);
-        Q_ASSERT(list.size() == 2);
-
-        const QString property = list.first().simplified();
-        const QString value = list.last().simplified();
-
-        bool okay = false;
-        int intValue = value.toInt(&okay);
-        if (okay) {
-            m_data.insert(property, intValue);
-        } else {
+        if (list.size() == 2) {
+            const QString property = list.first().simplified();
+            const QVariant value = toVariant(list.last().simplified());
             m_data.insert(property, value);
+        }
+        else if (list.size() == 1) {
+            const QString property = list.first().simplified();
+            QList<QVariant> varList;
+
+            while (!stream.atEnd()) {
+                QString line = stream.readLine();
+                if (!line.contains(":")) {
+                    line.remove('-');
+                    varList << toVariant(line.simplified());
+                } else {
+                    const QString property = list.first().simplified();
+                    const QVariant value = toVariant(list.last().simplified());
+                    m_data.insert(property, value);
+                    break;
+                }
+            }
+            m_data.insert(property, varList);
+        }
+        else {
+            qDebug() << m_filePath;
+            qDebug() << line;
+            Q_ASSERT(0);
         }
     }
 
