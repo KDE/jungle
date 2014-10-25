@@ -56,6 +56,7 @@ void DatabaseTest::testInsertAndFetch()
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
     data["episodeNumber"] = 5;
+    data["doubleValue"] = 5.44;
 
     JsonCollection col = db->collection("testCol");
     QString id = col.insert(data);
@@ -81,7 +82,7 @@ void DatabaseTest::testInsertWithId()
 
 void DatabaseTest::testInsertArray()
 {
-    QStringList list = {"alpha", "beta"};
+    QList<QVariant> list = {"alpha", "beta", 46};
 
     QVariantMap data;
     data["type"] = "episode";
@@ -93,7 +94,12 @@ void DatabaseTest::testInsertArray()
     QVariantMap output = col.fetch(id);
 
     data["_id"] = id;
+
     QCOMPARE(output, data);
+    // QVariant comparison does not seem to check the exact types
+    for (auto it = output.begin(); it != output.end(); it++) {
+        QCOMPARE(it.value().type(), data.value(it.key()).type());
+    }
 }
 
 void DatabaseTest::testDoubleInsert()

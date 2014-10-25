@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -21,8 +20,6 @@
 #include <tcejdb/ejdb.h>
 
 #include <QVariantMap>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QMapIterator>
 #include <QDateTime>
 #include <QDebug>
@@ -30,26 +27,6 @@
 // The bson must be destroyed on your own
 inline bson* mapToBson(const QVariantMap& map)
 {
-    /*
-    QJsonDocument doc = QJsonDocument::fromVariant(map);
-    bson* bs = json2bson(doc.toJson().constData());
-
-    if (map.contains("_id")) {
-        bson* bs2 = bson_dup(bs);
-        bs2->finished = false;
-        bson_del(bs);
-
-        QByteArray id = map.value("_id").toString().toUtf8();
-        bson_oid_t oid;
-        bson_oid_from_string(&oid, id.constData());
-        bson_append_oid(bs2, "_id", &oid);
-
-        bson_finish(bs2);
-        return bs2;
-    }
-
-    return bs;
-    */
     bson* rec = new bson();
     bson_init(rec);
 
@@ -85,15 +62,19 @@ inline bson* mapToBson(const QVariantMap& map)
 
             case QVariant::StringList:
             case QVariant::List: {
-                QList<QString> list = var.toStringList();
+                QList<QVariant> list = var.toList();
                 bson_append_start_array(rec, key.constData());
 
                 char buf[5];
                 int c = 0;
-                for (const QString& str : list) {
-                    QByteArray val = str.toUtf8();
+                for (const QVariant& var : list) {
                     bson_numstrn(buf, 5, c++);
-                    bson_append_string(rec, buf, val.constData());
+                    if (var.type() == QVariant::Int) {
+                        bson_append_int(rec, buf, var.toInt());
+                    } else {
+                        QByteArray val = var.toString().toUtf8();
+                        bson_append_string(rec, buf, val.constData());
+                    }
                 }
                 bson_append_finish_array(rec);
                 break;
@@ -144,22 +125,117 @@ inline bson* mapToBson(const QVariantMap& map)
 
 inline QVariantMap bsonToMap(bson* rec)
 {
-    char* buf;
-    int length;
+    bson_iterator* it = bson_iterator_create();
+    bson_iterator_init(it, rec);
 
-    bson2json(bson_data(rec), &buf, &length);
+    QVariantMap map;
 
-    QByteArray arr = QByteArray::fromRawData(buf, length);
+    while (bson_iterator_more(it)) {
+        bson_type type = bson_iterator_next(it);
 
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(arr, &error);
-    if (error.error) {
-        qDebug() << error.errorString();
-        qDebug() << arr;
-        Q_ASSERT(0);
+        const QByteArray arr(bson_iterator_key(it));
+        const QString key = QString::fromUtf8(arr);
+
+        switch (type) {
+            case BSON_DOUBLE: {
+                double d = bson_iterator_double(it);
+                map.insert(key, d);
+                break;
+            }
+
+            case BSON_STRING: {
+                const char* str = bson_iterator_string(it);
+                int len = bson_iterator_string_len(it);
+
+                QByteArray arr = QByteArray::fromRawData(str, len);
+                QString val = QString::fromUtf8(arr);
+                map.insert(key, val);
+                break;
+            }
+            case BSON_OBJECT: {
+                bson subObj;
+                bson_iterator_subobject(it, &subObj);
+
+                QVariantMap val = bsonToMap(&subObj);
+                map.insert(key, val);
+                break;
+            }
+
+            case BSON_ARRAY: {
+                bson subObj;
+                bson_iterator_subobject(it, &subObj);
+
+                const QVariantMap arrayMap = bsonToMap(&subObj);
+                QVariantList list;
+                for (auto it = arrayMap.begin(); it != arrayMap.end(); it++) {
+                    list << it.value();
+                }
+
+                map.insert(key, list);
+                break;
+            }
+
+            case BSON_BINDATA:
+                Q_ASSERT(0);
+                break;
+
+            case BSON_UNDEFINED:
+                Q_ASSERT(0);
+                break;
+
+            case BSON_OID: {
+                bson_oid_t* oid = bson_iterator_oid(it);
+                char oid_s[50];
+                bson_oid_to_string(oid, oid_s);
+
+                QByteArray arr = QByteArray::fromRawData(oid_s, strlen(oid_s));
+                QString val = QString::fromUtf8(arr);
+                map.insert(key, val);
+                break;
+            }
+            case BSON_BOOL: {
+                bool val = bson_iterator_bool(it);
+                map.insert(key, val);
+                break;
+            }
+            case BSON_DATE:
+                Q_ASSERT(0);
+            case BSON_NULL:
+                Q_ASSERT(0);
+            case BSON_REGEX:
+                Q_ASSERT(0);
+            case BSON_DBREF:
+                Q_ASSERT(0);
+            case BSON_CODE:
+                Q_ASSERT(0);
+            case BSON_SYMBOL:
+                Q_ASSERT(0);
+            case BSON_CODEWSCOPE:
+                Q_ASSERT(0);
+            case BSON_INT: {
+                int val = bson_iterator_int(it);
+                map.insert(key, val);
+                break;
+            }
+            case BSON_TIMESTAMP: {
+                Q_ASSERT(0);
+                //bson_timestamp_t t = bson_iterator_timestamp(it);
+            }
+            case BSON_LONG: {
+                long long val = bson_iterator_long(it);
+                map.insert(key, val);
+                break;
+            }
+
+            case BSON_EOO:
+                // vHanda: I have no idea why we get this!
+                continue;
+
+            default:
+                Q_ASSERT(0);
+        }
     }
-    QVariantMap map = doc.object().toVariantMap();
 
-    free(buf);
+    bson_iterator_dispose(it);
     return map;
 }
