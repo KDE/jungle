@@ -13,3 +13,8 @@ set(TVEPISODEMODEL_SRC tvepisodemodeltest.cpp modeltest.cpp ../tvepisodemodel.cp
 #    TEST_NAME "tvepisodemodeltest"
 #    LINK_LIBRARIES Qt5::Test junglecommon
 #)
+
+ecm_add_test(guessitjobtest.cpp ../guessitjob.cpp
+    TEST_NAME "guessitjobtest"
+    LINK_LIBRARIES Qt5::Test
+)
