@@ -19,15 +19,12 @@ Item {
     Keys.onSpacePressed: mediaPlayer.playbackState == MediaPlayer.PlayingState ? mediaPlayer.pause() : mediaPlayer.play()
 
     Keys.onPressed: {
-        var amount = 0;
+        var amount = 3000;
         if (event.modifiers & Qt.ControlModifier) {
             amount = 60000
         }
         else if (event.modifiers & Qt.AltModifier) {
             amount = 10000
-        }
-        else if (event.modifiers & Qt.ShiftModifier) {
-            amount = 3000
         }
 
         if (event.key == Qt.Key_Left) {
@@ -37,18 +34,16 @@ Item {
             mediaPlayer.seek(mediaPlayer.position + amount)
         }
 
-        if (event.modifiers & Qt.ControlModifier) {
-            if (event.key == Qt.Key_Up) {
-                if (mediaPlayer.volume < 1.0)
-                    mediaPlayer.volume += 0.05
-            }
-            else if (event.key == Qt.Key_Down) {
-                if (mediaPlayer.volume > 0)
-                    mediaPlayer.volume -= 0.05
-            }
+        if (event.key == Qt.Key_Up) {
+            if (mediaPlayer.volume < 1.0)
+                mediaPlayer.volume += 0.05
         }
-       toolBox.opacity = 1.0
-       toolBoxHideTimer.start()
+        else if (event.key == Qt.Key_Down) {
+            if (mediaPlayer.volume > 0)
+                mediaPlayer.volume -= 0.05
+        }
+        toolBox.opacity = 1.0
+        toolBoxHideTimer.start()
     }
 
     function play() {
