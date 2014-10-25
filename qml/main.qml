@@ -28,6 +28,7 @@ ApplicationWindow {
 
     width: 1800
     height: 1600
+    visible: true // the default is not true
 
     StackView {
         id: globalView
