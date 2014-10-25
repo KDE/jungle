@@ -7,8 +7,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH})
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Core Test DBus Qml Quick Widgets)
 find_package(KF5 REQUIRED COMPONENTS KDELibs4Support I18n Service Baloo)
 find_package(TmdbQt5 REQUIRED)
-find_package(GTest REQUIRED)
-find_package(GMock REQUIRED)
 find_package(Ejdb REQUIRED)
 
 find_package(GuessIt 0.9.3 REQUIRED) # Remove 'REQUIRED' on release
