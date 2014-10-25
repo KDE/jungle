@@ -35,14 +35,13 @@
 
 using namespace Jungle;
 
-MovieFetchJob::MovieFetchJob(TmdbQt::SearchJob* job, const QString& url,
-                             const QString& searchTerm, int year, QObject* parent)
+MovieFetchJob::MovieFetchJob(TmdbQt::SearchJob* job, const QString& searchTerm,
+                             int year, QObject* parent)
     : QObject(parent)
-    , m_url(url)
     , m_searchTerm(searchTerm)
     , m_year(year)
 {
-    qDebug() << url << searchTerm << year;
+    qDebug() << searchTerm << year;
     connect(job, SIGNAL(result(TmdbQt::SearchJob*)),
             this, SLOT(slotMovieResult(TmdbQt::SearchJob*)));
 }
@@ -81,7 +80,6 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
     m_data["id"] = movie.id();
     m_data["title"] = movie.title();
     m_data["releaseDate"] = movie.releaseDate();
-    m_data["url"] = m_url;
 
     QUrl posterUrl = movie.posterUrl(QLatin1String("w342"));
     m_data["posterPath"] = posterUrl;

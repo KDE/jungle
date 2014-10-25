@@ -42,10 +42,10 @@ TheMovieDbStore::TheMovieDbStore(QObject* parent)
             this, &TheMovieDbStore::initialized);
 }
 
-MovieFetchJob* TheMovieDbStore::fetchMovie(const QString& url, const QString& name, int year)
+MovieFetchJob* TheMovieDbStore::fetchMovie(const QString& name, int year)
 {
     TmdbQt::SearchJob* job = m_api.searchMovie(name, year);
-    MovieFetchJob* mjob = new MovieFetchJob(job, url, name, year);
+    MovieFetchJob* mjob = new MovieFetchJob(job, name, year);
 
     return mjob;
 }

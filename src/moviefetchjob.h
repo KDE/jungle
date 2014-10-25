@@ -31,8 +31,8 @@ class MovieFetchJob : public QObject
 {
     Q_OBJECT
 public:
-    MovieFetchJob(TmdbQt::SearchJob* job, const QString& url,
-                  const QString& searchTerm, int year, QObject* parent = 0);
+    MovieFetchJob(TmdbQt::SearchJob* job, const QString& searchTerm,
+                  int year, QObject* parent = 0);
 
     QVariantMap data() const { return m_data; }
     QString url() const { return m_url; }

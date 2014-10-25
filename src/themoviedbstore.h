@@ -37,7 +37,7 @@ class TheMovieDbStore : public QObject
 public:
     explicit TheMovieDbStore(QObject* parent = 0);
 
-    MovieFetchJob* fetchMovie(const QString& url, const QString& name, int year = 0);
+    MovieFetchJob* fetchMovie(const QString& name, int year = 0);
     TvShowFetchJob* fetchTvShow(const QString& name);
     TvSeasonFetchJob* fetchTvSeason(int showId, int seasonNum);
 

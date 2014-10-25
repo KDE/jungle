@@ -34,7 +34,6 @@ MovieDbConsumer::MovieDbConsumer(QList<QueueInterface*> output, QObject* parent)
 void MovieDbConsumer::itemsAdded(QueueInterface* queue)
 {
     if (m_job) {
-        queue->pop();
         return;
     }
 
@@ -54,10 +53,9 @@ void MovieDbConsumer::itemsAdded(QueueInterface* queue)
     }
 
     const QString name = m_input.value("title").toString();
-    const QString url = m_input.value("url").toString();
     int year = m_input.value("year").toInt();
 
-    m_job = m_store->fetchMovie(url, name, year);
+    m_job = m_store->fetchMovie(name, year);
     connect(m_job, SIGNAL(result(MovieFetchJob*)), this, SLOT(slotResult(MovieFetchJob*)));
 }
 
