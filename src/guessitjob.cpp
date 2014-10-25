@@ -83,6 +83,7 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
                     line.remove('-');
                     varList << toVariant(line.simplified());
                 } else {
+                    QStringList list = line.split(':', QString::SkipEmptyParts);
                     const QString property = list.first().simplified();
                     const QVariant value = toVariant(list.last().simplified());
                     m_data.insert(property, value);

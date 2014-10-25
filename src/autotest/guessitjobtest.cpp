@@ -29,6 +29,7 @@ class GuessItJobTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void testEpisode();
+    void testDoubleEpisode();
 };
 
 using namespace Jungle;
@@ -47,6 +48,32 @@ void GuessItJobTest::testEpisode()
     data["format"] = "HDTV";
     data["season"] = 1;
     data["container"] = "mp4";
+
+    GuessItJob* job = new GuessItJob(url);
+    QSignalSpy spy(job, SIGNAL(finished(GuessItJob*)));
+    spy.wait();
+
+    QCOMPARE(job->data(), data);
+}
+
+void GuessItJobTest::testDoubleEpisode()
+{
+    const QString url("./How.I.Met.Your.Mother.S09E23-E24.HDTV.x264-EXCELLENCE.mp4");
+
+    QVariantMap data;
+    data["type"] = "episode";
+    data["releaseGroup"] = "EXCELLENCE";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "How I Met Your Mother";
+    data["episodeNumber"] = 23;
+    data["videoCodec"] = "h264";
+    data["format"] = "HDTV";
+    data["season"] = 9;
+    data["container"] = "mp4";
+
+    QVariantList list;
+    list << 23 << 24;
+    data["episodeList"] = list;
 
     GuessItJob* job = new GuessItJob(url);
     QSignalSpy spy(job, SIGNAL(finished(GuessItJob*)));
