@@ -20,21 +20,17 @@
 #include "guessitjob.h"
 
 #include <QStandardPaths>
-#include <QJsonDocument>
 #include <QDebug>
 
 Jungle::GuessItJob::GuessItJob(const QString& filePath)
     : m_filePath(filePath)
 {
-    static QString guessItPath = QStandardPaths::locate(QStandardPaths::DataLocation, "guess.py");
-    static QString pythonPath = QStandardPaths::findExecutable("python2");
-
-    Q_ASSERT(!guessItPath.isEmpty());
-    Q_ASSERT(!pythonPath.isEmpty());
+    static QString exePath = QStandardPaths::findExecutable("guessit");
+    Q_ASSERT(!exePath.isEmpty());
 
     m_process = new QProcess(this);
-    m_process->setProgram(pythonPath);
-    m_process->setArguments(QStringList() << guessItPath << filePath);
+    m_process->setProgram(exePath);
+    m_process->setArguments(QStringList() << "-y" << filePath);
     connect(m_process, SIGNAL(finished(int)), this, SLOT(slotProcessFinished(int)));
     m_process->start();
 }
@@ -45,20 +41,34 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
 
     if (exitCode) {
         qDebug() << "Process crashed for this file" << m_filePath << "with error" << exitCode;
-        emit finished(this);
-        return;
+        Q_ASSERT(0);
     }
 
-    QByteArray json = m_process->readAllStandardOutput();
-    json.replace('\'', '"');
+    QString output = QString::fromUtf8(m_process->readAllStandardOutput());
+    QTextStream s(&output, QIODevice::ReadOnly);
 
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(json, &error);
-    if (error.error) {
-        qCritical() << error.errorString() << error.offset;
+    QString line = s.readLine();
+    Q_ASSERT(line.startsWith("?"));
+
+    QString yaml = s.readAll().mid(1);
+    QTextStream stream(&yaml, QIODevice::ReadOnly);
+
+    while (!stream.atEnd()) {
+        QString line = stream.readLine();
+        QStringList list = line.split(':', QString::SkipEmptyParts);
+        Q_ASSERT(list.size() == 2);
+
+        const QString property = list.first().simplified();
+        const QString value = list.last().simplified();
+
+        bool okay = false;
+        int intValue = value.toInt(&okay);
+        if (okay) {
+            m_data.insert(property, intValue);
+        } else {
+            m_data.insert(property, value);
+        }
     }
-
-    m_data = doc.toVariant().toMap();
 
     // Guess It marks everything as a movie if it cannot determine what it is
     QString type = m_data.value("type").toString();

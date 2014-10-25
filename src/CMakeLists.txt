@@ -68,7 +68,6 @@ target_link_libraries(jungleqmlplugin
     junglecommon
 )
 
-install(FILES guess.py DESTINATION ${DATA_INSTALL_DIR}/jungle)
 install(TARGETS jungleqmlplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
 install(FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
 
