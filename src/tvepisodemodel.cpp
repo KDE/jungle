@@ -80,7 +80,7 @@ QVariant TvEpisodeModel::data(const QModelIndex& index, int role) const
             return ep["airDate"].toDate();
 
         case SeasonRole:
-            return ep["season"].toInt();
+            return ep["seasonNumber"].toInt();
 
         case EpisodeNumberRole:
             return ep["episodeNumber"].toInt();

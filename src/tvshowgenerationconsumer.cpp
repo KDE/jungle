@@ -64,7 +64,7 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
 
     QVariantMap tvseason;
     tvseason["type"] = QStringLiteral("tvseason");
-    tvseason["season"] = season;
+    tvseason["seasonNumber"] = season;
     tvseason["showId"] = showId;
 
     map["showId"] = showId;

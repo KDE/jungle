@@ -36,7 +36,7 @@ public:
     virtual ~TvShowFetchJob();
 
     QVariantMap data() const { return m_show; }
-    QList<QVariantMap> seasons() const { return m_seasons; }
+    QList<QVariantMap> extraData() const { return m_seasons; }
 
 private slots:
     void slotResult(TmdbQt::TvSearchJob* job);

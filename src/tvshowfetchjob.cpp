@@ -81,7 +81,7 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
         season["airDate"] = sdb.airDate();
         season["movieDbId"] = sdb.id();
         season["seasonNumber"] = sdb.seasonNumber();
-        season["show"] = tvshow.id();
+        season["showId"] = tvshow.id();
 
         QUrl posterUrl = sdb.posterUrl(QLatin1String("w342"));
         season["posterPath"] = posterUrl;

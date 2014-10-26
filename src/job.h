@@ -35,6 +35,14 @@ public:
     virtual ~Job() {}
     virtual QVariantMap data() const = 0;
 
+    /**
+     * Some additional data that was collected and should be sent
+     * forward.
+     */
+    virtual QList<QVariantMap> extraData() const {
+        return {};
+    }
+
 signals:
     void finished(Job* job);
 

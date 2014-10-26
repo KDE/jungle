@@ -64,7 +64,7 @@ void DatabaseConsumer::itemsAdded(QueueInterface* queue)
     }
     else if (type == QStringLiteral("tvseason")) {
         QString showId = item.value("showId").toString();
-        int season = item.value("season").toInt();
+        int season = item.value("seasonNumber").toInt();
         if (!showId.isEmpty() && season) {
             QVariantMap query = {{"type", "tvseason"},
                                  {"showId", showId},
