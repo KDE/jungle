@@ -64,7 +64,7 @@ void AsyncJobConsumer::slotFinished(Job* job)
     auto list = job->extraData();
     for (const QVariantMap& map: list) {
         for (QueueInterface* queue : m_outputQueues) {
-            queue->add(m_input);
+            queue->add(map);
         }
     }
 

@@ -50,12 +50,12 @@ MovieFetchJob* TheMovieDbStore::fetchMovie(const QString& name, int year)
     return mjob;
 }
 
-TvShowFetchJob* TheMovieDbStore::fetchTvShow(const QString& name)
+TvShowFetchJob* TheMovieDbStore::fetchTvShow(const QString& name, const QString& dbShowId)
 {
-    return new TvShowFetchJob(&m_api, name);
+    return new TvShowFetchJob(&m_api, name, dbShowId, this);
 }
 
-TvSeasonFetchJob* TheMovieDbStore::fetchTvSeason(int showId, int seasonNum)
+TvSeasonFetchJob* TheMovieDbStore::fetchTvSeason(int showId, int seasonNum, const QString& dbShowId)
 {
-    return new TvSeasonFetchJob(&m_api, showId, seasonNum, this);
+    return new TvSeasonFetchJob(&m_api, showId, seasonNum, dbShowId, this);
 }

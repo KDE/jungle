@@ -42,7 +42,6 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
     }
 
     QString series = map.value("series").toString();
-    int season = map.value("season").toInt();
 
     Database* db = Database::instance();
     QString showId = db->showId(series);
@@ -62,15 +61,7 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
             q->add(tvshow);
     }
 
-    QVariantMap tvseason;
-    tvseason["type"] = QStringLiteral("tvseason");
-    tvseason["seasonNumber"] = season;
-    tvseason["showId"] = showId;
-
     map["showId"] = showId;
-
-    for (auto q : m_outputQueues)
-        q->add(tvseason);
     for (auto q : m_outputQueues)
         q->add(map);
 

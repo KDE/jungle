@@ -1,4 +1,5 @@
 /*
+ * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -17,28 +18,31 @@
  *
  */
 
-#ifndef JUNGLE_PROCESSOR_H
-#define JUNGLE_PROCESSOR_H
+#include "forwardingconsumer.h"
+#include "queueinterface.h"
 
-#include <QString>
-#include "queue.h"
+#include <QDebug>
 
-namespace Jungle {
+using namespace Jungle;
 
-class Processor
+ForwardingConsumer::ForwardingConsumer(const QList<QueueInterface*> output)
+    : m_outputQueues(output)
 {
-public:
-    Processor();
-
-    void addFile(const QString& filePath);
-
-private:
-    Queue m_guessItQueue;
-    Queue m_movieDbQueue;
-    Queue m_tvshowGenQueue;
-    Queue m_seasonForwardingQueue;
-    Queue m_saveQueue;
-};
 }
 
-#endif // JUNGLE_PROCESSOR_H
+void ForwardingConsumer::itemsAdded(QueueInterface* queue)
+{
+    QVariantMap map = queue->top();
+
+    const QString type = map.value("type").toString();
+    if (type != QStringLiteral("tvseason")) {
+        queue->pop();
+        return;
+    }
+
+    for (auto q : m_outputQueues)
+        q->add(map);
+
+    queue->pop();
+}
+

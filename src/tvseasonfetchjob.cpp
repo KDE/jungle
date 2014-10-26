@@ -31,12 +31,15 @@
 
 using namespace Jungle;
 
-TvSeasonFetchJob::TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int season, QObject* parent)
-    : QObject(parent)
+TvSeasonFetchJob::TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int season,
+                                   const QString& showId, QObject* parent)
+    : Job(parent)
     , m_api(api)
     , m_showId(show)
     , m_seasonNum(season)
+    , m_databaseShowId(showId)
 {
+    qDebug() << show << season;
     TmdbQt::TvSeasonInfoJob* job = m_api->getTvSeasonInfo(show, season);
     connect(job, SIGNAL(result(TmdbQt::TvSeasonInfoJob*)),
             this, SLOT(slotResult(TmdbQt::TvSeasonInfoJob*)));
@@ -49,21 +52,24 @@ void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
     TmdbQt::TvSeasonDb sdb = job->result();
 
     m_season["airDate"] = sdb.airDate();
-    m_season["id"] = sdb.id();
+    m_season["movieDbId"] = sdb.id();
     m_season["overview"] = sdb.overview();
     m_season["seasonNumber"] = sdb.seasonNumber();
+    m_season["showId"] = m_databaseShowId;
 
     TmdbQt::TvEpisodeDbList epList = sdb.episodes();
     for (int i = 0; i < epList.size(); i++) {
         TmdbQt::TvEpisodeDb ep = epList[i];
 
         QVariantMap episode;
+        episode["type"] = QStringLiteral("tvepisode");
         episode["airDate"] = ep.airDate();
         episode["episodeNumber"] = ep.episodeNumber();
         episode["name"] = ep.name();
         episode["overview"] = ep.overview();
         episode["season"] = m_seasonNum;
-        episode["show"] = m_showId;
+        episode["movieDbshowId"] = m_showId;
+        episode["showId"] = m_databaseShowId;
 
         m_episodes << episode;
 
@@ -105,16 +111,16 @@ void TvSeasonFetchJob::slotNetworkReply(QNetworkReply* reply)
 
     m_pendingJobs--;
     if (m_pendingJobs == 0) {
-        emit result(this);
+        emitFinished();
     }
 }
 
-QVariantMap TvSeasonFetchJob::seasonData() const
+QVariantMap TvSeasonFetchJob::data() const
 {
     return m_season;
 }
 
-QList<QVariantMap> TvSeasonFetchJob::episodes() const
+QList<QVariantMap> TvSeasonFetchJob::extraData() const
 {
     return m_episodes;
 }

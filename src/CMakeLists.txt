@@ -31,6 +31,7 @@ set(SRCS
     moviedbconsumer.cpp
     databaseconsumer.cpp
     tvshowgenerationconsumer.cpp
+    forwardingconsumer.cpp
     processor.cpp
 )
 

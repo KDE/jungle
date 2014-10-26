@@ -21,7 +21,7 @@
 #ifndef JUNGLE_TVSEASONFETCHJOB_H
 #define JUNGLE_TVSEASONFETCHJOB_H
 
-#include <QObject>
+#include "job.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
@@ -29,17 +29,15 @@
 
 namespace Jungle {
 
-class TvSeasonFetchJob : public QObject
+class TvSeasonFetchJob : public Job
 {
     Q_OBJECT
 public:
-    TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int season, QObject* parent = 0);
+    TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int season,
+                     const QString& showid, QObject* parent = 0);
 
-    QVariantMap seasonData() const;
-    QList<QVariantMap> episodes() const;
-
-signals:
-    void result(TvSeasonFetchJob* job);
+    QVariantMap data() const;
+    QList<QVariantMap> extraData() const;
 
 private slots:
     void slotResult(TmdbQt::TvSeasonInfoJob* job);
@@ -52,6 +50,8 @@ private:
     int m_showId;
     int m_seasonNum;
     int m_pendingJobs;
+
+    QString m_databaseShowId;
 
     QVariantMap m_season;
     QList<QVariantMap> m_episodes;

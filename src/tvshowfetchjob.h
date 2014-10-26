@@ -32,7 +32,8 @@ class TvShowFetchJob : public Job
 {
     Q_OBJECT
 public:
-    explicit TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name, QObject* parent = 0);
+    explicit TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name,
+                            const QString& dbShowId, QObject* parent = 0);
     virtual ~TvShowFetchJob();
 
     QVariantMap data() const { return m_show; }
@@ -45,6 +46,7 @@ private slots:
 private:
     TmdbQt::TheMovieDbApi* m_api;
     QString m_name;
+    QString m_dbShowId;
 
     QVariantMap m_show;
     QList<QVariantMap> m_seasons;

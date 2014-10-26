@@ -73,6 +73,19 @@ void DatabaseConsumer::itemsAdded(QueueInterface* queue)
             item = merge(existingItem, item);
         }
     }
+    else if (type == QStringLiteral("tvepisode")) {
+        QString showId = item.value("showId").toString();
+        int season = item.value("season").toInt();
+        int ep = item.value("episodeNumber").toInt();
+        if (!showId.isEmpty() && season) {
+            QVariantMap query = {{"type", "tvepisode"},
+                                 {"showId", showId},
+                                 {"season", season},
+                                 {"episodeNumber", ep}};
+            QVariantMap existingItem = m_db->query(query);
+            item = merge(existingItem, item);
+        }
+    }
 
     m_db->add(item);
 

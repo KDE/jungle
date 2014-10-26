@@ -38,8 +38,8 @@ public:
     explicit TheMovieDbStore(QObject* parent = 0);
 
     MovieFetchJob* fetchMovie(const QString& name, int year = 0);
-    TvShowFetchJob* fetchTvShow(const QString& name);
-    TvSeasonFetchJob* fetchTvSeason(int showId, int seasonNum);
+    TvShowFetchJob* fetchTvShow(const QString& name, const QString& dbShowId);
+    TvSeasonFetchJob* fetchTvSeason(int showId, int seasonNum, const QString& dbShowId);
 
 signals:
     void initialized();

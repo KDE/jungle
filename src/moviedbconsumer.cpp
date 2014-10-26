@@ -46,7 +46,19 @@ Job* MovieDbConsumer::fetchJob(const QVariantMap& input)
         Q_ASSERT(input.contains("title"));
 
         const QString title = input.value("title").toString();
-        return m_store->fetchTvShow(title);
+        const QString dbShowId = input.value("id").toString();
+        return m_store->fetchTvShow(title, dbShowId);
+    }
+
+    if (type == QStringLiteral("tvseason")) {
+        if (!input.contains("movieDbShowId") || !input.contains("seasonNumber"))
+            return 0;
+
+        int showId = input.value("movieDbShowId").toInt();
+        int season = input.value("seasonNumber").toInt();
+        const QString dbShowId = input.value("showId").toString();
+
+        return m_store->fetchTvSeason(showId, season, dbShowId);
     }
 
     return 0;

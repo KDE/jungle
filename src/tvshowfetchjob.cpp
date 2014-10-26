@@ -32,10 +32,12 @@
 
 using namespace Jungle;
 
-TvShowFetchJob::TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name, QObject* parent)
+TvShowFetchJob::TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name,
+                               const QString& dbShowId, QObject* parent)
     : Job(parent)
     , m_api(api)
     , m_name(name)
+    , m_dbShowId(dbShowId)
 {
     TmdbQt::TvSearchJob* job = m_api->searchTvShow(name);
     connect(job, SIGNAL(result(TmdbQt::TvSearchJob*)),
@@ -78,10 +80,12 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
         TmdbQt::TvSeasonDb sdb = seasons[i];
 
         QVariantMap season;
+        season["type"] = QStringLiteral("tvseason");
         season["airDate"] = sdb.airDate();
         season["movieDbId"] = sdb.id();
         season["seasonNumber"] = sdb.seasonNumber();
-        season["showId"] = tvshow.id();
+        season["movieDbShowId"] = tvshow.id();
+        season["showId"] = m_dbShowId;
 
         QUrl posterUrl = sdb.posterUrl(QLatin1String("w342"));
         season["posterPath"] = posterUrl;

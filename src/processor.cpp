@@ -22,6 +22,7 @@
 #include "moviedbconsumer.h"
 #include "databaseconsumer.h"
 #include "tvshowgenerationconsumer.h"
+#include "forwardingconsumer.h"
 
 #include <QVariantMap>
 #include <QDebug>
@@ -34,13 +35,17 @@ Processor::Processor()
     GuessItConsumer* guessItConsumer = new GuessItConsumer(giOutputQ);
     m_guessItQueue.setConsumer(guessItConsumer);
 
-    QList<QueueInterface*> mdbOutputQ = {&m_saveQueue};
+    QList<QueueInterface*> mdbOutputQ = {&m_saveQueue, &m_seasonForwardingQueue};
     MovieDbConsumer* movieDbConsumer = new MovieDbConsumer(mdbOutputQ);
     m_movieDbQueue.setConsumer(movieDbConsumer);
 
     QList<QueueInterface*> tvGenOutputQ = {&m_saveQueue, &m_movieDbQueue};
     TvShowGenerationConsumer* tvGenCon = new TvShowGenerationConsumer(tvGenOutputQ);
     m_tvshowGenQueue.setConsumer(tvGenCon);
+
+    QList<QueueInterface*> forOutQ = {&m_movieDbQueue};
+    ForwardingConsumer* forCon = new ForwardingConsumer(forOutQ);
+    m_seasonForwardingQueue.setConsumer(forCon);
 
     DatabaseConsumer* dbConsumer = new DatabaseConsumer();
     m_saveQueue.setConsumer(dbConsumer);
