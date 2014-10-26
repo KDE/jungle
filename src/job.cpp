@@ -17,33 +17,5 @@
  *
  */
 
-#ifndef GUESSITCONSUMER_H
-#define GUESSITCONSUMER_H
-
-#include "consumerinterface.h"
-#include "guessitjob.h"
-
-namespace Jungle {
-
-class GuessItConsumer : public QObject, public ConsumerInterface
-{
-    Q_OBJECT
-public:
-    GuessItConsumer(const QList<QueueInterface*> outputQueues);
-
-    virtual void itemsAdded(QueueInterface* queue);
-
-private slots:
-    void slotFinished(Job* job);
-
-private:
-    QList<QueueInterface*> m_outputQueues;
-    QueueInterface* m_inputQueue;
-
-    GuessItJob* m_job;
-    QVariantMap m_input;
-};
-
-}
-
-#endif // GUESSITCONSUMER_H
+#include "job.h"
+// This file is needed for moc file generation

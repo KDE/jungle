@@ -20,22 +20,18 @@
 #ifndef GUESSITJOB_H
 #define GUESSITJOB_H
 
-#include <QObject>
-#include <QVariantMap>
+#include "job.h"
 #include <QProcess>
 
 namespace Jungle {
 
-class GuessItJob : public QObject
+class GuessItJob : public Job
 {
     Q_OBJECT
 public:
     GuessItJob(const QString& filePath);
 
     QVariantMap data() const;
-
-signals:
-    void finished(GuessItJob* job);
 
 private slots:
     void slotProcessFinished(int exitCode);

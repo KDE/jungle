@@ -43,10 +43,10 @@ void GuessItConsumer::itemsAdded(QueueInterface* queue)
     Q_ASSERT(!filePath.isEmpty());
 
     m_job = new GuessItJob(filePath);
-    connect(m_job, SIGNAL(finished(GuessItJob*)), this, SLOT(slotFinished(GuessItJob*)));
+    connect(m_job, SIGNAL(finished(Job*)), this, SLOT(slotFinished(Job*)));
 }
 
-void GuessItConsumer::slotFinished(GuessItJob* job)
+void GuessItConsumer::slotFinished(Job* job)
 {
     QVariantMap map = m_input;
     map.unite(job->data());

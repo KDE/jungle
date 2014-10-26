@@ -1,4 +1,4 @@
-ecm_add_test(guessitjobtest.cpp ../guessitjob.cpp
+ecm_add_test(guessitjobtest.cpp ../guessitjob.cpp ../job.cpp
     TEST_NAME "guessitjobtest"
     LINK_LIBRARIES Qt5::Test
 )

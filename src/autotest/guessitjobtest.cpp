@@ -50,7 +50,7 @@ void GuessItJobTest::testEpisode()
     data["container"] = "mp4";
 
     GuessItJob* job = new GuessItJob(url);
-    QSignalSpy spy(job, SIGNAL(finished(GuessItJob*)));
+    QSignalSpy spy(job, SIGNAL(finished(Job*)));
     spy.wait();
 
     QCOMPARE(job->data(), data);
@@ -76,7 +76,7 @@ void GuessItJobTest::testDoubleEpisode()
     data["episodeList"] = list;
 
     GuessItJob* job = new GuessItJob(url);
-    QSignalSpy spy(job, SIGNAL(finished(GuessItJob*)));
+    QSignalSpy spy(job, SIGNAL(finished(Job*)));
     spy.wait();
 
     QCOMPARE(job->data(), data);

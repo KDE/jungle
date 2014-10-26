@@ -48,11 +48,9 @@ static QVariant toVariant(const QString& str)
 
 void Jungle::GuessItJob::slotProcessFinished(int exitCode)
 {
-    deleteLater();
-
     if (exitCode) {
         qDebug() << "Process crashed for this file" << m_filePath << "with error" << exitCode;
-        emit finished(this);
+        emitFinished();
         return;
     }
 
@@ -109,7 +107,7 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
         m_data["type"] = "tvepisode";
     }
 
-    emit finished(this);
+    emitFinished();
 }
 
 QVariantMap Jungle::GuessItJob::data() const

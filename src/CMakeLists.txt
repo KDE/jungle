@@ -24,6 +24,7 @@ set(SRCS
     tvshowfetchjob.cpp
     tvseasonfetchjob.cpp
 
+    job.cpp
     queue.cpp
     guessitconsumer.cpp
     guessitjob.cpp
