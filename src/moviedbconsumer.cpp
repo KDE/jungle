@@ -32,15 +32,23 @@ MovieDbConsumer::MovieDbConsumer(QList<QueueInterface*> output, QObject* parent)
 Job* MovieDbConsumer::fetchJob(const QVariantMap& input)
 {
     const QString type = input.value("type").toString();
-    if (type != QStringLiteral("movie"))
-        return 0;
+    if (type == QStringLiteral("movie")) {
+        if (!input.contains("year") || !input.contains("title"))
+            return 0;
 
-    if (!input.contains("year") || !input.contains("title"))
-        return 0;
+        const QString name = input.value("title").toString();
+        const int year = input.value("year").toInt();
 
-    const QString name = input.value("title").toString();
-    const int year = input.value("year").toInt();
+        return m_store->fetchMovie(name, year);
+    }
 
-    return m_store->fetchMovie(name, year);
+    if (type == QStringLiteral("tvshow")) {
+        Q_ASSERT(input.contains("title"));
+
+        const QString title = input.value("title").toString();
+        return m_store->fetchTvShow(title);
+    }
+
+    return 0;
 }
 

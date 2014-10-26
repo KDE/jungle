@@ -25,22 +25,20 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
+#include "job.h"
 #include <tmdbqt/themoviedbapi.h>
 
 namespace Jungle {
 
-class TvShowFetchJob : public QObject
+class TvShowFetchJob : public Job
 {
     Q_OBJECT
 public:
     explicit TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name, QObject* parent = 0);
     virtual ~TvShowFetchJob();
 
-    QVariantMap result() { return m_show; }
+    QVariantMap data() const { return m_show; }
     QList<QVariantMap> seasons() const { return m_seasons; }
-
-signals:
-    void result(TvShowFetchJob* job);
 
 private slots:
     void slotResult(TmdbQt::TvSearchJob* job);

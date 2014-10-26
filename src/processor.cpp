@@ -38,7 +38,7 @@ Processor::Processor()
     MovieDbConsumer* movieDbConsumer = new MovieDbConsumer(mdbOutputQ);
     m_movieDbQueue.setConsumer(movieDbConsumer);
 
-    QList<QueueInterface*> tvGenOutputQ = {&m_saveQueue};
+    QList<QueueInterface*> tvGenOutputQ = {&m_saveQueue, &m_movieDbQueue};
     TvShowGenerationConsumer* tvGenCon = new TvShowGenerationConsumer(tvGenOutputQ);
     m_tvshowGenQueue.setConsumer(tvGenCon);
 

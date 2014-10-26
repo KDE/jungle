@@ -35,7 +35,7 @@
 using namespace Jungle;
 
 TvShowFetchJob::TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name, QObject* parent)
-    : QObject(parent)
+    : Job(parent)
     , m_api(api)
     , m_name(name)
 {
@@ -56,7 +56,7 @@ void TvShowFetchJob::slotResult(TmdbQt::TvSearchJob* job)
 {
     TmdbQt::TvShowDbList shows = job->result();
     if (shows.isEmpty()) {
-        emit result(this);
+        emitFinished();
         return;
     }
 
@@ -72,7 +72,7 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
 
     m_show["title"] = tvshow.name();
     m_show["releaseDate"] = tvshow.firstAiredDate();
-    m_show["id"] = tvshow.id();
+    m_show["movieDbId"] = tvshow.id();
 
     TmdbQt::TvSeasonDbList seasons = tvshow.seasons();
     for (int i = 0; i < seasons.size(); i++) {
@@ -80,7 +80,7 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
 
         QVariantMap season;
         season["airDate"] = sdb.airDate();
-        season["id"] = sdb.id();
+        season["movieDbId"] = sdb.id();
         season["seasonNumber"] = sdb.seasonNumber();
         season["show"] = tvshow.id();
 
@@ -102,7 +102,7 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
 void TvShowFetchJob::slotNetworkReply(QNetworkReply* reply)
 {
     const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    QString showId = m_show.value("id").toString();
+    QString showId = m_show.value("movieDbId").toString();
 
     if (reply->property("showPoster").isValid()) {
         QString url = dataDir + "/jungle/tvshow-" + showId;
@@ -130,6 +130,6 @@ void TvShowFetchJob::slotNetworkReply(QNetworkReply* reply)
 
     m_pendingJobs--;
     if (!m_pendingJobs) {
-        emit result(this);
+        emitFinished();
     }
 }
