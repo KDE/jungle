@@ -168,10 +168,10 @@ QVariantMap Database::episode(int showId, int season, int epNum)
     return QVariantMap();
 }
 
-QList<QVariantMap> Database::allEpisodes(int showId, int season)
+QList<QVariantMap> Database::allEpisodes(const QString& showId, int season)
 {
     QVariantMap queryMap = {{"type", "tvepisode"},
-                            {"show", showId}};
+                            {"showId", showId}};
 
     if (season != -1) {
         queryMap.insert("season", season);

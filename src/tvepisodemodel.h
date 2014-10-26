@@ -28,7 +28,7 @@ namespace Jungle {
 class TvEpisodeModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(int showId READ showId WRITE setShowId)
+    Q_PROPERTY(QString showId READ showId WRITE setShowId)
 
 public:
     explicit TvEpisodeModel(QObject* parent = 0);
@@ -45,8 +45,8 @@ public:
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-    int showId() const;
-    void setShowId(int id);
+    QString showId() const;
+    void setShowId(const QString& id);
 
     int season() const;
     /**
@@ -61,7 +61,7 @@ private slots:
 
 private:
     QList<QVariantMap> m_episodes;
-    int m_showId;
+    QString m_showId;
     int m_season;
 };
 }

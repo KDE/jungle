@@ -53,7 +53,7 @@ public:
     bool hasEpisodes(int show, int season);
 
     QVariantMap episode(int showId, int season, int epNum);
-    QList<QVariantMap> allEpisodes(int showId, int season = -1);
+    QList<QVariantMap> allEpisodes(const QString& showId, int season = -1);
 
     QList<QVariantMap> allVideos() const;
 signals:

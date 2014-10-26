@@ -24,7 +24,7 @@ import org.kde.jungle 0.1 as Jungle
 
 FocusScope {
     id: topElem
-    signal showSelected (int showId)
+    signal showSelected (string showId)
 
     GridView {
         id: tvshows

@@ -74,7 +74,7 @@ QVariant TvShowsModel::data(const QModelIndex& index, int role) const
             return show.value("releaseDate").toDate();
 
         case ShowIdRole:
-            return show.value("id").toInt();
+            return show.value("id").toString();
     }
 
     return QVariant();

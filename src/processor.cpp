@@ -21,6 +21,7 @@
 #include "guessitconsumer.h"
 #include "moviedbconsumer.h"
 #include "databaseconsumer.h"
+#include "tvshowgenerationconsumer.h"
 
 #include <QVariantMap>
 #include <QDebug>
@@ -29,13 +30,17 @@ using namespace Jungle;
 
 Processor::Processor()
 {
-    QList<QueueInterface*> giOutputQ = {&m_saveQueue, &m_movieDbQueue};
+    QList<QueueInterface*> giOutputQ = {&m_saveQueue, &m_movieDbQueue, &m_tvshowGenQueue};
     GuessItConsumer* guessItConsumer = new GuessItConsumer(giOutputQ);
     m_guessItQueue.setConsumer(guessItConsumer);
 
     QList<QueueInterface*> mdbOutputQ = {&m_saveQueue};
     MovieDbConsumer* movieDbConsumer = new MovieDbConsumer(mdbOutputQ);
     m_movieDbQueue.setConsumer(movieDbConsumer);
+
+    QList<QueueInterface*> tvGenOutputQ = {&m_saveQueue};
+    TvShowGenerationConsumer* tvGenCon = new TvShowGenerationConsumer(tvGenOutputQ);
+    m_tvshowGenQueue.setConsumer(tvGenCon);
 
     DatabaseConsumer* dbConsumer = new DatabaseConsumer();
     m_saveQueue.setConsumer(dbConsumer);

@@ -30,6 +30,7 @@ set(SRCS
     guessitjob.cpp
     moviedbconsumer.cpp
     databaseconsumer.cpp
+    tvshowgenerationconsumer.cpp
     processor.cpp
 )
 

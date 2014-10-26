@@ -1,4 +1,5 @@
 /*
+ * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -17,27 +18,23 @@
  *
  */
 
-#ifndef JUNGLE_PROCESSOR_H
-#define JUNGLE_PROCESSOR_H
+#ifndef JUNGLE_TVSHOWGENERATIONCONSUMER_H
+#define JUNGLE_TVSHOWGENERATIONCONSUMER_H
 
-#include <QString>
-#include "queue.h"
+#include "consumerinterface.h"
 
 namespace Jungle {
 
-class Processor
+class TvShowGenerationConsumer : public ConsumerInterface
 {
 public:
-    Processor();
-
-    void addFile(const QString& filePath);
+    TvShowGenerationConsumer(const QList<QueueInterface*> output);
+    virtual void itemsAdded(QueueInterface* queue);
 
 private:
-    Queue m_guessItQueue;
-    Queue m_movieDbQueue;
-    Queue m_tvshowGenQueue;
-    Queue m_saveQueue;
+    QList<QueueInterface*> m_outputQueues;
 };
+
 }
 
-#endif // JUNGLE_PROCESSOR_H
+#endif // JUNGLE_TVSHOWGENERATIONCONSUMER_H

@@ -27,7 +27,6 @@ using namespace Jungle;
 
 TvEpisodeModel::TvEpisodeModel(QObject* parent)
     : QAbstractListModel(parent)
-    , m_showId(0)
     , m_season(-1)
 {
     QHash<int, QByteArray> names = roleNames();
@@ -66,7 +65,10 @@ QVariant TvEpisodeModel::data(const QModelIndex& index, int role) const
     QVariantMap ep = m_episodes.at(index.row());
     switch (role) {
         case Qt::DisplayRole:
-            return ep["name"].toString();
+            if (ep.contains("name")) {
+                return ep["name"].toString();
+            }
+            return ep.value("series").toString();
 
         case UrlRole:
             return ep["url"].toString();
@@ -87,12 +89,12 @@ QVariant TvEpisodeModel::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
-int TvEpisodeModel::showId() const
+QString TvEpisodeModel::showId() const
 {
     return m_showId;
 }
 
-void TvEpisodeModel::setShowId(int id)
+void TvEpisodeModel::setShowId(const QString& id)
 {
     m_showId = id;
 
@@ -104,7 +106,7 @@ void TvEpisodeModel::setShowId(int id)
 void TvEpisodeModel::slotNewTvEpisode(const QVariantMap& episode)
 {
     //If the added episode is not of this tvshow, skip it.
-    if (episode["showId"].toInt() != m_showId) {
+    if (episode["showId"].toString() != m_showId) {
         return;
     }
 
@@ -115,7 +117,7 @@ void TvEpisodeModel::slotNewTvEpisode(const QVariantMap& episode)
 
 void TvEpisodeModel::setSeason(int season)
 {
-    if (!m_showId) {
+    if (m_showId.isEmpty()) {
         beginResetModel();
         m_episodes.clear();
         endResetModel();
