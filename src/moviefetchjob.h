@@ -21,13 +21,12 @@
 #ifndef MOVIEFETCHJOB_H
 #define MOVIEFETCHJOB_H
 
-#include <QObject>
-#include <QNetworkAccessManager>
+#include "job.h"
 #include <tmdbqt/themoviedbapi.h>
 
 namespace Jungle {
 
-class MovieFetchJob : public QObject
+class MovieFetchJob : public Job
 {
     Q_OBJECT
 public:
@@ -36,9 +35,6 @@ public:
 
     QVariantMap data() const { return m_data; }
     QString url() const { return m_url; }
-
-signals:
-    void result(MovieFetchJob* job);
 
 private slots:
     void slotMovieResult(TmdbQt::SearchJob* job);

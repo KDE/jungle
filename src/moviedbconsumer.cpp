@@ -24,59 +24,23 @@
 using namespace Jungle;
 
 MovieDbConsumer::MovieDbConsumer(QList<QueueInterface*> output, QObject* parent)
-    : QObject(parent)
-    , m_outputQueues(output)
-    , m_job(0)
+    : AsyncJobConsumer(output, parent)
 {
     m_store = new TheMovieDbStore(this);
 }
 
-void MovieDbConsumer::itemsAdded(QueueInterface* queue)
+Job* MovieDbConsumer::fetchJob(const QVariantMap& input)
 {
-    if (m_job) {
-        return;
-    }
+    const QString type = input.value("type").toString();
+    if (type != QStringLiteral("movie"))
+        return 0;
 
-    m_inputQueue = queue;
-    m_input = queue->top();
+    if (!input.contains("year") || !input.contains("title"))
+        return 0;
 
+    const QString name = input.value("title").toString();
+    const int year = input.value("year").toInt();
 
-    const QString type = m_input.value("type").toString();
-    if (type != QStringLiteral("movie")) {
-        queue->pop();
-        return;
-    }
-
-    if (!m_input.contains("year")) {
-        queue->pop();
-        return;
-    }
-
-    const QString name = m_input.value("title").toString();
-    int year = m_input.value("year").toInt();
-
-    m_job = m_store->fetchMovie(name, year);
-    connect(m_job, SIGNAL(result(MovieFetchJob*)), this, SLOT(slotResult(MovieFetchJob*)));
+    return m_store->fetchMovie(name, year);
 }
-
-void MovieDbConsumer::slotResult(MovieFetchJob* job)
-{
-    QVariantMap map = m_input;
-
-    const QVariantMap data = job->data();
-    for (auto it = data.begin(); it != data.end(); it++) {
-        map.insert(it.key(), it.value());
-    }
-
-    for (QueueInterface* queue : m_outputQueues) {
-        queue->add(map);
-    }
-
-    m_job = 0;
-    m_inputQueue->pop();
-    if (!m_inputQueue->empty()) {
-        itemsAdded(m_inputQueue);
-    }
-}
-
 

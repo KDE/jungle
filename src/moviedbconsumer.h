@@ -21,30 +21,21 @@
 #ifndef JUNGLE_MOVIE_DBCONSUMER_H
 #define JUNGLE_MOVIE_DBCONSUMER_H
 
-#include "consumerinterface.h"
+#include "asyncjobconsumer.h"
 #include "themoviedbstore.h"
 
 namespace Jungle {
 
-class MovieDbConsumer : public QObject, public ConsumerInterface
+class MovieDbConsumer : public AsyncJobConsumer
 {
-    Q_OBJECT
 public:
     explicit MovieDbConsumer(QList<QueueInterface*> outputQueues, QObject* parent = 0);
 
-    virtual void itemsAdded(QueueInterface* queue);
-
-private slots:
-    void slotResult(MovieFetchJob* job);
+protected:
+    virtual Job* fetchJob(const QVariantMap& input);
 
 private:
-    QList<QueueInterface*> m_outputQueues;
-    QueueInterface* m_inputQueue;
-
     TheMovieDbStore* m_store;
-    MovieFetchJob* m_job;
-
-    QVariantMap m_input;
 };
 }
 

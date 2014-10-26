@@ -41,10 +41,11 @@ void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
     m_input = queue->top();
     m_job = fetchJob(m_input);
     if (m_job == 0) {
+        return;
+        /*
         if (!m_inputQueue->empty()) {
             itemsAdded(m_inputQueue);
-        }
-        return;
+        }*/
     }
 
     connect(m_job, SIGNAL(finished(Job*)), this, SLOT(slotFinished(Job*)));

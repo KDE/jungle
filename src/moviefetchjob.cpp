@@ -37,7 +37,7 @@ using namespace Jungle;
 
 MovieFetchJob::MovieFetchJob(TmdbQt::SearchJob* job, const QString& searchTerm,
                              int year, QObject* parent)
-    : QObject(parent)
+    : Job(parent)
     , m_searchTerm(searchTerm)
     , m_year(year)
 {
@@ -50,13 +50,13 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
 {
     TmdbQt::MovieDbList list = job->result();
     if (list.isEmpty()) {
-        emit result(this);
+        emitFinished();
         return;
     }
 
     TmdbQt::MovieDb movie = list.takeFirst();
     if (m_year == 0 && !list.isEmpty()) {
-        emit result(this);
+        emitFinished();
         return;
     }
 
@@ -71,7 +71,7 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
             if (movie.id() == -1) {
                 movie = mov;
             } else {
-                emit result(this);
+                emitFinished();
                 return;
             }
         }
@@ -84,7 +84,6 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
     QUrl posterUrl = movie.posterUrl(QLatin1String("w342"));
     m_data["posterPath"] = posterUrl;
 
-    emit result(this);
-    deleteLater();
+    emitFinished();
 }
 

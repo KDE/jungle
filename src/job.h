@@ -29,6 +29,9 @@ class Job : public QObject
 {
     Q_OBJECT
 public:
+    explicit Job(QObject* parent = 0)
+        : QObject(parent)
+    {}
     virtual ~Job() {}
     virtual QVariantMap data() const = 0;
 
