@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ * <one line to give the library's name and an idea of what it does.>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,19 +18,19 @@
  *
  */
 
-#include "guessitconsumer.h"
-#include "queueinterface.h"
+#include "asyncjobconsumer.h"
+#include "job.h"
 
 using namespace Jungle;
 
-GuessItConsumer::GuessItConsumer(const QList<QueueInterface*> outputQueues)
-    : m_outputQueues(outputQueues)
-    , m_inputQueue(0)
+AsyncJobConsumer::AsyncJobConsumer(QList< QueueInterface* > output, QObject* parent)
+    : QObject(parent)
     , m_job(0)
+    , m_outputQueues(output)
 {
 }
 
-void GuessItConsumer::itemsAdded(QueueInterface* queue)
+void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
 {
     if (m_job) {
         return;
@@ -38,28 +39,31 @@ void GuessItConsumer::itemsAdded(QueueInterface* queue)
     m_inputQueue = queue;
 
     m_input = queue->top();
-    QString filePath = m_input.value("url").toString();
+    m_job = fetchJob(m_input);
+    if (m_job == 0) {
+        if (!m_inputQueue->empty()) {
+            itemsAdded(m_inputQueue);
+        }
+        return;
+    }
 
-    Q_ASSERT(!filePath.isEmpty());
-
-    m_job = new GuessItJob(filePath);
     connect(m_job, SIGNAL(finished(Job*)), this, SLOT(slotFinished(Job*)));
 }
 
-void GuessItConsumer::slotFinished(Job* job)
+void AsyncJobConsumer::slotFinished(Job* job)
 {
-    QVariantMap map = m_input;
-    map.unite(job->data());
-
-    m_job = 0;
+    const QVariantMap data = job->data();
+    for (auto it = data.begin(); it != data.end(); it++)
+        m_input.insert(it.key(), it.value());
 
     for (QueueInterface* queue : m_outputQueues) {
-        queue->add(map);
+        queue->add(m_input);
     }
 
     m_inputQueue->pop();
+    m_job = 0;
+
     if (!m_inputQueue->empty()) {
         itemsAdded(m_inputQueue);
     }
 }
-

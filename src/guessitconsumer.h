@@ -20,28 +20,27 @@
 #ifndef GUESSITCONSUMER_H
 #define GUESSITCONSUMER_H
 
-#include "consumerinterface.h"
+#include "asyncjobconsumer.h"
 #include "guessitjob.h"
 
 namespace Jungle {
 
-class GuessItConsumer : public QObject, public ConsumerInterface
+class GuessItConsumer : public AsyncJobConsumer
 {
-    Q_OBJECT
 public:
-    GuessItConsumer(const QList<QueueInterface*> outputQueues);
+    explicit GuessItConsumer(QList<QueueInterface*> output, QObject* parent = 0)
+        : AsyncJobConsumer(output, parent)
+    {
+    }
 
-    virtual void itemsAdded(QueueInterface* queue);
+protected:
+    virtual Job* fetchJob(const QVariantMap& input)
+    {
+        QString filePath = input.value("url").toString();
+        Q_ASSERT(!filePath.isEmpty());
 
-private slots:
-    void slotFinished(Job* job);
-
-private:
-    QList<QueueInterface*> m_outputQueues;
-    QueueInterface* m_inputQueue;
-
-    GuessItJob* m_job;
-    QVariantMap m_input;
+        return new GuessItJob(filePath);
+    }
 };
 
 }
