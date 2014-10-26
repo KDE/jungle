@@ -34,7 +34,7 @@ Processor::Processor()
     m_guessItQueue.setConsumer(guessItConsumer);
 
     QList<QueueInterface*> mdbOutputQ = {&m_saveQueue};
-    MovieDbConsumer* movieDbConsumer = new MovieDbConsumer(giOutputQ);
+    MovieDbConsumer* movieDbConsumer = new MovieDbConsumer(mdbOutputQ);
     m_movieDbQueue.setConsumer(movieDbConsumer);
 
     DatabaseConsumer* dbConsumer = new DatabaseConsumer();
