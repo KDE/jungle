@@ -27,10 +27,8 @@
 #include <tmdbqt/tvseasoninfojob.h>
 #include <tmdbqt/tvepisodedblist.h>
 
-#include <QStandardPaths>
-#include <QNetworkRequest>
-#include <QFile>
-#include <QTimer>
+#include <QDebug>
+#include <QUrl>
 
 using namespace Jungle;
 
@@ -42,8 +40,6 @@ TvShowFetchJob::TvShowFetchJob(TmdbQt::TheMovieDbApi* api, const QString& name, 
     TmdbQt::TvSearchJob* job = m_api->searchTvShow(name);
     connect(job, SIGNAL(result(TmdbQt::TvSearchJob*)),
             this, SLOT(slotResult(TmdbQt::TvSearchJob*)));
-    connect(&m_network, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(slotNetworkReply(QNetworkReply*)));
 
     qDebug() << "TvShow:" << name;
 }
@@ -74,6 +70,9 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
     m_show["releaseDate"] = tvshow.firstAiredDate();
     m_show["movieDbId"] = tvshow.id();
 
+    QUrl posterUrl = tvshow.posterUrl(QLatin1String("w342"));
+    m_show["posterPath"] = posterUrl;
+
     TmdbQt::TvSeasonDbList seasons = tvshow.seasons();
     for (int i = 0; i < seasons.size(); i++) {
         TmdbQt::TvSeasonDb sdb = seasons[i];
@@ -84,52 +83,11 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
         season["seasonNumber"] = sdb.seasonNumber();
         season["show"] = tvshow.id();
 
-        m_seasons << season;
-
         QUrl posterUrl = sdb.posterUrl(QLatin1String("w342"));
-        QNetworkReply* reply = m_network.get(QNetworkRequest(posterUrl));
-        reply->setProperty("seasonNum", sdb.seasonNumber());
-        reply->setProperty("index", i);
+        season["posterPath"] = posterUrl;
+
+        m_seasons << season;
     }
 
-    QUrl posterUrl = tvshow.posterUrl(QLatin1String("w342"));
-    QNetworkReply* reply = m_network.get(QNetworkRequest(posterUrl));
-    reply->setProperty("showPoster", posterUrl);
-
-    m_pendingJobs = seasons.size() + 1;
-}
-
-void TvShowFetchJob::slotNetworkReply(QNetworkReply* reply)
-{
-    const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    QString showId = m_show.value("movieDbId").toString();
-
-    if (reply->property("showPoster").isValid()) {
-        QString url = dataDir + "/jungle/tvshow-" + showId;
-
-        QFile file(url);
-        file.open(QIODevice::WriteOnly);
-        file.write(reply->readAll());
-        file.close();
-
-        m_show["posterPath"] = url;
-    }
-    else {
-        int seasonNum = reply->property("seasonNum").toInt();
-        QString url = QString::fromLatin1("%1/jungle/tvshow-%2-season%3")
-                      .arg(dataDir).arg(showId).arg(seasonNum);
-
-        QFile file(url);
-        file.open(QIODevice::WriteOnly);
-        file.write(reply->readAll());
-        file.close();
-
-        int index = reply->property("index").toInt();
-        m_seasons[index]["posterPath"] = url;
-    }
-
-    m_pendingJobs--;
-    if (!m_pendingJobs) {
-        emitFinished();
-    }
+    emitFinished();
 }

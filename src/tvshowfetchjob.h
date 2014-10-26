@@ -22,8 +22,6 @@
 #define TVSHOWFETCHJOB_H
 
 #include <QObject>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 
 #include "job.h"
 #include <tmdbqt/themoviedbapi.h>
@@ -43,17 +41,13 @@ public:
 private slots:
     void slotResult(TmdbQt::TvSearchJob* job);
     void slotResult(TmdbQt::TvShowInfoJob* job);
-    void slotNetworkReply(QNetworkReply* reply);
 
 private:
     TmdbQt::TheMovieDbApi* m_api;
-    QNetworkAccessManager m_network;
     QString m_name;
 
     QVariantMap m_show;
     QList<QVariantMap> m_seasons;
-
-    int m_pendingJobs;
 };
 
 }
