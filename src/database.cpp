@@ -119,14 +119,6 @@ QList<QVariantMap> Database::allVideos() const
     return videos;
 }
 
-bool Database::hasVideo(const QString& url)
-{
-    QVariantMap queryMap = {{"url", url}};
-    JsonQuery query = m_coll.execute(queryMap);
-
-    return query.totalCount();
-}
-
 QString Database::showId(const QString& name)
 {
     // FIXME: This needs to be done in lowercase!
@@ -157,22 +149,6 @@ QList<QVariantMap> Database::allShows() const
     return shows;
 }
 
-QVariantMap Database::episode(int showId, int season, int epNum)
-{
-    QVariantMap queryMap = {{"type", "tvepisode"},
-                            {"show", showId},
-                            {"season", season},
-                            {"episodeNumber", epNum}};
-    JsonQuery query = m_coll.execute(queryMap);
-
-    if (query.next()) {
-        QVariantMap map = query.result();
-        return map;
-    }
-
-    return QVariantMap();
-}
-
 QList<QVariantMap> Database::allEpisodes(const QString& showId, int season)
 {
     QVariantMap queryMap = {{"type", "tvepisode"},
@@ -191,17 +167,4 @@ QList<QVariantMap> Database::allEpisodes(const QString& showId, int season)
     }
 
     return epList;
-}
-
-
-bool Database::hasEpisodes(int show, int season)
-{
-    QVariantMap queryMap = {{"type", "tvepisode"},
-                            {"show", show}};
-
-    if (season != -1) {
-        queryMap.insert("season", season);
-    }
-    JsonQuery query = m_coll.execute(queryMap);
-    return query.totalCount();
 }
