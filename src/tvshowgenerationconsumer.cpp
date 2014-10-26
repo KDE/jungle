@@ -52,12 +52,15 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
         showId = QUuid::createUuid().toString();
         showId.remove('-');
         showId = showId.mid(1, 25);
-    }
 
-    QVariantMap tvshow;
-    tvshow["type"] = QStringLiteral("tvshow");
-    tvshow["id"] = showId;
-    tvshow["title"] = series;
+        QVariantMap tvshow;
+        tvshow["type"] = QStringLiteral("tvshow");
+        tvshow["id"] = showId;
+        tvshow["title"] = series;
+
+        for (auto q : m_outputQueues)
+            q->add(tvshow);
+    }
 
     QVariantMap tvseason;
     tvseason["type"] = QStringLiteral("tvseason");
@@ -66,8 +69,6 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
 
     map["showId"] = showId;
 
-    for (auto q : m_outputQueues)
-        q->add(tvshow);
     for (auto q : m_outputQueues)
         q->add(tvseason);
     for (auto q : m_outputQueues)
