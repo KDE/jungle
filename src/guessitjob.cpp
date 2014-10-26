@@ -104,7 +104,12 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
     }
 
     if (type == QString("episode")) {
-        m_data["type"] = "tvepisode";
+        if (!m_data.contains("season")) {
+            m_data["type"] = QStringLiteral("video");
+        }
+        else {
+            m_data["type"] = QStringLiteral("tvepisode");
+        }
     }
 
     emitFinished();

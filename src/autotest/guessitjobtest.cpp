@@ -30,6 +30,8 @@ class GuessItJobTest : public QObject
 private Q_SLOTS:
     void testEpisode();
     void testDoubleEpisode();
+    void testDefaultTypeShouldBeVideo();
+    void testNotTvShowWhenNoSeason();
 };
 
 using namespace Jungle;
@@ -81,6 +83,36 @@ void GuessItJobTest::testDoubleEpisode()
 
     QCOMPARE(job->data(), data);
 }
+
+void GuessItJobTest::testDefaultTypeShouldBeVideo()
+{
+    const QString url("./RandomVideo.mp4");
+
+    QVariantMap data;
+    data["type"] = "video";
+    data["mimetype"] = "video/mp4";
+    data["container"] = "mp4";
+    data["title"] = "RandomVideo";
+
+    GuessItJob* job = new GuessItJob(url);
+    QSignalSpy spy(job, SIGNAL(finished(Job*)));
+    spy.wait();
+
+    QCOMPARE(job->data(), data);
+}
+
+void GuessItJobTest::testNotTvShowWhenNoSeason()
+{
+    const QString url("/home/vishesh/Images/N9/13090064.mp4");
+
+    GuessItJob* job = new GuessItJob(url);
+    QSignalSpy spy(job, SIGNAL(finished(Job*)));
+    spy.wait();
+
+    QVariantMap out = job->data();
+    QCOMPARE(out.value("type").toString(), QStringLiteral("video"));
+}
+
 
 QTEST_MAIN(GuessItJobTest);
 
