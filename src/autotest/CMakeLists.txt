@@ -7,3 +7,8 @@ ecm_add_test(thumbnailcreationjobtest.cpp ../thumbnailcreationjob.cpp
     TEST_NAME "thumbnailcreationjobtest"
     LINK_LIBRARIES Qt5::Test KF5::KIOWidgets
 )
+
+ecm_add_test(asyncjobconsumertest.cpp ../job.cpp ../asyncjobconsumer.cpp
+    TEST_NAME "asyncjobconsumertest"
+    LINK_LIBRARIES Qt5::Test
+)

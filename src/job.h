@@ -38,7 +38,7 @@ public:
 signals:
     void finished(Job* job);
 
-protected:
+protected slots:
     void emitFinished() {
         emit finished(this);
         deleteLater();
