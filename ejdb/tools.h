@@ -112,6 +112,11 @@ inline bson* mapToBson(const QVariantMap& map)
                 break;
             }
 
+            case QVariant::Invalid: {
+                bson_append_null(rec, key.constData());
+                break;
+            }
+
             default: {
                 Q_ASSERT(0);
             }
