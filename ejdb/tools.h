@@ -198,8 +198,12 @@ inline QVariantMap bsonToMap(bson* rec)
                 map.insert(key, val);
                 break;
             }
-            case BSON_DATE:
-                Q_ASSERT(0);
+            case BSON_DATE: {
+                bson_date_t dt = bson_iterator_date(it);
+                QDate val = QDateTime::fromTime_t(dt).date();
+                map.insert(key, val);
+                break;
+            }
             case BSON_NULL:
                 Q_ASSERT(0);
             case BSON_REGEX:
