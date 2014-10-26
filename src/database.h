@@ -37,7 +37,8 @@ public:
     bool init();
     bool initialized();
 
-    QVariantMap item(const QString& url);
+    QVariantMap item(const QString& key, const QVariant& value);
+    QVariantMap query(const QVariantMap& map);
 
     void add(const QVariantMap& item);
 
@@ -46,7 +47,7 @@ public:
 
     bool hasVideo(const QString& url);
 
-    int showId(const QString& name);
+    QString showId(const QString& name);
 
     QList<QVariantMap> allShows() const;
 

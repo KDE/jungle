@@ -30,6 +30,16 @@ DatabaseConsumer::DatabaseConsumer()
     m_db = Database::instance();
 }
 
+static QVariantMap merge(const QVariantMap& left, const QVariantMap& right)
+{
+    QVariantMap map = left;
+    for (auto it = right.constBegin(); it != right.constEnd(); it++) {
+        map.insert(it.key(), it.value());
+    }
+
+    return map;
+}
+
 void DatabaseConsumer::itemsAdded(QueueInterface* queue)
 {
     QVariantMap item = queue->top();
@@ -37,15 +47,33 @@ void DatabaseConsumer::itemsAdded(QueueInterface* queue)
     //
     // Merge based on URL
     const QString url = item.value("url").toString();
-    QVariantMap prevItem = m_db->item(url);
+    QVariantMap prevItem = m_db->item("url", url);
     if (!prevItem.isEmpty()) {
-        for (auto it = item.constBegin(); it != item.constEnd(); it++) {
-            prevItem.insert(it.key(), it.value());
-        }
-        item = prevItem;
+        item = merge(prevItem, item);
     }
 
-    // const QString type = item.value("type").toString();
+    const QString type = item.value("type").toString();
+    if (type == QStringLiteral("tvshow")) {
+        QString id = item.value("id").toString();
+        if (!id.isEmpty()) {
+            QVariantMap query = {{"type", "tvshow"},
+                                 {"id", id}};
+            QVariantMap existingItem = m_db->query(query);
+            item = merge(existingItem, item);
+        }
+    }
+    else if (type == QStringLiteral("tvseason")) {
+        QString showId = item.value("showId").toString();
+        int season = item.value("season").toInt();
+        if (!showId.isEmpty() && season) {
+            QVariantMap query = {{"type", "tvseason"},
+                                 {"showId", showId},
+                                 {"season", season}};
+            QVariantMap existingItem = m_db->query(query);
+            item = merge(existingItem, item);
+        }
+    }
+
     m_db->add(item);
 
     queue->pop();

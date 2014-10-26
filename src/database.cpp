@@ -70,10 +70,15 @@ bool Database::init()
     return true;
 }
 
-QVariantMap Database::item(const QString& url)
+QVariantMap Database::item(const QString& key, const QVariant& value)
 {
-    QVariantMap queryMap = {{"url", url}};
-    JsonQuery query = m_coll.execute(queryMap);
+    QVariantMap queryMap = {{key, value}};
+    return query(queryMap);
+}
+
+QVariantMap Database::query(const QVariantMap& map)
+{
+    JsonQuery query = m_coll.execute(map);
     if (query.next()) {
         return query.result();
     }
@@ -122,7 +127,7 @@ bool Database::hasVideo(const QString& url)
     return query.totalCount();
 }
 
-int Database::showId(const QString& name)
+QString Database::showId(const QString& name)
 {
     // FIXME: This needs to be done in lowercase!
     QVariantMap queryMap;
@@ -132,10 +137,10 @@ int Database::showId(const QString& name)
     JsonQuery query = m_coll.execute(queryMap);
     if (query.next()) {
         QVariantMap map = query.result();
-        return map["id"].toInt();
+        return map["id"].toString();
     }
 
-    return 0;
+    return QString();
 }
 
 QList<QVariantMap> Database::allShows() const

@@ -20,6 +20,7 @@
 
 #include "tvshowgenerationconsumer.h"
 #include "queueinterface.h"
+#include "database.h"
 
 #include <QUuid>
 #include <QDebug>
@@ -43,11 +44,15 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
     QString series = map.value("series").toString();
     int season = map.value("season").toInt();
 
-    // FIXME: This complicated id generation was supposed to be for _id
-    //        But that doesn't seem to work. It still gets a new id
-    QString showId = QUuid::createUuid().toString();
-    showId.remove('-');
-    showId = showId.mid(1, 25);
+    Database* db = Database::instance();
+    QString showId = db->showId(series);
+    if (showId.isEmpty()) {
+        // FIXME: This complicated id generation was supposed to be for _id
+        //        But that doesn't seem to work. It still gets a new id
+        showId = QUuid::createUuid().toString();
+        showId.remove('-');
+        showId = showId.mid(1, 25);
+    }
 
     QVariantMap tvshow;
     tvshow["type"] = QStringLiteral("tvshow");
