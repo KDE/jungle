@@ -33,6 +33,8 @@ set(SRCS
     tvshowgenerationconsumer.cpp
     forwardingconsumer.cpp
     processor.cpp
+
+    networkimagefetchjob.cpp
 )
 
 add_executable(jungle ${SRCS})

@@ -12,3 +12,8 @@ ecm_add_test(asyncjobconsumertest.cpp ../job.cpp ../asyncjobconsumer.cpp
     TEST_NAME "asyncjobconsumertest"
     LINK_LIBRARIES Qt5::Test
 )
+
+ecm_add_test(networkimagefetchjobtest.cpp ../job.cpp ../networkimagefetchjob.cpp
+    TEST_NAME "networkimagefetchjobtest"
+    LINK_LIBRARIES Qt5::Test Qt5::Network
+)
