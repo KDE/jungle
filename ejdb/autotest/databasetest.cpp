@@ -47,6 +47,7 @@ private Q_SLOTS:
     void testInsertAndQuery();
     void testAndQuery();
     void testQueryNullValue();
+    void testQueryRegexp();
 private:
     QTemporaryDir m_tempDir;
     QScopedPointer<JsonDatabase> db;
@@ -215,6 +216,47 @@ void DatabaseTest::testQueryNullValue()
     QVERIFY(query.next());
     QCOMPARE(query.result(), data2);
     QVERIFY(!query.next());
+}
+
+void DatabaseTest::testQueryRegexp()
+{
+    JsonCollection col = db->collection("testCol");
+
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "Outlander";
+
+    QString id = col.insert(data);
+    data["_id"] = id;
+
+    QVariantMap data2;
+    data2["type"] = "movie";
+    data2["series"] = "Batman";
+    col.insert(data2);
+
+    QVariantMap queryMap = {{"type", QRegularExpression("ep.*")}};
+    JsonQuery query = col.execute(queryMap);
+    QCOMPARE(query.totalCount(), 1);
+    QVERIFY(query.next());
+    QCOMPARE(query.result(), data);
+    QVERIFY(!query.next());
+
+    QVariantMap queryMap2 = {{"type", QRegularExpression("tv")}};
+    JsonQuery query2 = col.execute(queryMap2);
+    QCOMPARE(query2.totalCount(), 0);
+
+    QVariantMap queryMap3 = {{"series", QRegularExpression("outlander")}};
+    JsonQuery query3 = col.execute(queryMap3);
+    QCOMPARE(query3.totalCount(), 0);
+
+    QRegularExpression exp("outlander", QRegularExpression::CaseInsensitiveOption);
+    QVariantMap queryMap4 = {{"series", exp}};
+    JsonQuery query4 = col.execute(queryMap4);
+    QCOMPARE(query4.totalCount(), 1);
+    QVERIFY(query4.next());
+    QCOMPARE(query4.result(), data);
+    QVERIFY(!query4.next());
 }
 
 

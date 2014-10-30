@@ -95,14 +95,22 @@ inline bson* mapToBson(const QVariantMap& map)
             case QVariant::RegularExpression: {
                 QRegularExpression regex = var.toRegularExpression();
                 QByteArray patern = regex.pattern().toUtf8();
-                bson_append_regex(rec, key.constData(), patern.constData(), "");
+                QByteArray options;
+                if (regex.patternOptions() & QRegularExpression::CaseInsensitiveOption)
+                    options += "i";
+
+                bson_append_regex(rec, key.constData(), patern.constData(), options.constData());
                 break;
             }
 
             case QVariant::RegExp: {
                 QRegExp regex = var.toRegExp();
                 QByteArray patern = regex.pattern().toUtf8();
-                bson_append_regex(rec, key.constData(), patern.constData(), "");
+                QByteArray options;
+                if (regex.caseSensitivity() == Qt::CaseInsensitive)
+                    options += "i";
+
+                bson_append_regex(rec, key.constData(), patern.constData(), options.constData());
                 break;
             }
 
@@ -228,6 +236,7 @@ inline QVariantMap bsonToMap(bson* rec)
 
                 QRegularExpression val(QString::fromUtf8(arr));
                 map.insert(key, val);
+                // FIXME: What about the options?
                 break;
             }
             case BSON_DBREF:
