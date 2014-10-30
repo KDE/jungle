@@ -133,9 +133,9 @@ QList<QVariantMap> Database::allVideos() const
 
 QString Database::showId(const QString& name)
 {
-    QRegularExpression exp(name, QRegularExpression::CaseInsensitiveOption);
+    QVariantMap titleExp = {{"$icase", name}};
     QVariantMap queryMap = {{"type", "tvshow"},
-                            {"title", exp}};
+                            {"title", titleExp}};
 
     QVariantMap map = m_coll.findOne(queryMap);
     return map.value("id").toString();
