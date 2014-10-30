@@ -80,6 +80,14 @@ QVariantMap JsonCollection::fetch(const QString& id) const
     return map;
 }
 
+bool JsonCollection::remove(const QString& id)
+{
+    bson_oid_t oid;
+    bson_oid_from_string(&oid, id.toUtf8().constData());
+
+    return ejdbrmbson(m_coll, &oid);
+}
+
 JsonQuery JsonCollection::execute(const QVariantMap& map) const
 {
     bson* rec = mapToBson(map);

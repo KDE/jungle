@@ -30,6 +30,11 @@
 using namespace Jungle;
 
 Processor::Processor()
+    : m_guessItQueue("guessit")
+    , m_movieDbQueue("moviedb")
+    , m_tvshowGenQueue("tvshowgen")
+    , m_seasonForwardingQueue("seasonforwarding")
+    , m_saveQueue("save")
 {
     QList<QueueInterface*> giOutputQ = {&m_saveQueue, &m_movieDbQueue, &m_tvshowGenQueue};
     GuessItConsumer* guessItConsumer = new GuessItConsumer(giOutputQ);

@@ -18,28 +18,45 @@
  */
 
 #include "queue.h"
+#include "jsonquery.h"
+
 #include <QDebug>
+#include <QStandardPaths>
 
 using namespace Jungle;
 
-Queue::Queue()
+Queue::Queue(const QString& name)
 {
+    static QString jungleDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle/";
+
+    Q_ASSERT(!name.isEmpty());
+    m_db = new JsonDatabase();
+    m_db->setPath(jungleDir + QStringLiteral("queue_") + name);
+    m_coll = m_db->collection("queue");
+}
+
+Queue::~Queue()
+{
+    delete m_db;
 }
 
 void Queue::add(const QVariantMap& input)
 {
-    m_queue.enqueue(input);
+    m_coll.insert(input);
     m_consumer->itemsAdded(this);
 }
 
 bool Queue::empty()
 {
-    return m_queue.empty();
+    JsonQuery q = m_coll.execute(QVariantMap());
+    return q.totalCount();
 }
 
 void Queue::pop()
 {
-    m_queue.dequeue();
+    QVariantMap t = top();
+    QString id = t.value("_id").toString();
+    m_coll.remove(id);
 }
 
 void Queue::setConsumer(ConsumerInterface* consumer)
@@ -49,6 +66,12 @@ void Queue::setConsumer(ConsumerInterface* consumer)
 
 QVariantMap Queue::top()
 {
-    return m_queue.first();
+    JsonQuery q = m_coll.execute(QVariantMap());
+    if (q.next()) {
+        return q.result();
+    }
+
+    Q_ASSERT_X(0, "", "Queue::top called when empty!");
+    return QVariantMap();
 }
 

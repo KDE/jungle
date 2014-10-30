@@ -38,6 +38,7 @@ public:
 
     QString insert(const QVariantMap& map);
     QVariantMap fetch(const QString& id) const;
+    bool remove(const QString& id);
 
     JsonQuery execute(const QVariantMap& query) const;
 private:

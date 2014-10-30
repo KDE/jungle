@@ -22,6 +22,8 @@
 
 #include "queueinterface.h"
 #include "consumerinterface.h"
+#include "jsondatabase.h"
+#include "jsoncollection.h"
 
 #include <QQueue>
 
@@ -30,7 +32,8 @@ namespace Jungle {
 class Queue : public QueueInterface
 {
 public:
-    Queue();
+    Queue(const QString& name);
+    virtual ~Queue();
 
     void setConsumer(ConsumerInterface* consumer);
 
@@ -41,7 +44,9 @@ public:
 
 private:
     ConsumerInterface* m_consumer;
-    QQueue<QVariantMap> m_queue;
+
+    JsonDatabase* m_db;
+    JsonCollection m_coll;
 };
 }
 
