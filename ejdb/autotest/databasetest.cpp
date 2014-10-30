@@ -47,6 +47,7 @@ private Q_SLOTS:
     void testDoubleInsert();
     void testInsertAndQuery();
     void testAndQuery();
+    void testQueryNull();
     void testQueryNullValue();
     void testQueryRegexp();
 private:
@@ -206,6 +207,25 @@ void DatabaseTest::testAndQuery()
     data["_id"] = id;
     QCOMPARE(query.result(), data);
     QVERIFY(!query.next());
+}
+
+void DatabaseTest::testQueryNull()
+{
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "Outlander";
+
+    JsonCollection col = db->collection("testCol");
+    col.insert(data);
+
+    QVariantMap data2 = data;
+    data2["series"] = "Batman";
+    col.insert(data2);
+
+    QVariantMap queryMap;
+    JsonQuery query = col.execute(queryMap);
+    QCOMPARE(query.totalCount(), 2);
 }
 
 void DatabaseTest::testQueryNullValue()
