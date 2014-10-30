@@ -36,6 +36,11 @@ JsonCollection::JsonCollection(EJDB* db, const QString& name)
     , m_collectionName(name)
 {
     m_coll = ejdbcreatecoll(m_db, name.toUtf8().constData(), 0);
+    if (!m_coll) {
+        int err = ejdbecode(db);
+        qDebug() << "ERROR" << err << ejdberrmsg(err);
+    }
+    Q_ASSERT(m_coll);
 }
 
 JsonCollection::~JsonCollection()
