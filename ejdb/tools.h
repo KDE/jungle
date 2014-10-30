@@ -23,6 +23,7 @@
 #include <QMapIterator>
 #include <QDateTime>
 #include <QDebug>
+#include <QRegularExpression>
 
 // The bson must be destroyed on your own
 inline bson* mapToBson(const QVariantMap& map)
@@ -91,8 +92,18 @@ inline bson* mapToBson(const QVariantMap& map)
                 break;
             }
 
+            case QVariant::RegularExpression: {
+                QRegularExpression regex = var.toRegularExpression();
+                QByteArray patern = regex.pattern().toUtf8();
+                bson_append_regex(rec, key.constData(), patern.constData(), "");
+                break;
+            }
+
             case QVariant::RegExp: {
-                Q_ASSERT(0);
+                QRegExp regex = var.toRegExp();
+                QByteArray patern = regex.pattern().toUtf8();
+                bson_append_regex(rec, key.constData(), patern.constData(), "");
+                break;
             }
 
             case QVariant::Int: {
@@ -211,8 +222,14 @@ inline QVariantMap bsonToMap(bson* rec)
             }
             case BSON_NULL:
                 Q_ASSERT(0);
-            case BSON_REGEX:
-                Q_ASSERT(0);
+            case BSON_REGEX: {
+                const char* str = bson_iterator_regex(it);
+                QByteArray arr = QByteArray::fromRawData(str, strlen(str));
+
+                QRegularExpression val(QString::fromUtf8(arr));
+                map.insert(key, val);
+                break;
+            }
             case BSON_DBREF:
                 Q_ASSERT(0);
             case BSON_CODE:

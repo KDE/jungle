@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QTemporaryDir>
 #include <QUuid>
+#include <QRegularExpression>
 
 class DatabaseTest : public QObject
 {
@@ -41,6 +42,7 @@ private Q_SLOTS:
     void testInsertAndFetch();
     void testInsertWithId();
     void testInsertArray();
+    void testInsertRegex();
     void testDoubleInsert();
     void testInsertAndQuery();
     void testAndQuery();
@@ -101,6 +103,20 @@ void DatabaseTest::testInsertArray()
     for (auto it = output.begin(); it != output.end(); it++) {
         QCOMPARE(it.value().type(), data.value(it.key()).type());
     }
+}
+
+void DatabaseTest::testInsertRegex()
+{
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = QRegularExpression("video/mp4");
+
+    JsonCollection col = db->collection("testCol");
+    QString id = col.insert(data);
+    data["_id"] = id;
+
+    QVariantMap output = col.fetch(id);
+    QCOMPARE(output, data);
 }
 
 void DatabaseTest::testDoubleInsert()
