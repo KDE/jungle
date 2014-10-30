@@ -60,35 +60,3 @@ JsonCollection JsonDatabase::collection(const QString& name)
 {
     return JsonCollection(m_jdb, name);
 }
-
-/*
-static void addVariant(bson &rec, const QVariant& variant)
-{
-    switch (variant.type()) {
-        case QVariant::Double:
-
-            return BSON_DOUBLE;
-        case QVariant::String:
-            return BSON_STRING;
-        case QVariant::Map:
-            return BSON_OBJECT;
-        case QVariant::List:
-            return BSON_ARRAY;
-        case QVariant::Bool:
-            return BSON_BOOL;
-        case QVariant::Date:
-            return BSON_DATE;
-        case QVariant::RegExp:
-            return BSON_REGEX;
-        case QVariant::Int:
-            return BSON_INT;
-        case QVariant::DateTime:
-            return BSON_TIMESTAMP;
-        case QVariant::LongLong:
-            return BSON_LONG;
-    }
-
-    return BSON_EOO;
-}
-*/
-
