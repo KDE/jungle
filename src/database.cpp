@@ -25,6 +25,7 @@
 
 #include <QStandardPaths>
 #include <QDir>
+#include <QRegularExpression>
 
 using namespace Jungle;
 
@@ -121,10 +122,9 @@ QList<QVariantMap> Database::allVideos() const
 
 QString Database::showId(const QString& name)
 {
-    // FIXME: This needs to be done in lowercase!
-    QVariantMap queryMap;
-    queryMap["type"] = "tvshow";
-    queryMap["title"] = name;
+    QRegularExpression exp(name, QRegularExpression::CaseInsensitiveOption);
+    QVariantMap queryMap = {{"type", "tvshow"},
+                            {"title", exp}};
 
     JsonQuery query = m_coll.execute(queryMap);
     if (query.next()) {
