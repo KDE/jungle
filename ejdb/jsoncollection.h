@@ -41,6 +41,8 @@ public:
     bool remove(const QString& id);
 
     JsonQuery execute(const QVariantMap& query) const;
+    int count(const QVariantMap& query) const;
+    QVariantMap findOne(const QVariantMap& query) const;
 private:
     JsonCollection(EJDB* db, const QString& name);
 

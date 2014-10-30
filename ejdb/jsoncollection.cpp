@@ -101,3 +101,41 @@ JsonQuery JsonCollection::execute(const QVariantMap& map) const
 
     return query;
 }
+
+int JsonCollection::count(const QVariantMap& map) const
+{
+    bson* rec = mapToBson(map);
+
+    u_int32_t count;
+    EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, 0);
+    ejdbqryexecute(m_coll, q, &count, JBQRYCOUNT, 0);
+
+    ejdbquerydel(q);
+    bson_del(rec);
+    return count;
+}
+
+QVariantMap JsonCollection::findOne(const QVariantMap& query) const
+{
+    bson* rec = mapToBson(query);
+
+    u_int32_t count;
+    EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, 0);
+    EJQRESULT result = ejdbqryexecute(m_coll, q, &count, JBQRYFINDONE, 0);
+
+    int size;
+    const void* data = ejdbqresultbsondata(result, 0, &size);
+
+    QVariantMap map;
+    if (data) {
+        bson* rec2 = bson_create_from_buffer(data, size);
+        map = bsonToMap(rec2);
+        bson_del(rec2);
+    }
+
+    ejdbquerydel(q);
+    bson_del(rec);
+    return map;
+
+}
+

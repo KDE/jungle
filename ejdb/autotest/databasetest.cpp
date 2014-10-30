@@ -50,6 +50,8 @@ private Q_SLOTS:
     void testQueryNull();
     void testQueryNullValue();
     void testQueryRegexp();
+    void testQueryCount();
+    void testQueryFindOne();
 private:
     QTemporaryDir m_tempDir;
     QScopedPointer<JsonDatabase> db;
@@ -293,6 +295,45 @@ void DatabaseTest::testQueryRegexp()
     QVERIFY(query4.next());
     QCOMPARE(query4.result(), data);
     QVERIFY(!query4.next());
+}
+
+void DatabaseTest::testQueryCount()
+{
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "Outlander";
+
+    JsonCollection col = db->collection("testCol");
+    col.insert(data);
+
+    QVariantMap data2 = data;
+    data2["series"] = "Batman";
+    col.insert(data2);
+
+    QVariantMap queryMap = {{"type", "episode"}};
+    int count = col.count(queryMap);
+    QCOMPARE(count, 2);
+}
+
+void DatabaseTest::testQueryFindOne()
+{
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "Outlander";
+
+    JsonCollection col = db->collection("testCol");
+    QString id = col.insert(data);
+
+    QVariantMap data2 = data;
+    data2["series"] = "Batman";
+    col.insert(data2);
+    data["_id"] = id;
+
+    QVariantMap queryMap = {{"series", "Outlander"}};
+    QVariantMap output = col.findOne(queryMap);
+    QCOMPARE(output, data);
 }
 
 
