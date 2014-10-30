@@ -68,6 +68,31 @@ private Q_SLOTS:
         QCOMPARE(q.empty(), false);
         QCOMPARE(q.top(), map1);
     }
+
+    void testRetainState() {
+        QVariantMap map1 = {{"url", "a"}};
+        QVariantMap map2 = {{"url", "b"}};
+
+        {
+            Queue q("testRetainState");
+            q.add(map1);
+            q.add(map2);
+        }
+        {
+            Queue q("testRetainState");
+            QCOMPARE(q.empty(), false);
+            QCOMPARE(q.top(), map1);
+            q.pop();
+        }
+
+        {
+            Queue q("testRetainState");
+            QCOMPARE(q.empty(), false);
+            QCOMPARE(q.top(), map2);
+            q.pop();
+            QCOMPARE(q.empty(), true);
+        }
+    }
 };
 
 QTEST_MAIN(QueueTest);
