@@ -90,6 +90,17 @@ QVariantMap Database::query(const QVariantMap& map)
 void Database::add(const QVariantMap& item)
 {
     m_coll.insert(item);
+
+    const QString type = item.value("type").toString();
+    Q_ASSERT(!type.isEmpty());
+
+    if (type == QStringLiteral("movie")) {
+        emit movieAdded(item);
+    } else if (type == QStringLiteral("tvepisode")) {
+        emit tvEpisodeAdded(item);
+    } else if (type == QStringLiteral("tvshow")) {
+        emit tvShowAdded(item);
+    }
 }
 
 QList<QVariantMap> Database::allMovies() const
