@@ -151,9 +151,10 @@ QList<QVariantMap> Database::allShows() const
 
 QList<QVariantMap> Database::allEpisodes(const QString& showId, int season)
 {
+    QVariantMap urlQ = {{"$exists", true}};
     QVariantMap queryMap = {{"type", "tvepisode"},
                             {"showId", showId},
-                            {"url", QVariant()}};
+                            {"url", urlQ}};
 
     if (season != -1) {
         queryMap.insert("season", season);
