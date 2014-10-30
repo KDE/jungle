@@ -137,13 +137,8 @@ QString Database::showId(const QString& name)
     QVariantMap queryMap = {{"type", "tvshow"},
                             {"title", exp}};
 
-    JsonQuery query = m_coll.execute(queryMap);
-    if (query.next()) {
-        QVariantMap map = query.result();
-        return map["id"].toString();
-    }
-
-    return QString();
+    QVariantMap map = m_coll.findOne(queryMap);
+    return map.value("id").toString();
 }
 
 QList<QVariantMap> Database::allShows() const
