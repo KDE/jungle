@@ -17,3 +17,8 @@ ecm_add_test(networkimagefetchjobtest.cpp ../job.cpp ../networkimagefetchjob.cpp
     TEST_NAME "networkimagefetchjobtest"
     LINK_LIBRARIES Qt5::Test Qt5::Network
 )
+
+ecm_add_test(queuetest.cpp ../queue.cpp
+    TEST_NAME "queuetest"
+    LINK_LIBRARIES Qt5::Test kjsondatabase
+)

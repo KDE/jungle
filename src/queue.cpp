@@ -22,16 +22,22 @@
 
 #include <QDebug>
 #include <QStandardPaths>
+#include <QDir>
 
 using namespace Jungle;
 
 Queue::Queue(const QString& name)
+    : m_consumer(0)
 {
     static QString jungleDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle/";
+    QDir().mkpath(jungleDir);
 
     Q_ASSERT(!name.isEmpty());
     m_db = new JsonDatabase();
     m_db->setPath(jungleDir + QStringLiteral("queue_") + name);
+    if (!m_db->open()) {
+        Q_ASSERT_X(0, "", "Queue could not open database");
+    }
     m_coll = m_db->collection("queue");
 }
 
@@ -42,20 +48,25 @@ Queue::~Queue()
 
 void Queue::add(const QVariantMap& input)
 {
+    Q_ASSERT(!input.isEmpty());
+
     m_coll.insert(input);
-    m_consumer->itemsAdded(this);
+    if (m_consumer)
+        m_consumer->itemsAdded(this);
 }
 
 bool Queue::empty()
 {
-    JsonQuery q = m_coll.execute(QVariantMap());
-    return q.totalCount();
+    return (m_coll.count(QVariantMap()) == 0);
 }
 
 void Queue::pop()
 {
-    QVariantMap t = top();
-    QString id = t.value("_id").toString();
+    QVariantMap map = m_coll.findOne(QVariantMap());
+    if (map.isEmpty()) {
+        Q_ASSERT_X(0, "", "Queue::pop called when empty!");
+    }
+    QString id = map.value("_id").toString();
     m_coll.remove(id);
 }
 
@@ -66,12 +77,12 @@ void Queue::setConsumer(ConsumerInterface* consumer)
 
 QVariantMap Queue::top()
 {
-    JsonQuery q = m_coll.execute(QVariantMap());
-    if (q.next()) {
-        return q.result();
+    QVariantMap map = m_coll.findOne(QVariantMap());
+    if (map.isEmpty()) {
+        Q_ASSERT_X(0, "", "Queue::top called when empty!");
     }
+    map.remove("_id");
 
-    Q_ASSERT_X(0, "", "Queue::top called when empty!");
-    return QVariantMap();
+    return map;
 }
 
