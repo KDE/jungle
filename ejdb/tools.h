@@ -25,7 +25,7 @@
 #include <QDebug>
 #include <QRegularExpression>
 
-// The bson must be destroyed on your own
+// The object should be destroyed with bson_del
 inline bson* mapToBson(const QVariantMap& map)
 {
     bson* rec = new bson();
@@ -58,7 +58,10 @@ inline bson* mapToBson(const QVariantMap& map)
             }
 
             case QVariant::Map: {
-                Q_ASSERT(0);
+                bson* obj = mapToBson(var.toMap());
+                bson_append_bson(rec, key.constData(), obj);
+                bson_del(obj);
+                break;
             }
 
             case QVariant::StringList:
