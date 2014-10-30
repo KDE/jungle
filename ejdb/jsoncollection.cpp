@@ -58,7 +58,7 @@ QString JsonCollection::insert(const QVariantMap& map)
     bson_oid_to_string(&oid, str);
     QByteArray id = QByteArray::fromRawData(str, 25);
 
-    bson_destroy(rec);
+    bson_del(rec);
 
     return QString::fromUtf8(id);
 }
@@ -97,7 +97,7 @@ JsonQuery JsonCollection::execute(const QVariantMap& map) const
 
     ejdbquerydel(q);
 
-    bson_destroy(rec);
+    bson_del(rec);
 
     return query;
 }
