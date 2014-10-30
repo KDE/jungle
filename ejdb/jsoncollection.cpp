@@ -56,7 +56,12 @@ QString JsonCollection::insert(const QVariantMap& map)
     bson* rec = mapToBson(map);
 
     bson_oid_t oid;
-    ejdbsavebson(m_coll, rec, &oid);
+    if (!ejdbsavebson(m_coll, rec, &oid)) {
+        int err = ejdbecode(m_db);
+        qDebug() << "ERROR" << err << ejdberrmsg(err);
+        qDebug() << map;
+        Q_ASSERT(0);
+    }
 
     char str[26];
     bson_oid_to_string(&oid, str);
