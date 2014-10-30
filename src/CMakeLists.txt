@@ -19,6 +19,8 @@ install(TARGETS junglecommon EXPORT JungleLibraryTargets ${INSTALL_TARGETS_DEFAU
 set(SRCS
     main.cpp
     baloovideosfetcher.cpp
+    filesystemtracker.cpp
+
     themoviedbstore.cpp
     moviefetchjob.cpp
     tvshowfetchjob.cpp

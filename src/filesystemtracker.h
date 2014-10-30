@@ -1,4 +1,5 @@
 /*
+ * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -17,33 +18,39 @@
  *
  */
 
-#ifndef JUNGLE_BALOOVIDEOSFETCHER_H
-#define JUNGLE_BALOOVIDEOSFETCHER_H
+#ifndef JUNGLE_FILESYSTEMTRACKER_H
+#define JUNGLE_FILESYSTEMTRACKER_H
 
-#include <QStringList>
 #include <QObject>
-
-#include <Baloo/Query>
-#include <Baloo/QueryRunnable>
+#include <QSet>
+#include "jsondatabase.h"
+#include "jsoncollection.h"
 
 namespace Jungle {
 
-class BalooVideosFetcher : public QObject
+class FileSystemTracker : public QObject
 {
     Q_OBJECT
 public:
-    explicit BalooVideosFetcher(QObject* parent = 0);
-
-    void fetch();
+    explicit FileSystemTracker(QObject* parent = 0);
+    virtual ~FileSystemTracker();
 
 signals:
-    void videoResult(const QString& filePath);
-    void finished();
+    void videoAdded(const QString& filePath);
+    void videoRemoved(const QString& filePath);
 
 private slots:
-    void queryResult(Baloo::QueryRunnable*, const Baloo::Result& res);
-    void slotFinished();
+    void init();
+    void slotVideoResult(const QString& filePath);
+    void slotFetchFinished();
+
+private:
+    JsonDatabase* m_db;
+    JsonCollection m_coll;
+
+    QSet<QString> m_filePaths;
 };
+
 }
 
-#endif // JUNGLE_BALOOVIDEOSFETCHER_H
+#endif // JUNGLE_FILESYSTEMTRACKER_H

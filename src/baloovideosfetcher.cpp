@@ -19,29 +19,41 @@
 
 #include "baloovideosfetcher.h"
 
-#include <Baloo/Query>
-#include <Baloo/ResultIterator>
+#include <QThreadPool>
 
 using namespace Jungle;
 
-BalooVideosFetcher::BalooVideosFetcher()
+BalooVideosFetcher::BalooVideosFetcher(QObject* parent): QObject(parent)
 {
+
 }
 
-QStringList BalooVideosFetcher::allVideos()
+void BalooVideosFetcher::fetch()
 {
     Baloo::Query query;
     query.setType("Video");
 
-    QStringList videos;
+    Baloo::QueryRunnable* runnable = new Baloo::QueryRunnable(query, this);
+    connect(runnable, SIGNAL(queryResult(Baloo::QueryRunnable*,Baloo::Result)),
+            this, SLOT(queryResult(Baloo::QueryRunnable*,Baloo::Result)));
+    connect(runnable, SIGNAL(finished(Baloo::QueryRunnable*)),
+            this, SLOT(slotFinished()));
 
-    auto it = query.exec();
-    while (it.next()) {
-        const QString url = it.filePath();
-        if (!url.isEmpty()) {
-            videos << url;
-        }
+    QThreadPool* pool = QThreadPool::globalInstance();
+    pool->start(runnable);
+}
+
+void BalooVideosFetcher::queryResult(Baloo::QueryRunnable*, const Baloo::Result& res)
+{
+    const QString filePath = res.filePath();
+
+    if (!filePath.isEmpty()) {
+        emit videoResult(filePath);
     }
+}
 
-    return videos;
+void BalooVideosFetcher::slotFinished()
+{
+    deleteLater();
+    emit finished();
 }

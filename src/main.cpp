@@ -28,7 +28,9 @@
 #include <QDebug>
 
 #include "processor.h"
-#include "baloovideosfetcher.h"
+#include "filesystemtracker.h"
+
+using namespace Jungle;
 
 int main(int argc, char** argv)
 {
@@ -36,15 +38,19 @@ int main(int argc, char** argv)
     app.setApplicationDisplayName("Jungle");
     app.setWindowIcon(QIcon::fromTheme("nepomuk"));
 
-    Jungle::Processor processor;
+    Processor processor;
+    FileSystemTracker fsTracker;
 
-    Jungle::BalooVideosFetcher videoFetcher;
-    QStringList videoList = videoFetcher.allVideos();
-
-    for (const QString& filePath : videoList) {
+    QObject::connect(&fsTracker, &FileSystemTracker::videoAdded,
+            [&](const QString& filePath) {
         qDebug() << filePath;
         processor.addFile(filePath);
-    }
+    });
+
+    QObject::connect(&fsTracker, &FileSystemTracker::videoRemoved,
+            [&](const QString& filePath) {
+        qDebug() << "HANDLE THIS CASE" << filePath;
+    });
 
     qDebug() << "Starting QML";
     QQmlEngine engine;
