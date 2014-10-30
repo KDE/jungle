@@ -21,6 +21,8 @@
 #include "asyncjobconsumer.h"
 #include "job.h"
 
+#include <QDebug>
+
 using namespace Jungle;
 
 AsyncJobConsumer::AsyncJobConsumer(QList< QueueInterface* > output, QObject* parent)
@@ -54,6 +56,17 @@ void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
 void AsyncJobConsumer::slotFinished(Job* job)
 {
     const QVariantMap data = job->data();
+    if (data.isEmpty()) {
+        m_inputQueue->pop();
+        m_job = 0;
+
+        if (!m_inputQueue->empty()) {
+            itemsAdded(m_inputQueue);
+        }
+        return;
+    }
+
+    // Merge input and output
     for (auto it = data.begin(); it != data.end(); it++)
         m_input.insert(it.key(), it.value());
 
