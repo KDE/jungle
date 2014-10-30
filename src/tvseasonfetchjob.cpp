@@ -28,6 +28,7 @@
 #include <QNetworkRequest>
 #include <QFile>
 #include <QTimer>
+#include <QDebug>
 
 using namespace Jungle;
 
@@ -43,8 +44,6 @@ TvSeasonFetchJob::TvSeasonFetchJob(TmdbQt::TheMovieDbApi* api, int show, int sea
     TmdbQt::TvSeasonInfoJob* job = m_api->getTvSeasonInfo(show, season);
     connect(job, SIGNAL(result(TmdbQt::TvSeasonInfoJob*)),
             this, SLOT(slotResult(TmdbQt::TvSeasonInfoJob*)));
-    connect(&m_network, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(slotNetworkReply(QNetworkReply*)));
 }
 
 void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
@@ -71,48 +70,13 @@ void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
         episode["movieDbshowId"] = m_showId;
         episode["showId"] = m_databaseShowId;
 
-        m_episodes << episode;
-
         QUrl stillUrl = ep.stillUrl(QLatin1String("w342"));
-        QNetworkReply* reply = m_network.get(QNetworkRequest(stillUrl));
-        reply->setProperty("episodeNum", ep.episodeNumber());
-        reply->setProperty("index", i);
+        episode["stillPath"] = stillUrl;
+
+        m_episodes << episode;
     }
 
     m_pendingJobs = epList.size();
-}
-
-void TvSeasonFetchJob::slotNetworkReply(QNetworkReply* reply)
-{
-    const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-
-    int episodeNum = reply->property("episodeNum").toInt();
-    QString url = QString::fromLatin1("%1/jungle/tvshow-%2-season%3-ep%4")
-                  .arg(dataDir).arg(m_showId).arg(m_seasonNum).arg(episodeNum);
-
-    QByteArray data = reply->readAll();
-
-    bool containsData = !data.isEmpty();
-    if (data.size() < 100 || data.contains("Format not Supported"))
-        containsData = false;
-
-    if (containsData) {
-        QFile file(url);
-        file.open(QIODevice::WriteOnly);
-        file.write(data);
-        file.close();
-    }
-    else {
-        url.clear();
-    }
-
-    int index = reply->property("index").toInt();
-    m_episodes[index]["stillPath"] = url;
-
-    m_pendingJobs--;
-    if (m_pendingJobs == 0) {
-        emitFinished();
-    }
 }
 
 QVariantMap TvSeasonFetchJob::data() const

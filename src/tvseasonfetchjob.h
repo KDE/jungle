@@ -22,9 +22,6 @@
 #define JUNGLE_TVSEASONFETCHJOB_H
 
 #include "job.h"
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-
 #include <tmdbqt/themoviedbapi.h>
 
 namespace Jungle {
@@ -41,11 +38,9 @@ public:
 
 private slots:
     void slotResult(TmdbQt::TvSeasonInfoJob* job);
-    void slotNetworkReply(QNetworkReply* reply);
 
 private:
     TmdbQt::TheMovieDbApi* m_api;
-    QNetworkAccessManager m_network;
 
     int m_showId;
     int m_seasonNum;
