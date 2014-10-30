@@ -88,7 +88,9 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
                     break;
                 }
             }
-            m_data.insert(property, varList);
+
+            if (!varList.isEmpty())
+                m_data.insert(property, varList);
         }
         else {
             qDebug() << m_filePath;

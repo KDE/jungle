@@ -32,6 +32,7 @@ private Q_SLOTS:
     void testDoubleEpisode();
     void testDefaultTypeShouldBeVideo();
     void testNotTvShowWhenNoSeason();
+    void testDoubleQuestionMark();
 };
 
 using namespace Jungle;
@@ -113,6 +114,26 @@ void GuessItJobTest::testNotTvShowWhenNoSeason()
     QCOMPARE(out.value("type").toString(), QStringLiteral("video"));
 }
 
+void GuessItJobTest::testDoubleQuestionMark()
+{
+    const QString url("/home/vishes/Videos/Movies/Vicky Christina Barcelona (2008) DVDSCR Occor avi/Vicky Cristina Barcelona (2008) DVDSCR Occor.avi");
+
+    GuessItJob* job = new GuessItJob(url);
+    QSignalSpy spy(job, SIGNAL(finished(Job*)));
+    spy.wait();
+
+    QVariantMap data;
+    data["container"] = "avi";
+    data["format"] = "DVD";
+    data["mimetype"] = "video/x-msvideo";
+    data["other"] = "Screener";
+    data["title"] = "Vicky Christina Barcelona";
+    data["type"] = "movie";
+    data["year"] = 2008;
+
+    QVariantMap out = job->data();
+    QCOMPARE(out, data);
+}
 
 QTEST_MAIN(GuessItJobTest);
 
