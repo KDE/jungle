@@ -44,6 +44,7 @@ private Q_SLOTS:
     void testDoubleInsert();
     void testInsertAndQuery();
     void testAndQuery();
+    void testQueryNullValue();
 private:
     QTemporaryDir m_tempDir;
     QScopedPointer<JsonDatabase> db;
@@ -171,6 +172,32 @@ void DatabaseTest::testAndQuery()
     QVERIFY(query.next());
     data["_id"] = id;
     QCOMPARE(query.result(), data);
+    QVERIFY(!query.next());
+}
+
+void DatabaseTest::testQueryNullValue()
+{
+    QVariantMap data;
+    data["type"] = "episode";
+    data["mimetype"] = "video/mp4";
+    data["series"] = "Outlander";
+
+    JsonCollection col = db->collection("testCol");
+    QString id = col.insert(data);
+
+    QVariantMap data2 = data;
+    data2["series"] = "Batman";
+    data2.remove("mimetype");
+    QString id2 = col.insert(data2);
+    data2["_id"] = id2;
+
+    // Will return all items which do not have a mimetype
+    QVariantMap queryMap = {{"type", "episode"},
+                            {"mimetype", QVariant()}};
+    JsonQuery query = col.execute(queryMap);
+    QCOMPARE(query.totalCount(), 1);
+    QVERIFY(query.next());
+    QCOMPARE(query.result(), data2);
     QVERIFY(!query.next());
 }
 
