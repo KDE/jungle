@@ -89,6 +89,7 @@ QVariantMap Database::query(const QVariantMap& map)
 
 void Database::add(const QVariantMap& item)
 {
+    Q_ASSERT(!item.isEmpty());
     m_coll.insert(item);
 
     const QString type = item.value("type").toString();
