@@ -30,8 +30,11 @@ FocusScope {
 
     GridView {
         id: tvepisodes
-        model: Jungle.TvEpisodeModel {
-            id: epModel
+        model: Jungle.SortModel {
+            sourceModel: Jungle.TvEpisodeModel {
+                id: epModel
+            }
+            sortRoleName: "episodeNumber"
         }
 
         delegate: EpisodeDelegate {

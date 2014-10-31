@@ -28,7 +28,9 @@ FocusScope {
 
     GridView {
         id: tvshows
-        model: Jungle.TvShowsModel {}
+        model: Jungle.SortModel {
+            sourceModel: Jungle.TvShowsModel {}
+        }
         delegate: MovieDelegate {
             MouseArea {
                 anchors.fill: parent

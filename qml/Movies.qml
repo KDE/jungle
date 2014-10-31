@@ -8,7 +8,9 @@ GridView {
     id: gridView
     signal play (string url)
 
-    model: Jungle.MoviesModel {}
+    model: Jungle.SortModel {
+        sourceModel: Jungle.MoviesModel {}
+    }
 
     delegate: MovieDelegate {
         MouseArea {

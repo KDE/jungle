@@ -62,6 +62,7 @@ set(SRC
     tvshowsmodel.cpp
     tvepisodemodel.cpp
     videosmodel.cpp
+    sortmodel.cpp
 )
 
 add_library(jungleqmlplugin SHARED ${SRC})
