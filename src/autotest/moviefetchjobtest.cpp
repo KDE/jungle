@@ -42,7 +42,7 @@ void MovieFetchJobTest::test()
 
     MovieFetchJob* job = store.fetchMovie("Before Sunset", 2004);
     QSignalSpy spy(job, SIGNAL(finished(Job*)));
-    spy.wait();
+    QVERIFY(spy.wait());
 
     QVariantMap data;
     data["type"] = "movie";

@@ -75,6 +75,7 @@ void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
     }
 
     m_pendingJobs = epList.size();
+    emitFinished();
 }
 
 QVariantMap TvSeasonFetchJob::data() const

@@ -43,7 +43,7 @@ void TvShowFetchJobTest::test()
     const QString dbId("db-Id-string");
     TvShowFetchJob* job = store.fetchTvShow("Lost", dbId);
     QSignalSpy spy(job, SIGNAL(finished(Job*)));
-    spy.wait();
+    QVERIFY(spy.wait());
 
     QVariantMap data;
     data["type"] = "tvshow";

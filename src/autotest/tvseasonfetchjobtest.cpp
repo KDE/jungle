@@ -43,7 +43,7 @@ void TvSeasonFetchJobTest::test()
     const QString dbId("db-Id-string");
     TvSeasonFetchJob* job = store.fetchTvSeason(4607, 1, dbId);
     QSignalSpy spy(job, SIGNAL(finished(Job*)));
-    spy.wait();
+    QVERIFY(spy.wait());
 
     QVariantMap data = job->data();
     QCOMPARE(data.value("type").toString(), QString("tvseason"));
