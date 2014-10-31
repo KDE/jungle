@@ -29,15 +29,17 @@ class NetworkImageFetchJobTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
+    void init() {
+        QStandardPaths::setTestModeEnabled(true);
+    }
     void test();
+    void testNoUrl();
 };
 
 using namespace Jungle;
 
 void NetworkImageFetchJobTest::test()
 {
-    QStandardPaths::setTestModeEnabled(true);
-
     const QString url("https://www.google.es/images/srpr/logo11w.png");
 
     QVariantMap data;
@@ -53,6 +55,20 @@ void NetworkImageFetchJobTest::test()
     QVERIFY(!newUrl.isEmpty());
     QVERIFY(newUrl.startsWith("/"));
     QVERIFY(newUrl.contains("tvepisode"));
+}
+
+void NetworkImageFetchJobTest::testNoUrl()
+{
+    QVariantMap data;
+    data["type"] = "tvepisode";
+    data["thumbnail"] = "not-a-url";
+
+    auto job = new NetworkImageFetchJob(data);
+    QSignalSpy spy(job, SIGNAL(finished(Job*)));
+    spy.wait();
+
+    QVariantMap output = job->data();
+    QVERIFY(output.isEmpty());
 }
 
 QTEST_MAIN(NetworkImageFetchJobTest);

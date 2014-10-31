@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,19 +22,31 @@
 #include <QStandardPaths>
 #include <QUuid>
 #include <QFile>
+#include <QTimer>
 
 Jungle::NetworkImageFetchJob::NetworkImageFetchJob(const QVariantMap& input, QObject* parent)
     : Job(parent)
     , m_input(input)
+    , m_networkRequests(0)
 {
     connect(&m_network, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(slotNetworkReply(QNetworkReply*)));
 
-    QString val = m_input.value("thumbnail").toString();
-    if (val.startsWith("http://") || val.startsWith("https://")) {
-        m_network.get(QNetworkRequest(QUrl(val)));
-    } else {
-        emitFinished();
+    for (auto it = m_input.begin(); it != m_input.end(); it++) {
+        if (it.value().type() != QVariant::String) {
+            continue;
+        }
+
+        QString val = it.value().toString();
+        if (val.startsWith("http://") || val.startsWith("https://")) {
+            m_network.get(QNetworkRequest(QUrl(val)));
+            m_networkRequests++;
+        }
+    }
+
+    if (m_networkRequests == 0) {
+        m_input.clear();
+        QTimer::singleShot(0, this, SLOT(emitFinished()));
     }
 }
 
@@ -66,6 +77,19 @@ void Jungle::NetworkImageFetchJob::slotNetworkReply(QNetworkReply* reply)
     file.write(data);
     file.close();
 
-    m_input["thumbnail"] = url;
-    emitFinished();
+    for (auto it = m_input.begin(); it != m_input.end(); it++) {
+        if (it.value().type() != QVariant::String) {
+            continue;
+        }
+
+        QString val = it.value().toString();
+        if (val == reply->url().toString()) {
+            it.value() = url;
+        }
+    }
+
+    m_networkRequests--;
+    if (m_networkRequests == 0) {
+        emitFinished();
+    }
 }
