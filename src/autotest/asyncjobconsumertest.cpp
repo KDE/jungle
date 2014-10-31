@@ -53,7 +53,7 @@ public:
 class Queue : public QueueInterface
 {
 public:
-    virtual void add(const QVariantMap& input) {
+    virtual void enqueue(const QVariantMap& input) {
         m_queue.enqueue(input);
         if (consumer)
             consumer->itemsAdded(this);
@@ -63,11 +63,11 @@ public:
         return m_queue.isEmpty();
     }
 
-    virtual void pop() {
+    virtual void dequeue() {
         m_queue.dequeue();
     }
 
-    virtual QVariantMap top() {
+    virtual QVariantMap head() {
         return m_queue.first();
     }
 
@@ -103,9 +103,9 @@ void AsyncJobConsumerTest::testSimple()
     QVariantMap d2 = {{"test2", "test"}};
     QVariantMap d3 = {{"test3", "test"}};
 
-    queue.add(d1);
-    queue.add(d2);
-    queue.add(d3);
+    queue.enqueue(d1);
+    queue.enqueue(d2);
+    queue.enqueue(d3);
 
     QTest::qWait(50);
 
@@ -148,9 +148,9 @@ void AsyncJobConsumerTest::testSkippingItems()
     QVariantMap d2 = {{"test2", "test"}};
     QVariantMap d3 = {{"url", "test2"}};
 
-    queue.add(d1);
-    queue.add(d2);
-    queue.add(d3);
+    queue.enqueue(d1);
+    queue.enqueue(d2);
+    queue.enqueue(d3);
 
     QTest::qWait(50);
 

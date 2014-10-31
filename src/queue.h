@@ -37,10 +37,10 @@ public:
 
     void setConsumer(ConsumerInterface* consumer);
 
-    virtual void add(const QVariantMap& input);
+    virtual void enqueue(const QVariantMap& input);
     virtual bool empty();
-    virtual void pop();
-    virtual QVariantMap top();
+    virtual void dequeue();
+    virtual QVariantMap head();
 
 private:
     ConsumerInterface* m_consumer;

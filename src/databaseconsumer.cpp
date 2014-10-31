@@ -42,7 +42,7 @@ static QVariantMap merge(const QVariantMap& left, const QVariantMap& right)
 
 void DatabaseConsumer::itemsAdded(QueueInterface* queue)
 {
-    QVariantMap item = queue->top();
+    QVariantMap item = queue->head();
 
     //
     // Merge based on URL
@@ -89,5 +89,5 @@ void DatabaseConsumer::itemsAdded(QueueInterface* queue)
 
     m_db->add(item);
 
-    queue->pop();
+    queue->dequeue();
 }

@@ -39,34 +39,34 @@ private Q_SLOTS:
         QVERIFY(q.empty());
     }
 
-    void testAdd() {
-        Queue q("testAdd");
+    void testEnqueue() {
+        Queue q("testEnqueue");
         QVariantMap map = {{"url", "a"}};
-        q.add(map);
+        q.enqueue(map);
 
         QCOMPARE(q.empty(), false);
-        QCOMPARE(q.top(), map);
+        QCOMPARE(q.head(), map);
     }
 
-    void testPop() {
-        Queue q("testPop");
+    void testDequeue() {
+        Queue q("testDequeue");
         QVariantMap map = {{"url", "a"}};
-        q.add(map);
-        q.pop();
+        q.enqueue(map);
+        q.dequeue();
 
         QCOMPARE(q.empty(), true);
     }
 
-    void testTop() {
-        Queue q("testTop");
+    void testHead() {
+        Queue q("testHead");
         QVariantMap map1 = {{"url", "a"}};
         QVariantMap map2 = {{"url", "b"}};
 
-        q.add(map1);
-        q.add(map2);
+        q.enqueue(map1);
+        q.enqueue(map2);
 
         QCOMPARE(q.empty(), false);
-        QCOMPARE(q.top(), map1);
+        QCOMPARE(q.head(), map1);
     }
 
     void testRetainState() {
@@ -76,21 +76,21 @@ private Q_SLOTS:
         {
             Queue q("testRetainState");
             QCOMPARE(q.empty(), true);
-            q.add(map1);
-            q.add(map2);
+            q.enqueue(map1);
+            q.enqueue(map2);
         }
         {
             Queue q("testRetainState");
             QCOMPARE(q.empty(), false);
-            QCOMPARE(q.top(), map1);
-            q.pop();
+            QCOMPARE(q.head(), map1);
+            q.dequeue();
         }
 
         {
             Queue q("testRetainState");
             QCOMPARE(q.empty(), false);
-            QCOMPARE(q.top(), map2);
-            q.pop();
+            QCOMPARE(q.head(), map2);
+            q.dequeue();
             QCOMPARE(q.empty(), true);
         }
     }

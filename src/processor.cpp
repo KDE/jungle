@@ -78,5 +78,5 @@ void Processor::addFile(const QString& filePath)
     QVariantMap map;
     map.insert("url", filePath);
 
-    m_guessItQueue.add(map);
+    m_guessItQueue.enqueue(map);
 }

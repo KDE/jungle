@@ -29,9 +29,9 @@ class QueueInterface
 public:
     virtual ~QueueInterface() {}
 
-    virtual void add(const QVariantMap& input) = 0;
-    virtual QVariantMap top() = 0;
-    virtual void pop() = 0;
+    virtual void enqueue(const QVariantMap& input) = 0;
+    virtual void dequeue() = 0;
+    virtual QVariantMap head() = 0;
     virtual bool empty() = 0;
 };
 

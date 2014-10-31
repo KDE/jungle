@@ -34,10 +34,10 @@ TvShowGenerationConsumer::TvShowGenerationConsumer(const QList<QueueInterface*> 
 
 void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
 {
-    QVariantMap map = queue->top();
+    QVariantMap map = queue->head();
 
     if (map.value("type").toString() != QStringLiteral("tvepisode")) {
-        queue->pop();
+        queue->dequeue();
         return;
     }
 
@@ -58,12 +58,12 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
         tvshow["title"] = series;
 
         for (auto q : m_outputQueues)
-            q->add(tvshow);
+            q->enqueue(tvshow);
     }
 
     map["showId"] = showId;
     for (auto q : m_outputQueues)
-        q->add(map);
+        q->enqueue(map);
 
-    queue->pop();
+    queue->dequeue();
 }

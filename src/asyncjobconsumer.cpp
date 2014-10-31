@@ -40,10 +40,10 @@ void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
 
     m_inputQueue = queue;
 
-    m_input = queue->top();
+    m_input = queue->head();
     m_job = fetchJob(m_input);
     if (m_job == 0) {
-        m_inputQueue->pop();
+        m_inputQueue->dequeue();
         if (!m_inputQueue->empty()) {
             itemsAdded(m_inputQueue);
         }
@@ -57,7 +57,7 @@ void AsyncJobConsumer::slotFinished(Job* job)
 {
     const QVariantMap data = job->data();
     if (data.isEmpty()) {
-        m_inputQueue->pop();
+        m_inputQueue->dequeue();
         m_job = 0;
 
         if (!m_inputQueue->empty()) {
@@ -71,17 +71,17 @@ void AsyncJobConsumer::slotFinished(Job* job)
         m_input.insert(it.key(), it.value());
 
     for (QueueInterface* queue : m_outputQueues) {
-        queue->add(m_input);
+        queue->enqueue(m_input);
     }
 
     auto list = job->extraData();
     for (const QVariantMap& map: list) {
         for (QueueInterface* queue : m_outputQueues) {
-            queue->add(map);
+            queue->enqueue(map);
         }
     }
 
-    m_inputQueue->pop();
+    m_inputQueue->dequeue();
     m_job = 0;
 
     if (!m_inputQueue->empty()) {

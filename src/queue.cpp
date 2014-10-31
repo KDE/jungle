@@ -46,7 +46,7 @@ Queue::~Queue()
     delete m_db;
 }
 
-void Queue::add(const QVariantMap& input)
+void Queue::enqueue(const QVariantMap& input)
 {
     Q_ASSERT(!input.isEmpty());
 
@@ -60,7 +60,7 @@ bool Queue::empty()
     return (m_coll.count(QVariantMap()) == 0);
 }
 
-void Queue::pop()
+void Queue::dequeue()
 {
     QVariantMap map = m_coll.findOne(QVariantMap());
     if (map.isEmpty()) {
@@ -75,7 +75,7 @@ void Queue::setConsumer(ConsumerInterface* consumer)
     m_consumer = consumer;
 }
 
-QVariantMap Queue::top()
+QVariantMap Queue::head()
 {
     QVariantMap map = m_coll.findOne(QVariantMap());
     if (map.isEmpty()) {
