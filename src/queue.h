@@ -36,6 +36,7 @@ public:
     virtual ~Queue();
 
     void setConsumer(ConsumerInterface* consumer);
+    ConsumerInterface* consumer();
 
     virtual void enqueue(const QVariantMap& input);
     virtual bool empty();

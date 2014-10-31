@@ -75,6 +75,11 @@ void Queue::setConsumer(ConsumerInterface* consumer)
     m_consumer = consumer;
 }
 
+ConsumerInterface* Queue::consumer()
+{
+    return m_consumer;
+}
+
 QVariantMap Queue::head()
 {
     QVariantMap map = m_coll.findOne(QVariantMap());

@@ -20,17 +20,22 @@
 #ifndef JUNGLE_PROCESSOR_H
 #define JUNGLE_PROCESSOR_H
 
+#include <QObject>
 #include <QString>
 #include "queue.h"
 
 namespace Jungle {
 
-class Processor
+class Processor : public QObject
 {
+    Q_OBJECT
 public:
     Processor();
+    virtual ~Processor();
 
+public slots:
     void addFile(const QString& filePath);
+    void resume();
 
 private:
     Queue m_guessItQueue;
@@ -40,6 +45,8 @@ private:
     Queue m_tvSeasonQueue;
     Queue m_networkImageQueue;
     Queue m_saveQueue;
+
+    QList<Queue*> m_queues;
 };
 }
 

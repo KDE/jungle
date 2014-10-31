@@ -26,6 +26,7 @@
 #include <QIcon>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QTimer>
 
 #include "processor.h"
 #include "filesystemtracker.h"
@@ -59,6 +60,8 @@ int main(int argc, char** argv)
     QString path = QStandardPaths::locate(QStandardPaths::DataLocation, "main.qml");
     QQmlComponent component(&engine, path);
     component.create(objectContext);
+
+    QTimer::singleShot(0, &processor, SLOT(resume()));
 
     return app.exec();
 }

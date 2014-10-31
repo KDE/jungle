@@ -69,6 +69,14 @@ Processor::Processor()
 
     DatabaseConsumer* dbConsumer = new DatabaseConsumer();
     m_saveQueue.setConsumer(dbConsumer);
+
+    m_queues << &m_guessItQueue << &m_tvShowGenQueue << &m_tvSeasonQueue
+             << &m_tvShowGenQueue << &m_movieQueue << &m_networkImageQueue
+             << &m_saveQueue;
+}
+
+Processor::~Processor()
+{
 }
 
 void Processor::addFile(const QString& filePath)
@@ -79,4 +87,14 @@ void Processor::addFile(const QString& filePath)
     map.insert("url", filePath);
 
     m_guessItQueue.enqueue(map);
+}
+
+void Processor::resume()
+{
+    for (Queue* q : m_queues) {
+        if (!q->empty()) {
+            auto consumer = q->consumer();
+            consumer->itemsAdded(q);
+        }
+    }
 }
