@@ -23,6 +23,7 @@
 #include "databaseconsumer.h"
 #include "tvshowgenerationconsumer.h"
 #include "forwardingconsumer.h"
+#include "networkimageconsumer.h"
 
 #include <QVariantMap>
 #include <QDebug>
@@ -34,19 +35,24 @@ Processor::Processor()
     , m_movieDbQueue("moviedb")
     , m_tvshowGenQueue("tvshowgen")
     , m_seasonForwardingQueue("seasonforwarding")
+    , m_networkImageQueue("networkimage")
     , m_saveQueue("save")
 {
     QList<QueueInterface*> giOutputQ = {&m_saveQueue, &m_movieDbQueue, &m_tvshowGenQueue};
     GuessItConsumer* guessItConsumer = new GuessItConsumer(giOutputQ);
     m_guessItQueue.setConsumer(guessItConsumer);
 
-    QList<QueueInterface*> mdbOutputQ = {&m_saveQueue, &m_seasonForwardingQueue};
+    QList<QueueInterface*> mdbOutputQ = {&m_saveQueue, &m_seasonForwardingQueue, &m_networkImageQueue};
     MovieDbConsumer* movieDbConsumer = new MovieDbConsumer(mdbOutputQ);
     m_movieDbQueue.setConsumer(movieDbConsumer);
 
     QList<QueueInterface*> tvGenOutputQ = {&m_saveQueue, &m_movieDbQueue};
     TvShowGenerationConsumer* tvGenCon = new TvShowGenerationConsumer(tvGenOutputQ);
     m_tvshowGenQueue.setConsumer(tvGenCon);
+
+    QList<QueueInterface*> netOutQ = {&m_saveQueue};
+    NetworkImageConsumer* netImgConsumer = new NetworkImageConsumer(netOutQ);
+    m_networkImageQueue.setConsumer(netImgConsumer);
 
     QList<QueueInterface*> forOutQ = {&m_movieDbQueue};
     ForwardingConsumer* forCon = new ForwardingConsumer(forOutQ);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,29 +17,29 @@
  *
  */
 
-#ifndef JUNGLE_PROCESSOR_H
-#define JUNGLE_PROCESSOR_H
+#ifndef JUNGLE_NETWORK_IMAGE_CONSUMER
+#define JUNGLE_NETWORK_IMAGE_CONSUMER
 
-#include <QString>
-#include "queue.h"
+#include "asyncjobconsumer.h"
+#include "networkimagefetchjob.h"
 
 namespace Jungle {
 
-class Processor
+class NetworkImageConsumer : public AsyncJobConsumer
 {
 public:
-    Processor();
+    explicit NetworkImageConsumer(QList<QueueInterface*> output, QObject* parent = 0)
+        : AsyncJobConsumer(output, parent)
+    {
+    }
 
-    void addFile(const QString& filePath);
-
-private:
-    Queue m_guessItQueue;
-    Queue m_movieDbQueue;
-    Queue m_tvshowGenQueue;
-    Queue m_seasonForwardingQueue;
-    Queue m_networkImageQueue;
-    Queue m_saveQueue;
+protected:
+    virtual Job* fetchJob(const QVariantMap& input)
+    {
+        return new NetworkImageFetchJob(input, this);
+    }
 };
+
 }
 
-#endif // JUNGLE_PROCESSOR_H
+#endif
