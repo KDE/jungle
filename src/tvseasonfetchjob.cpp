@@ -47,6 +47,7 @@ void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
 {
     TmdbQt::TvSeasonDb sdb = job->result();
 
+    m_season["type"] = QStringLiteral("tvseason");
     m_season["airDate"] = sdb.airDate();
     m_season["movieDbId"] = sdb.id();
     m_season["overview"] = sdb.overview();
@@ -64,7 +65,7 @@ void TvSeasonFetchJob::slotResult(TmdbQt::TvSeasonInfoJob* job)
         episode["name"] = ep.name();
         episode["overview"] = ep.overview();
         episode["season"] = m_seasonNum;
-        episode["movieDbshowId"] = m_showId;
+        episode["movieDbShowId"] = m_showId;
         episode["showId"] = m_databaseShowId;
 
         QUrl stillUrl = ep.stillUrl(QLatin1String("w342"));
