@@ -68,6 +68,7 @@ void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
 {
     TmdbQt::TvShowDb tvshow = job->result();
 
+    m_show["type"] = QStringLiteral("tvshow");
     m_show["title"] = tvshow.name();
     m_show["releaseDate"] = tvshow.firstAiredDate();
     m_show["movieDbId"] = tvshow.id();

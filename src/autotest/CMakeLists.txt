@@ -23,6 +23,11 @@ ecm_add_test(moviefetchjobtest.cpp ../job.cpp ../moviefetchjob.cpp ../themoviedb
     LINK_LIBRARIES Qt5::Test TmdbQt::TmdbQt5
 )
 
+ecm_add_test(tvshowfetchjobtest.cpp ../job.cpp ../moviefetchjob.cpp ../themoviedbstore.cpp ../tvshowfetchjob.cpp ../tvseasonfetchjob.cpp
+    TEST_NAME "tvshowfetchjobtest"
+    LINK_LIBRARIES Qt5::Test TmdbQt::TmdbQt5
+)
+
 ecm_add_test(queuetest.cpp ../queue.cpp
     TEST_NAME "queuetest"
     LINK_LIBRARIES Qt5::Test kjsondatabase
