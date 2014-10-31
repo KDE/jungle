@@ -74,6 +74,7 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
         }
     }
 
+    m_data["type"] = QStringLiteral("movie");
     m_data["movieDbId"] = movie.id();
     m_data["title"] = movie.title();
     m_data["releaseDate"] = movie.releaseDate();

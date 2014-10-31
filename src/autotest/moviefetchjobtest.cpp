@@ -45,6 +45,7 @@ void MovieFetchJobTest::test()
     spy.wait();
 
     QVariantMap data;
+    data["type"] = "movie";
     data["movieDbId"] = 80;
     data["title"] = "Before Sunset";
     data["releaseDate"] = QDate(2004, 02, 10);
