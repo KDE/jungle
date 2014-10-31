@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,25 +17,43 @@
  *
  */
 
-#ifndef JUNGLE_MOVIE_DBCONSUMER_H
-#define JUNGLE_MOVIE_DBCONSUMER_H
+#ifndef JUNGLE_TVSHOW_CONSUMER_H
+#define JUNGLE_TVSHOW_CONSUMER_H
 
 #include "asyncjobconsumer.h"
 #include "themoviedbstore.h"
+#include "tvshowfetchjob.h"
 
 namespace Jungle {
 
-class MovieDbConsumer : public AsyncJobConsumer
+class TvShowConsumer : public AsyncJobConsumer
 {
 public:
-    explicit MovieDbConsumer(QList<QueueInterface*> outputQueues, QObject* parent = 0);
+    explicit TvShowConsumer(TheMovieDbStore* api, QList<QueueInterface*> output, QObject* parent = 0)
+        : AsyncJobConsumer(output, parent)
+        , m_api(api)
+    {
+    }
 
 protected:
-    virtual Job* fetchJob(const QVariantMap& input);
+    virtual Job* fetchJob(const QVariantMap& input)
+    {
+        const QString type = input.value("type").toString();
+        if (type == QStringLiteral("tvshow")) {
+            Q_ASSERT(input.contains("title"));
+
+            const QString title = input.value("title").toString();
+            const QString dbShowId = input.value("id").toString();
+            return m_api->fetchTvShow(title, dbShowId);
+        }
+
+        return 0;
+    }
 
 private:
-    TheMovieDbStore* m_store;
+    TheMovieDbStore* m_api;
 };
+
 }
 
 #endif

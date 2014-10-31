@@ -34,9 +34,10 @@ public:
 
 private:
     Queue m_guessItQueue;
-    Queue m_movieDbQueue;
-    Queue m_tvshowGenQueue;
-    Queue m_seasonForwardingQueue;
+    Queue m_tvShowGenQueue;
+    Queue m_movieQueue;
+    Queue m_tvShowQueue;
+    Queue m_tvSeasonQueue;
     Queue m_networkImageQueue;
     Queue m_saveQueue;
 };

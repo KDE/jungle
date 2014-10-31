@@ -30,10 +30,8 @@ set(SRCS
     queue.cpp
     asyncjobconsumer.cpp
     guessitjob.cpp
-    moviedbconsumer.cpp
     databaseconsumer.cpp
     tvshowgenerationconsumer.cpp
-    forwardingconsumer.cpp
     processor.cpp
 
     networkimagefetchjob.cpp
