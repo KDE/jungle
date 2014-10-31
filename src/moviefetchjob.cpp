@@ -23,25 +23,22 @@
 #include <QUrl>
 #include <QTimer>
 #include <QRegularExpression>
-
-#include <QFile>
-#include <QFileInfo>
 #include <QDebug>
-#include <QStandardPaths>
-
-#include <QNetworkReply>
 
 #include <tmdbqt/searchjob.h>
+#include <tmdbqt/themoviedbapi.h>
 
 using namespace Jungle;
 
-MovieFetchJob::MovieFetchJob(TmdbQt::SearchJob* job, const QString& searchTerm,
+MovieFetchJob::MovieFetchJob(TmdbQt::TheMovieDbApi* api, const QString& searchTerm,
                              int year, QObject* parent)
     : Job(parent)
+    , m_api(api)
     , m_searchTerm(searchTerm)
     , m_year(year)
 {
     qDebug() << searchTerm << year;
+    TmdbQt::SearchJob* job = m_api->searchMovie(searchTerm, year);
     connect(job, SIGNAL(result(TmdbQt::SearchJob*)),
             this, SLOT(slotMovieResult(TmdbQt::SearchJob*)));
 }
@@ -77,7 +74,7 @@ void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
         }
     }
 
-    m_data["id"] = movie.id();
+    m_data["movieDbId"] = movie.id();
     m_data["title"] = movie.title();
     m_data["releaseDate"] = movie.releaseDate();
 

@@ -26,7 +26,6 @@
 #include "tvshowfetchjob.h"
 #include "tvseasonfetchjob.h"
 
-#include <QNetworkAccessManager>
 #include <tmdbqt/themoviedbapi.h>
 
 namespace Jungle {
@@ -36,6 +35,7 @@ class TheMovieDbStore : public QObject
     Q_OBJECT
 public:
     explicit TheMovieDbStore(QObject* parent = 0);
+    virtual ~TheMovieDbStore();
 
     MovieFetchJob* fetchMovie(const QString& name, int year = 0);
     TvShowFetchJob* fetchTvShow(const QString& name, const QString& dbShowId);

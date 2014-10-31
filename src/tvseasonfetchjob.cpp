@@ -24,11 +24,8 @@
 #include <tmdbqt/tvseasoninfojob.h>
 #include <tmdbqt/tvepisodedblist.h>
 
-#include <QStandardPaths>
-#include <QNetworkRequest>
-#include <QFile>
-#include <QTimer>
 #include <QDebug>
+#include <QUrl>
 
 using namespace Jungle;
 

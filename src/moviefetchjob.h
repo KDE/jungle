@@ -30,7 +30,7 @@ class MovieFetchJob : public Job
 {
     Q_OBJECT
 public:
-    MovieFetchJob(TmdbQt::SearchJob* job, const QString& searchTerm,
+    MovieFetchJob(TmdbQt::TheMovieDbApi* api, const QString& searchTerm,
                   int year, QObject* parent = 0);
 
     QVariantMap data() const { return m_data; }
@@ -40,6 +40,8 @@ private slots:
     void slotMovieResult(TmdbQt::SearchJob* job);
 
 private:
+    TmdbQt::TheMovieDbApi* m_api;
+
     QString m_url;
     QString m_searchTerm;
     int m_year;

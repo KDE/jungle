@@ -19,15 +19,7 @@
  */
 
 #include "themoviedbstore.h"
-
-#include <QFile>
-#include <QFileInfo>
 #include <QDebug>
-#include <QStandardPaths>
-
-#include <QNetworkReply>
-
-#include <tmdbqt/searchjob.h>
 
 // Issued to vhanda for personal use
 static const char* s_key = "d27948732458af6587dbc9b9764aad37";
@@ -42,12 +34,13 @@ TheMovieDbStore::TheMovieDbStore(QObject* parent)
             this, &TheMovieDbStore::initialized);
 }
 
+TheMovieDbStore::~TheMovieDbStore()
+{
+}
+
 MovieFetchJob* TheMovieDbStore::fetchMovie(const QString& name, int year)
 {
-    TmdbQt::SearchJob* job = m_api.searchMovie(name, year);
-    MovieFetchJob* mjob = new MovieFetchJob(job, name, year);
-
-    return mjob;
+    return new MovieFetchJob(&m_api, name, year);
 }
 
 TvShowFetchJob* TheMovieDbStore::fetchTvShow(const QString& name, const QString& dbShowId)
