@@ -34,14 +34,15 @@ Item {
             mediaPlayer.seek(mediaPlayer.position + amount)
         }
 
+        var vol = mediaPlayer.volume
         if (event.key == Qt.Key_Up) {
-            if (mediaPlayer.volume < 1.0)
-                mediaPlayer.volume += 0.05
+            vol += 0.05
+        } else if (event.key == Qt.Key_Down) {
+            vol -= 0.05
         }
-        else if (event.key == Qt.Key_Down) {
-            if (mediaPlayer.volume > 0)
-                mediaPlayer.volume -= 0.05
-        }
+        vol = Math.max(0.0, Math.min(1.0, vol));
+        mediaPlayer.volume = vol
+
         toolBox.opacity = 1.0
         toolBoxHideTimer.start()
     }
