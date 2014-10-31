@@ -75,6 +75,7 @@ private Q_SLOTS:
 
         {
             Queue q("testRetainState");
+            QCOMPARE(q.empty(), true);
             q.add(map1);
             q.add(map2);
         }

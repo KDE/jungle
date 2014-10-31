@@ -46,7 +46,7 @@ public:
     }
 
     QVariantMap data() const {
-        return {};
+        return {{"some", "value"}};
     }
 };
 
@@ -112,9 +112,11 @@ void AsyncJobConsumerTest::testSimple()
     // THEN
     QCOMPARE(queue.empty(), true);
     QCOMPARE(outQueue.m_queue.size(), 3);
-    QCOMPARE(outQueue.m_queue[0], d1);
-    QCOMPARE(outQueue.m_queue[1], d2);
-    QCOMPARE(outQueue.m_queue[2], d3);
+
+    QVariantMap add = {{"some", "value"}};
+    QCOMPARE(outQueue.m_queue[0], d1.unite(add));
+    QCOMPARE(outQueue.m_queue[1], d2.unite(add));
+    QCOMPARE(outQueue.m_queue[2], d3.unite(add));
 }
 
 class SkippingConsumer : public AsyncJobConsumer
@@ -155,8 +157,9 @@ void AsyncJobConsumerTest::testSkippingItems()
     // THEN
     QCOMPARE(queue.empty(), true);
     QCOMPARE(outQueue.m_queue.size(), 2);
-    QCOMPARE(outQueue.m_queue[0], d1);
-    QCOMPARE(outQueue.m_queue[1], d3);
+    QVariantMap add = {{"some", "value"}};
+    QCOMPARE(outQueue.m_queue[0], d1.unite(add));
+    QCOMPARE(outQueue.m_queue[1], d3.unite(add));
 }
 
 
