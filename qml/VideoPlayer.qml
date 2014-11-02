@@ -7,7 +7,6 @@ Item {
 
     MediaPlayer {
         id: mediaPlayer
-        source: "/home/vishesh/Videos/True.Detective.S01E01.HDTV.x264-2HD.mp4"
     }
 
     VideoOutput {
