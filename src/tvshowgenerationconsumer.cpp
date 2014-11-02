@@ -42,6 +42,10 @@ void TvShowGenerationConsumer::itemsAdded(QueueInterface* queue)
     }
 
     QString series = map.value("series").toString();
+    if (series.isEmpty()) {
+        queue->dequeue();
+        return;
+    }
 
     Database* db = Database::instance();
     QString showId = db->showId(series);
