@@ -51,6 +51,16 @@ void TvShowsModel::slotPopulate()
 
 void TvShowsModel::slotNewTvShow(const QVariantMap& show)
 {
+    QVariant title = show.value("title");
+    for (int i = 0; i < m_shows.size(); i++) {
+        if (m_shows[i].value("title") == title) {
+            m_shows[i] = show;
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index);
+            return;
+        }
+    }
+
     beginInsertRows(QModelIndex(), m_shows.size(), m_shows.size());
     m_shows << show;
     endInsertRows();

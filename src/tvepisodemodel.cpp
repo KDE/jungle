@@ -110,6 +110,16 @@ void TvEpisodeModel::slotNewTvEpisode(const QVariantMap& episode)
         return;
     }
 
+    QVariant url = episode.value("url");
+    for (int i = 0; i < m_episodes.size(); i++) {
+        if (m_episodes[i].value("url") == url) {
+            m_episodes[i] = episode;
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index);
+            return;
+        }
+    }
+
     beginInsertRows(QModelIndex(), m_episodes.size(), m_episodes.size());
     m_episodes << episode;
     endInsertRows();

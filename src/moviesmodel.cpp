@@ -52,6 +52,16 @@ void MoviesModel::slotPopulate()
 
 void MoviesModel::slotNewMovie(const QVariantMap& movie)
 {
+    QString url = movie.value("url").toString();
+    for (int i = 0; i < m_movies.size(); i++) {
+        if (m_movies[i].value("url").toString() == url) {
+            m_movies[i] = movie;
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index);
+            return;
+        }
+    }
+
     beginInsertRows(QModelIndex(), m_movies.size(), m_movies.size());
     m_movies << movie;
     endInsertRows();
