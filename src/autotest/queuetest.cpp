@@ -94,6 +94,24 @@ private Q_SLOTS:
             QCOMPARE(q.empty(), true);
         }
     }
+
+    void testHeadStaysTheSame() {
+        Queue q("testHeadStaysTheSame");
+
+        QVariantMap map1 = {{"a", "1"}};
+        QVariantMap map2 = {{"a", "2"}};
+        QVariantMap map3 = {{"a", "3"}};
+
+        q.enqueue(map1);
+        q.enqueue(map2);
+
+        qDebug() << q.head();
+        QCOMPARE(q.head(), map1);
+        q.dequeue();
+        QCOMPARE(q.head(), map2);
+        q.enqueue(map3);
+        QCOMPARE(q.head(), map2);
+    }
 };
 
 QTEST_MAIN(QueueTest);
