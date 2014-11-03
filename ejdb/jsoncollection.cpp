@@ -97,15 +97,17 @@ bool JsonCollection::remove(const QString& id)
     return ejdbrmbson(m_coll, &oid);
 }
 
-JsonQuery JsonCollection::execute(const QVariantMap& map) const
+JsonQuery JsonCollection::execute(const QVariantMap& map, const QVariantMap& hints) const
 {
-    bson* rec = mapToBson(map);
+    bson* rec = mapToBson(map, true);
+    bson* hint = mapToBson(hints, true);
 
-    EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, 0);
+    EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, hint);
     JsonQuery query(q, m_coll);
 
     ejdbquerydel(q);
 
+    bson_del(hint);
     bson_del(rec);
 
     return query;
@@ -113,7 +115,7 @@ JsonQuery JsonCollection::execute(const QVariantMap& map) const
 
 int JsonCollection::count(const QVariantMap& map) const
 {
-    bson* rec = mapToBson(map);
+    bson* rec = mapToBson(map, true);
 
     u_int32_t count;
     EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, 0);
@@ -124,12 +126,13 @@ int JsonCollection::count(const QVariantMap& map) const
     return count;
 }
 
-QVariantMap JsonCollection::findOne(const QVariantMap& query) const
+QVariantMap JsonCollection::findOne(const QVariantMap& query, const QVariantMap& hintMap) const
 {
-    bson* rec = mapToBson(query);
+    bson* rec = mapToBson(query, true);
+    bson* hint = mapToBson(hintMap, true);
 
     u_int32_t count;
-    EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, 0);
+    EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, hint);
     EJQRESULT result = ejdbqryexecute(m_coll, q, &count, JBQRYFINDONE, 0);
 
     int size;
@@ -143,6 +146,8 @@ QVariantMap JsonCollection::findOne(const QVariantMap& query) const
     }
 
     ejdbquerydel(q);
+
+    bson_del(hint);
     bson_del(rec);
     return map;
 

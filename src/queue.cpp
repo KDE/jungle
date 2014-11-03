@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QStandardPaths>
 #include <QDir>
+#include <QDateTime>
 
 using namespace Jungle;
 
@@ -50,7 +51,13 @@ void Queue::enqueue(const QVariantMap& input)
 {
     Q_ASSERT(!input.isEmpty());
 
-    m_coll.insert(input);
+    QVariantMap map(input);
+    // Just using the mtime is not enough as this function is often called
+    // with the same milliseconds. The `count` solution is hack, but it
+    // mostly works with little drawbacks.
+    static int count = 0;
+    map["_mtime"] = QDateTime::currentDateTime().toMSecsSinceEpoch() + (count++);
+    m_coll.insert(map);
     if (m_consumer)
         m_consumer->itemsAdded(this);
 }
@@ -62,9 +69,11 @@ bool Queue::empty()
 
 void Queue::dequeue()
 {
-    QVariantMap map = m_coll.findOne(QVariantMap());
+    QVariantMap order = {{"_mtime", 1}};
+    QVariantMap hint = {{"$orderby", order}};
+    QVariantMap map = m_coll.findOne(QVariantMap(), hint);
     if (map.isEmpty()) {
-        Q_ASSERT_X(0, "", "Queue::pop called when empty!");
+        Q_ASSERT_X(0, "", "Queue::dequeue called when empty!");
     }
     QString id = map.value("_id").toString();
     m_coll.remove(id);
@@ -82,11 +91,14 @@ ConsumerInterface* Queue::consumer()
 
 QVariantMap Queue::head()
 {
-    QVariantMap map = m_coll.findOne(QVariantMap());
+    QVariantMap order = {{"_mtime", 1}};
+    QVariantMap hint = {{"$orderby", order}};
+    QVariantMap map = m_coll.findOne(QVariantMap(), hint);
     if (map.isEmpty()) {
-        Q_ASSERT_X(0, "", "Queue::top called when empty!");
+        Q_ASSERT_X(0, "", "Queue::head called when empty!");
     }
     map.remove("_id");
+    map.remove("_mtime");
 
     return map;
 }

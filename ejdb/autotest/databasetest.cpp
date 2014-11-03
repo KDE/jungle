@@ -52,6 +52,7 @@ private Q_SLOTS:
     void testQueryRegexp();
     void testQueryCount();
     void testQueryFindOne();
+    void testQuerySort();
 private:
     QTemporaryDir m_tempDir;
     QScopedPointer<JsonDatabase> db;
@@ -335,6 +336,26 @@ void DatabaseTest::testQueryFindOne()
     QVariantMap output = col.findOne(queryMap);
     QCOMPARE(output, data);
 }
+
+void DatabaseTest::testQuerySort()
+{
+    QVariantMap a = {{"a", 2}};
+    QVariantMap b = {{"a", 1}};
+    QVariantMap c = {{"a", 3}};
+
+    JsonCollection col = db->collection("testCol");
+    col.insert(a);
+    QString id = col.insert(b);
+    col.insert(c);
+
+    b.insert("_id", id);
+
+    QVariantMap order = {{"a", 1}};
+    QVariantMap hint = {{"$orderby", order}};
+    QVariantMap output = col.findOne(QVariantMap(), hint);
+    QCOMPARE(output, b);
+}
+
 
 
 QTEST_MAIN(DatabaseTest);

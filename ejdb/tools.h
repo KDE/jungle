@@ -26,10 +26,14 @@
 #include <QRegularExpression>
 
 // The object should be destroyed with bson_del
-inline bson* mapToBson(const QVariantMap& map)
+inline bson* mapToBson(const QVariantMap& map, bool query = false)
 {
     bson* rec = new bson();
-    bson_init(rec);
+    if (query) {
+        bson_init_as_query(rec);
+    } else {
+        bson_init(rec);
+    }
 
     QMapIterator<QString, QVariant> it(map);
     while (it.hasNext()) {
@@ -140,6 +144,7 @@ inline bson* mapToBson(const QVariantMap& map)
             }
 
             default: {
+                qDebug() << var.typeName();
                 Q_ASSERT(0);
             }
         }
