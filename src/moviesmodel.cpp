@@ -37,6 +37,7 @@ MoviesModel::MoviesModel(QObject* parent)
     names.insert(UrlRole, "url");
     names.insert(CoverRole, "cover");
     names.insert(ReleaseDateRole, "date");
+    names.insert(YearRole, "year");
     setRoleNames(names);
 
     connect(Database::instance(), SIGNAL(movieAdded(QVariantMap)),
@@ -76,16 +77,19 @@ QVariant MoviesModel::data(const QModelIndex& index, int role) const
     QVariantMap movie = m_movies[index.row()];
     switch (role) {
         case Qt::DisplayRole:
-            return movie["title"].toString();
+            return movie.value("title").toString();
 
         case UrlRole:
-            return movie["url"].toString();
+            return movie.value("url").toString();
 
         case CoverRole:
-            return movie["posterPath"].toString();
+            return movie.value("posterPath").toString();
 
         case ReleaseDateRole:
-            return movie["releaseDate"].toDate();
+            return movie.value("releaseDate").toDate();
+
+        case YearRole:
+            return movie.value("year").toInt();
     }
 
     return QVariant();

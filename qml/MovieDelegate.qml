@@ -35,8 +35,8 @@ ColumnLayout {
     }
 
     PlasmaComponents.Label {
-        Layout.fillWidth: true
-        text: date.getFullYear()
+        text: year
+        Layout.maximumWidth: parent.width
 
         opacity: 0.5
         elide: Text.ElideRight
