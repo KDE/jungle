@@ -99,5 +99,12 @@ Item {
                 toolBoxHideTimer.restart()
         }
     }
+
+    // The VideoPlayer should always have a black background
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        z: -1
+    }
 }
 
