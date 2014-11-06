@@ -58,6 +58,7 @@ install(TARGETS jungle DESTINATION ${BIN_INSTALL_DIR})
 #
 set(SRC
     qmlplugins.cpp
+    cursor.cpp
     moviesmodel.cpp
     tvshowsmodel.cpp
     tvepisodemodel.cpp
@@ -70,6 +71,7 @@ add_library(jungleqmlplugin SHARED ${SRC})
 target_link_libraries(jungleqmlplugin
     Qt5::Core
     Qt5::Qml
+    Qt5::Quick
     junglecommon
 )
 

@@ -25,8 +25,14 @@
 #include "tvepisodemodel.h"
 #include "videosmodel.h"
 #include "sortmodel.h"
+#include "cursor.h"
 
 #include <QtQml/qqml.h>
+
+static QObject* cursor_singleton(QQmlEngine*, QJSEngine*)
+{
+    return new Jungle::Cursor();
+}
 
 void QmlPlugins::registerTypes(const char *uri)
 {
@@ -37,5 +43,6 @@ void QmlPlugins::registerTypes(const char *uri)
     qmlRegisterType<Jungle::TvEpisodeModel> (uri, 0, 1, "TvEpisodeModel");
     qmlRegisterType<Jungle::VideosModel> (uri, 0, 1, "VideosModel");
     qmlRegisterType<Jungle::SortModel> (uri, 0, 1, "SortModel");
+    qmlRegisterSingletonType<Jungle::Cursor>(uri, 0, 1, "Cursor", cursor_singleton);
 }
 
