@@ -173,7 +173,7 @@ void DatabaseTest::testInsertAndQuery()
     QString id2 = col.insert(data);
 
     QVariantMap queryMap = {{"type", "episode"}};
-    JsonQuery query = col.execute(queryMap);
+    JsonQuery query = col.find(queryMap);
 
     QCOMPARE(query.totalCount(), 2);
     QVERIFY(query.next());
@@ -204,7 +204,7 @@ void DatabaseTest::testAndQuery()
 
     QVariantMap queryMap = {{"type", "episode"},
                             {"series", "Outlander"}};
-    JsonQuery query = col.execute(queryMap);
+    JsonQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 1);
     QVERIFY(query.next());
     data["_id"] = id;
@@ -227,7 +227,7 @@ void DatabaseTest::testQueryNull()
     col.insert(data2);
 
     QVariantMap queryMap;
-    JsonQuery query = col.execute(queryMap);
+    JsonQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 2);
 }
 
@@ -250,7 +250,7 @@ void DatabaseTest::testQueryNullValue()
     // Will return all items which do not have a mimetype
     QVariantMap queryMap = {{"type", "episode"},
                             {"mimetype", QVariant()}};
-    JsonQuery query = col.execute(queryMap);
+    JsonQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 1);
     QVERIFY(query.next());
     QCOMPARE(query.result(), data2);
@@ -275,23 +275,23 @@ void DatabaseTest::testQueryRegexp()
     col.insert(data2);
 
     QVariantMap queryMap = {{"type", QRegularExpression("ep.*")}};
-    JsonQuery query = col.execute(queryMap);
+    JsonQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 1);
     QVERIFY(query.next());
     QCOMPARE(query.result(), data);
     QVERIFY(!query.next());
 
     QVariantMap queryMap2 = {{"type", QRegularExpression("tv")}};
-    JsonQuery query2 = col.execute(queryMap2);
+    JsonQuery query2 = col.find(queryMap2);
     QCOMPARE(query2.totalCount(), 0);
 
     QVariantMap queryMap3 = {{"series", QRegularExpression("outlander")}};
-    JsonQuery query3 = col.execute(queryMap3);
+    JsonQuery query3 = col.find(queryMap3);
     QCOMPARE(query3.totalCount(), 0);
 
     QRegularExpression exp("outlander", QRegularExpression::CaseInsensitiveOption);
     QVariantMap queryMap4 = {{"series", exp}};
-    JsonQuery query4 = col.execute(queryMap4);
+    JsonQuery query4 = col.find(queryMap4);
     QCOMPARE(query4.totalCount(), 1);
     QVERIFY(query4.next());
     QCOMPARE(query4.result(), data);

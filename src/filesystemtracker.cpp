@@ -73,7 +73,7 @@ void FileSystemTracker::slotVideoResult(const QString& filePath)
 
 void FileSystemTracker::slotFetchFinished()
 {
-    JsonQuery q = m_coll.execute(QVariantMap());
+    JsonQuery q = m_coll.find(QVariantMap());
     while (q.next()) {
         QVariantMap map = q.result();
         QString filePath = map.value("url").toString();

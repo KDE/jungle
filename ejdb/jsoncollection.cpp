@@ -97,7 +97,7 @@ bool JsonCollection::remove(const QString& id)
     return ejdbrmbson(m_coll, &oid);
 }
 
-JsonQuery JsonCollection::execute(const QVariantMap& map, const QVariantMap& hints) const
+JsonQuery JsonCollection::find(const QVariantMap& map, const QVariantMap& hints) const
 {
     bson* rec = mapToBson(map, true);
     bson* hint = mapToBson(hints, true);

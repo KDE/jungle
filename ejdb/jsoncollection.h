@@ -39,7 +39,7 @@ public:
     QVariantMap fetch(const QString& id) const;
     bool remove(const QString& id);
 
-    JsonQuery execute(const QVariantMap& query, const QVariantMap& hints = QVariantMap()) const;
+    JsonQuery find(const QVariantMap& query, const QVariantMap& hints = QVariantMap()) const;
     int count(const QVariantMap& query) const;
     QVariantMap findOne(const QVariantMap& query, const QVariantMap& hints = QVariantMap()) const;
 private:
