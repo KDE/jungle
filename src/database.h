@@ -50,6 +50,7 @@ public:
     QList<QVariantMap> allVideos() const;
 
 signals:
+    void videoAdded(const QVariantMap& movie);
     void movieAdded(const QVariantMap& movie);
     void tvShowAdded(const QVariantMap& show);
     void tvEpisodeAdded(const QVariantMap& episode);

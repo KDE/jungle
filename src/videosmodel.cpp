@@ -33,6 +33,9 @@ VideosModel::VideosModel(QObject* parent): QAbstractListModel(parent)
     QHash<int, QByteArray> names = roleNames();
     names.insert(UrlRole, "url");
     setRoleNames(names);
+
+    connect(Database::instance(), SIGNAL(videoAdded(QVariantMap)),
+            this, SLOT(slotNewVideo(QVariantMap)));
 }
 
 void VideosModel::slotPopulate()
@@ -40,6 +43,23 @@ void VideosModel::slotPopulate()
     beginResetModel();
     m_videos = Database::instance()->allVideos();
     endResetModel();
+}
+
+void VideosModel::slotNewVideo(const QVariantMap& video)
+{
+    QString url = video.value("url").toString();
+    for (int i = 0; i < m_videos.size(); i++) {
+        if (m_videos[i].value("url").toString() == url) {
+            m_videos[i] = video;
+            QModelIndex index = createIndex(i, 0);
+            emit dataChanged(index, index);
+            return;
+        }
+    }
+
+    beginInsertRows(QModelIndex(), m_videos.size(), m_videos.size());
+    m_videos << video;
+    endInsertRows();
 }
 
 QVariant VideosModel::data(const QModelIndex& index, int role) const

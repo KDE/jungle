@@ -101,6 +101,8 @@ void Database::add(const QVariantMap& item)
         emit tvEpisodeAdded(item);
     } else if (type == QStringLiteral("tvshow")) {
         emit tvShowAdded(item);
+    } else if (type == QStringLiteral("video")) {
+        emit videoAdded(item);
     }
 }
 

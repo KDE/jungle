@@ -40,6 +40,7 @@ public:
 
 private slots:
     void slotPopulate();
+    void slotNewVideo(const QVariantMap& video);
 
 private:
     QList<QVariantMap> m_videos;
