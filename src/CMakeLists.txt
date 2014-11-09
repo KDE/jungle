@@ -77,5 +77,6 @@ target_link_libraries(jungleqmlplugin
 
 install(TARGETS jungleqmlplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
 install(FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/jungle)
+install(FILES jungle.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
 add_subdirectory(autotest)

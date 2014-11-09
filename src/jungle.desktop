@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Jungle
+GenericName=KDE Video Player
+Comment=An amazing video player
+Exec=jungle %U
+Terminal=false
+Type=Application
+Categories=Qt;KDE;Multimedia;
+MimeType=video/mp4;
+Icon=nepomuk
