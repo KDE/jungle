@@ -106,6 +106,12 @@ void Database::add(const QVariantMap& item)
     }
 }
 
+void Database::remove(const QString& id)
+{
+    Q_ASSERT(!id.isEmpty());
+    m_coll.remove(id);
+}
+
 QList<QVariantMap> Database::allMovies() const
 {
     QVariantMap queryMap = {{"type", "movie"}};

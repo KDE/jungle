@@ -50,7 +50,8 @@ int main(int argc, char** argv)
 
     QObject::connect(&fsTracker, &FileSystemTracker::videoRemoved,
             [&](const QString& filePath) {
-        qDebug() << "HANDLE THIS CASE" << filePath;
+        qDebug() << "FILE DELETED" << filePath;
+        processor.removeFile(filePath);
     });
 
     qDebug() << "Starting QML";

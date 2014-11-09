@@ -41,6 +41,7 @@ public:
     QVariantMap query(const QVariantMap& map);
 
     void add(const QVariantMap& item);
+    void remove(const QString& id);
 
     QString showId(const QString& name);
 

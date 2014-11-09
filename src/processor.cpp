@@ -89,6 +89,17 @@ void Processor::addFile(const QString& filePath)
     m_guessItQueue.enqueue(map);
 }
 
+void Processor::removeFile(const QString& filePath)
+{
+    Q_ASSERT(!filePath.isEmpty());
+
+    QVariantMap map;
+    map.insert("url", filePath);
+    map.insert("delete", true);
+
+    m_saveQueue.enqueue(map);
+}
+
 void Processor::resume()
 {
     for (Queue* q : m_queues) {

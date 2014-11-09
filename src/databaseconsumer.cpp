@@ -87,7 +87,12 @@ void DatabaseConsumer::itemsAdded(QueueInterface* queue)
         }
     }
 
-    m_db->add(item);
+    if (item.value("delete").toBool() && item.contains("_id")) {
+        m_db->remove(item.value("_id").toString());
+    }
+    else {
+        m_db->add(item);
+    }
 
     queue->dequeue();
 }

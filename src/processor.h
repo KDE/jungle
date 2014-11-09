@@ -35,6 +35,7 @@ public:
 
 public slots:
     void addFile(const QString& filePath);
+    void removeFile(const QString& filePath);
     void resume();
 
 private:
