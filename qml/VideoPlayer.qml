@@ -129,5 +129,9 @@ Item {
         color: "black"
         z: -1
     }
+
+    onVisibleChanged: {
+        Jungle.Cursor.show()
+    }
 }
 
