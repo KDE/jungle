@@ -32,7 +32,8 @@ public:
     virtual void enqueue(const QVariantMap& input) = 0;
     virtual void dequeue() = 0;
     virtual QVariantMap head() = 0;
-    virtual bool empty() = 0;
+    virtual bool empty() const = 0;
+    virtual int size() const = 0;
 };
 
 }

@@ -62,9 +62,14 @@ void Queue::enqueue(const QVariantMap& input)
         m_consumer->itemsAdded(this);
 }
 
-bool Queue::empty()
+bool Queue::empty() const
 {
-    return (m_coll.count(QVariantMap()) == 0);
+    return size() == 0;
+}
+
+int Queue::size() const
+{
+    return m_coll.count(QVariantMap());
 }
 
 void Queue::dequeue()

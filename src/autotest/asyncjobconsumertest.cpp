@@ -59,8 +59,12 @@ public:
             consumer->itemsAdded(this);
     }
 
-    virtual bool empty() {
+    virtual bool empty() const {
         return m_queue.isEmpty();
+    }
+
+    virtual int size() const {
+        return m_queue.size();
     }
 
     virtual void dequeue() {
