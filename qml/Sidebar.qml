@@ -21,7 +21,7 @@ import QtQuick.Layouts 1.0
 
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-ColumnLayout {
+RowLayout {
     id: root
     signal moviesActivated
     signal tvShowsActivated
@@ -32,7 +32,6 @@ ColumnLayout {
         onClicked: root.moviesActivated()
 
         Layout.fillWidth: true
-        Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
     }
 
     PlasmaComponents.ToolButton {
@@ -40,7 +39,6 @@ ColumnLayout {
         onClicked: root.tvShowsActivated()
 
         Layout.fillWidth: true
-        Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
     }
 
     PlasmaComponents.ToolButton {
@@ -48,10 +46,5 @@ ColumnLayout {
         onClicked: root.videosActivated()
 
         Layout.fillWidth: true
-        Layout.alignment: Qt.AlignTop | Qt.AlignVCenter
-    }
-
-    Item {
-        Layout.fillHeight: true
     }
 }

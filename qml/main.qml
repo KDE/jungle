@@ -26,7 +26,9 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 ApplicationWindow {
     id: applicationWindow
     title: "Jungle"
-    color: "black"
+
+    SystemPalette { id: sysPal }
+    color: sysPal.base
 
     width: 1800
     height: 1600
@@ -34,14 +36,10 @@ ApplicationWindow {
 
     StackView {
         id: globalView
-        initialItem: RowLayout {
+        initialItem: ColumnLayout {
             Sidebar {
-                id: sidebar
-
-                Layout.minimumWidth: 400
-                Layout.maximumWidth: 400
-                Layout.fillHeight: true
-
+                z: 1000
+                Layout.fillWidth: true
                 onMoviesActivated: {
                     stackView.pop(movies)
                 }
