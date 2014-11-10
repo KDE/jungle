@@ -13,6 +13,7 @@ GridView {
     }
 
     delegate: MovieDelegate {
+        subtext: model.year
         MouseArea {
             anchors.fill: parent
             onClicked: gridView.play(url)

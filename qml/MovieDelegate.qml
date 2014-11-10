@@ -16,27 +16,42 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import QtQuick 2.1
+import QtQuick 2.3
 import QtQuick.Layouts 1.0
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 ColumnLayout {
+    property alias subtext: sub.text
+    width: gridView.cellWidth
+    height: gridView.cellHeight
+    clip: true
+
     Image {
         source: cover
         fillMode: Image.PreserveAspectFit
+        asynchronous: true
+        mipmap: true
+
+        Layout.fillHeight: true
+        Layout.fillWidth: true
+
+        width: gridView.cellWidth
     }
 
     PlasmaComponents.Label {
-        Layout.fillWidth: true
         text: display
+        Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+        Layout.maximumWidth: gridView.cellWidth
 
         font.bold: true
         elide: Text.ElideRight
+        clip: true
     }
 
     PlasmaComponents.Label {
-        text: year
-        Layout.maximumWidth: parent.width
+        id: sub
+        Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+        Layout.maximumWidth: gridView.cellHeight
 
         opacity: 0.5
         elide: Text.ElideRight

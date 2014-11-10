@@ -27,7 +27,7 @@ FocusScope {
     signal showSelected (string showId)
 
     GridView {
-        id: tvshows
+        id: gridView
         model: Jungle.SortModel {
             sourceModel: Jungle.TvShowsModel {}
         }

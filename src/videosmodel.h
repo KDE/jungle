@@ -36,6 +36,7 @@ public:
 
     enum Roles {
         UrlRole = Qt::UserRole + 1,
+        DateRole
     };
 
 private slots:

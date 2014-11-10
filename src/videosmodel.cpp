@@ -23,6 +23,8 @@
 
 #include <QUrl>
 #include <QTimer>
+#include <QFileInfo>
+#include <QDateTime>
 
 using namespace Jungle;
 
@@ -32,6 +34,7 @@ VideosModel::VideosModel(QObject* parent): QAbstractListModel(parent)
 
     QHash<int, QByteArray> names = roleNames();
     names.insert(UrlRole, "url");
+    names.insert(DateRole, "date");
     setRoleNames(names);
 
     connect(Database::instance(), SIGNAL(videoAdded(QVariantMap)),
@@ -69,12 +72,16 @@ QVariant VideosModel::data(const QModelIndex& index, int role) const
     }
 
     QVariantMap video = m_videos[index.row()];
+    const QString url = video.value("url").toString();
     switch (role) {
         case Qt::DisplayRole:
-            return QUrl::fromLocalFile(video["url"].toString()).fileName();
+            return QUrl::fromLocalFile(url).fileName();
 
         case UrlRole:
-            return video["url"].toString();
+            return url;
+
+        case DateRole:
+            return QFileInfo(url).lastModified();
     }
 
     return QVariant();
