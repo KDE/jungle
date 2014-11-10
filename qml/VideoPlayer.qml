@@ -71,6 +71,12 @@ Item {
         mediaPlayer.play()
     }
 
+    function playUrl(url) {
+        source = url
+        focus = true
+        mediaPlayer.play()
+    }
+
     function stop() {
         mediaPlayer.stop()
     }

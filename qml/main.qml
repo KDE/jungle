@@ -21,6 +21,8 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.1
 import QtQuick.Window 2.1
 
+import org.kde.plasma.components 2.0 as PlasmaComponents
+
 ApplicationWindow {
     id: applicationWindow
     title: "Jungle"
@@ -84,11 +86,8 @@ ApplicationWindow {
                     Layout.fillHeight: true
                     focus: true
                     onPlay: {
-                        videoPlayer.source = url
-                        videoPlayer.focus = true
                         globalView.push(videoPlayer)
-
-                        videoPlayer.play()
+                        videoPlayer.playUrl(url)
                     }
                 }
             }
@@ -108,11 +107,8 @@ ApplicationWindow {
                 visible: false
 
                 onPlay: {
-                    videoPlayer.source = url
-                    videoPlayer.focus = true
                     globalView.push(videoPlayer)
-
-                    videoPlayer.play()
+                    videoPlayer.playUrl(url)
                 }
             }
 
@@ -121,11 +117,8 @@ ApplicationWindow {
                 visible: false
 
                 onPlay: {
-                    videoPlayer.source = url
-                    videoPlayer.focus = true
                     globalView.push(videoPlayer)
-
-                    videoPlayer.play()
+                    videoPlayer.playUrl(url)
                 }
             }
         }
