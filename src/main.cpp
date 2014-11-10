@@ -28,6 +28,8 @@
 #include <QDebug>
 #include <QTimer>
 
+#include <KDBusService>
+
 #include "processor.h"
 #include "filesystemtracker.h"
 
@@ -38,6 +40,8 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
     app.setApplicationDisplayName("Jungle");
     app.setWindowIcon(QIcon::fromTheme("nepomuk"));
+
+    KDBusService service(KDBusService::Unique);
 
     Processor processor;
     FileSystemTracker fsTracker;

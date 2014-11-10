@@ -46,6 +46,7 @@ target_link_libraries(jungle
     Qt5::DBus
     Qt5::Widgets
     KF5::Baloo
+    KF5::DBusAddons
     TmdbQt::TmdbQt5
     kjsondatabase
     junglecommon
