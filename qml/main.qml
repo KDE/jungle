@@ -67,7 +67,7 @@ ApplicationWindow {
 
         onFinished: {
             jungleConfig.initialRun = false
-            globalView.push(mainView)
+            finishInitialization();
         }
     }
 
@@ -78,7 +78,7 @@ ApplicationWindow {
                 push(firstRun)
             }
             else {
-                push(mainView)
+                finishInitialization();
             }
         }
     }
@@ -96,6 +96,17 @@ ApplicationWindow {
             applicationWindow.visibility = Window.FullScreen
         } else {
             applicationWindow.visibility = Window.Maximized
+        }
+    }
+
+    function finishInitialization() {
+        if (jungleArg) {
+            globalView.push(mainView)
+            globalView.push(videoPlayer)
+            videoPlayer.playUrl(jungleArg)
+        }
+        else {
+            globalView.push(mainView)
         }
     }
 }

@@ -27,7 +27,11 @@
 #include <QDebug>
 #include <QTimer>
 
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+
 #include <KDBusService>
+#include <KLocalizedString>
 
 #include "processor.h"
 #include "filesystemtracker.h"
@@ -42,6 +46,15 @@ int main(int argc, char** argv)
     app.setWindowIcon(QIcon::fromTheme("nepomuk"));
 
     KDBusService service(KDBusService::Unique);
+
+    QCommandLineParser parser;
+    parser.addPositionalArgument(i18n("url"), i18n("The url to play"));
+    parser.addHelpOption();
+    parser.process(app);
+
+    if (parser.positionalArguments().size() > 1) {
+        parser.showHelp(1);
+    }
 
     Processor processor;
     FileSystemTracker fsTracker;
@@ -65,6 +78,12 @@ int main(int argc, char** argv)
     QQmlContext* objectContext = engine.rootContext();
     objectContext->setContextProperty("jungleProcessor", &processor);
     objectContext->setContextProperty("jungleConfig", &config);
+
+    QString arg;
+    if (!parser.positionalArguments().isEmpty()) {
+        arg = parser.positionalArguments().first();
+    }
+    objectContext->setContextProperty("jungleArg", arg);
 
     QString path = QStandardPaths::locate(QStandardPaths::DataLocation, "main.qml");
     QQmlComponent component(&engine, path);
