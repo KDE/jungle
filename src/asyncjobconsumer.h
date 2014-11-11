@@ -31,7 +31,7 @@ class AsyncJobConsumer : public QObject, public ConsumerInterface
 {
     Q_OBJECT
 public:
-    explicit AsyncJobConsumer(QList<QueueInterface*> output, QObject* parent = 0);
+    explicit AsyncJobConsumer(QueueInterface* input, QList<QueueInterface*> output, QObject* parent = 0);
 
     virtual void itemsAdded(QueueInterface* queue);
 

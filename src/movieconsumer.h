@@ -28,8 +28,8 @@ namespace Jungle {
 class MovieConsumer : public TheMovieDbConsumer
 {
 public:
-    explicit MovieConsumer(TheMovieDbStore* api, QList<QueueInterface*> output, QObject* parent = 0)
-        : TheMovieDbConsumer(api, output, parent)
+    explicit MovieConsumer(TheMovieDbStore* api, QueueInterface* input, QList<QueueInterface*> output, QObject* parent = 0)
+        : TheMovieDbConsumer(api, input, output, parent)
         , m_api(api)
     {
     }

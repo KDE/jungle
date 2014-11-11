@@ -24,18 +24,18 @@
 
 using namespace Jungle;
 
-AsyncJobConsumer::AsyncJobConsumer(QList< QueueInterface* > output, QObject* parent)
+AsyncJobConsumer::AsyncJobConsumer(QueueInterface* input, QList< QueueInterface* > output, QObject* parent)
     : QObject(parent)
     , m_job(0)
     , m_outputQueues(output)
-    , m_inputQueue(0)
+    , m_inputQueue(input)
     , m_ready(true)
 {
 }
 
 void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
 {
-    m_inputQueue = queue;
+    Q_ASSERT(m_inputQueue == queue);
     if (m_job) {
         return;
     }

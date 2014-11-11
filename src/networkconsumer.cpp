@@ -21,9 +21,9 @@
 
 using namespace Jungle;
 
-NetworkConsumer::NetworkConsumer(QNetworkAccessManager* manager,
+NetworkConsumer::NetworkConsumer(QNetworkAccessManager* manager, QueueInterface* input,
                                  QList<QueueInterface*> output, QObject* parent)
-    : AsyncJobConsumer(output, parent)
+    : AsyncJobConsumer(input, output, parent)
 {
     bool accessible = (manager->networkAccessible() == QNetworkAccessManager::Accessible);
     setReady(accessible);

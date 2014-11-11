@@ -24,9 +24,10 @@
 
 using namespace Jungle;
 
-TheMovieDbConsumer::TheMovieDbConsumer(TheMovieDbStore* store, QList<QueueInterface*> output,
+TheMovieDbConsumer::TheMovieDbConsumer(TheMovieDbStore* store, QueueInterface* input,
+                                       QList<QueueInterface*> output,
                                        QObject* parent)
-    : AsyncJobConsumer(output, parent)
+    : AsyncJobConsumer(input, output, parent)
 {
     setReady(false);
     if (store->isInitialized()) {

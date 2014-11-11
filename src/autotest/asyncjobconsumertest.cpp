@@ -82,8 +82,8 @@ public:
 class SimpleJobConsumer : public AsyncJobConsumer
 {
 public:
-    explicit SimpleJobConsumer(QList< QueueInterface* > output, QObject* parent = 0)
-        : AsyncJobConsumer(output, parent)
+    explicit SimpleJobConsumer(QueueInterface* input, QList< QueueInterface* > output, QObject* parent = 0)
+        : AsyncJobConsumer(input, output, parent)
     {
     }
 protected:
@@ -97,9 +97,9 @@ void AsyncJobConsumerTest::testSimple()
     // GIVEN
     Queue outQueue;
     QList<QueueInterface*> l = {&outQueue};
-    SimpleJobConsumer consumer(l);
 
     Queue queue;
+    SimpleJobConsumer consumer(&queue, l);
     queue.consumer = &consumer;
 
     // WHEN
@@ -126,8 +126,8 @@ void AsyncJobConsumerTest::testSimple()
 class SkippingConsumer : public AsyncJobConsumer
 {
 public:
-    explicit SkippingConsumer(QList< QueueInterface* > output, QObject* parent = 0)
-        : AsyncJobConsumer(output, parent)
+    explicit SkippingConsumer(QueueInterface* input, QList< QueueInterface* > output, QObject* parent = 0)
+        : AsyncJobConsumer(input, output, parent)
     {
     }
 protected:
@@ -142,9 +142,9 @@ void AsyncJobConsumerTest::testSkippingItems()
     // GIVEN
     Queue outQueue;
     QList<QueueInterface*> l = {&outQueue};
-    SkippingConsumer consumer(l);
 
     Queue queue;
+    SkippingConsumer consumer(&queue, l);
     queue.consumer = &consumer;
 
     // WHEN

@@ -29,7 +29,8 @@ class TheMovieDbConsumer : public AsyncJobConsumer
 {
     Q_OBJECT
 public:
-    explicit TheMovieDbConsumer(TheMovieDbStore* store, QList<QueueInterface*> output, QObject* parent = 0);
+    explicit TheMovieDbConsumer(TheMovieDbStore* store, QueueInterface* input,
+                                QList<QueueInterface*> output, QObject* parent = 0);
 
 private slots:
     void slotInitialized();

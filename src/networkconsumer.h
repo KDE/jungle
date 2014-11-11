@@ -29,7 +29,7 @@ class NetworkConsumer : public AsyncJobConsumer
 {
     Q_OBJECT
 public:
-    explicit NetworkConsumer(QNetworkAccessManager* manager,
+    explicit NetworkConsumer(QNetworkAccessManager* manager, QueueInterface* input,
                              QList<QueueInterface*> output, QObject* parent = 0);
 
 private slots:

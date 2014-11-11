@@ -28,8 +28,9 @@ namespace Jungle {
 class NetworkImageConsumer : public NetworkConsumer
 {
 public:
-    explicit NetworkImageConsumer(QNetworkAccessManager* manager, QList<QueueInterface*> output, QObject* parent = 0)
-        : NetworkConsumer(manager, output, parent)
+    explicit NetworkImageConsumer(QNetworkAccessManager* manager, QueueInterface* input,
+                                  QList<QueueInterface*> output, QObject* parent = 0)
+        : NetworkConsumer(manager, input, output, parent)
         , m_manager(manager)
     {
     }

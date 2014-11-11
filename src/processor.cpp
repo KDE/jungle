@@ -42,7 +42,7 @@ Processor::Processor()
     , m_saveQueue("save")
 {
     QList<QueueInterface*> giOutputQ = {&m_saveQueue, &m_movieQueue, &m_tvShowGenQueue};
-    GuessItConsumer* guessItConsumer = new GuessItConsumer(giOutputQ);
+    GuessItConsumer* guessItConsumer = new GuessItConsumer(&m_guessItQueue, giOutputQ);
     m_guessItQueue.setConsumer(guessItConsumer);
 
     QList<QueueInterface*> tvGenOutputQ = {&m_saveQueue, &m_tvShowQueue};
@@ -52,19 +52,19 @@ Processor::Processor()
     TheMovieDbStore* movieDbApi = new TheMovieDbStore();
 
     QList<QueueInterface*> movieOutputQ = {&m_saveQueue, &m_networkImageQueue};
-    MovieConsumer* movieConsumer = new MovieConsumer(movieDbApi, movieOutputQ);
+    MovieConsumer* movieConsumer = new MovieConsumer(movieDbApi, &m_movieQueue, movieOutputQ);
     m_movieQueue.setConsumer(movieConsumer);
 
     QList<QueueInterface*> tvShowOutputQ = {&m_saveQueue, &m_tvSeasonQueue, &m_networkImageQueue};
-    TvShowConsumer* tvShowConsumer = new TvShowConsumer(movieDbApi, tvShowOutputQ);
+    TvShowConsumer* tvShowConsumer = new TvShowConsumer(movieDbApi, &m_tvShowQueue, tvShowOutputQ);
     m_tvShowQueue.setConsumer(tvShowConsumer);
 
     QList<QueueInterface*> tvSeasonOutputQ = {&m_saveQueue, &m_networkImageQueue};
-    TvSeasonConsumer* tvSeasonConsumer = new TvSeasonConsumer(movieDbApi, tvSeasonOutputQ);
+    TvSeasonConsumer* tvSeasonConsumer = new TvSeasonConsumer(movieDbApi, &m_tvSeasonQueue, tvSeasonOutputQ);
     m_tvSeasonQueue.setConsumer(tvSeasonConsumer);
 
     QList<QueueInterface*> netOutQ = {&m_saveQueue};
-    NetworkImageConsumer* netImgConsumer = new NetworkImageConsumer(&m_network, netOutQ);
+    NetworkImageConsumer* netImgConsumer = new NetworkImageConsumer(&m_network, &m_networkImageQueue, netOutQ);
     m_networkImageQueue.setConsumer(netImgConsumer);
 
     DatabaseConsumer* dbConsumer = new DatabaseConsumer();

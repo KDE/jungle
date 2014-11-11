@@ -28,8 +28,8 @@ namespace Jungle {
 class GuessItConsumer : public AsyncJobConsumer
 {
 public:
-    explicit GuessItConsumer(QList<QueueInterface*> output, QObject* parent = 0)
-        : AsyncJobConsumer(output, parent)
+    explicit GuessItConsumer(QueueInterface* input, QList<QueueInterface*> output, QObject* parent = 0)
+        : AsyncJobConsumer(input, output, parent)
     {
     }
 
