@@ -34,90 +34,90 @@ ApplicationWindow {
     height: 1600
     visible: true // the default is not true
 
-    StackView {
-        id: globalView
-        initialItem: ColumnLayout {
-            Sidebar {
-                z: 1000
-                Layout.fillWidth: true
-                onMoviesActivated: {
-                    stackView.pop(movies)
-                }
+    ColumnLayout {
+        id: mainView
+        visible: false
 
-                onTvShowsActivated: {
-                    stackView.push(tvshows);
-                }
+        Sidebar {
+            z: 1000
+            Layout.fillWidth: true
+            onMoviesActivated: {
+                stackView.pop(movies)
+            }
 
-                onVideosActivated: {
-                    stackView.push(videos);
+            onTvShowsActivated: {
+                stackView.push(tvshows);
+            }
+
+            onVideosActivated: {
+                stackView.push(videos);
+            }
+        }
+
+        StackView {
+            id: stackView
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            delegate: StackViewDelegate {
+                pushTransition: StackViewTransition {
+                    PropertyAnimation {
+                        target: enterItem
+                        property: "y"
+                        from: exitItem.height
+                        to: 0
+                    }
+                }
+                popTransition: StackViewTransition {
+                    PropertyAnimation {
+                        target: exitItem
+                        property: "y"
+                        from: 0
+                        to: enterItem.height
+                    }
                 }
             }
 
-            StackView {
-                id: stackView
+            initialItem: Movies {
+                id: movies
+
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-
-                delegate: StackViewDelegate {
-                    pushTransition: StackViewTransition {
-                        PropertyAnimation {
-                            target: enterItem
-                            property: "y"
-                            from: exitItem.height
-                            to: 0
-                        }
-                    }
-                    popTransition: StackViewTransition {
-                        PropertyAnimation {
-                            target: exitItem
-                            property: "y"
-                            from: 0
-                            to: enterItem.height
-                        }
-                    }
-                }
-
-                initialItem: Movies {
-                    id: movies
-
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    focus: true
-                    onPlay: {
-                        globalView.push(videoPlayer)
-                        videoPlayer.playUrl(url)
-                    }
-                }
-            }
-
-            TvShows {
-                id: tvshows
-                visible: false
-
-                onShowSelected: {
-                    tvEpisodes.showId = showId
-                    stackView.push(tvEpisodes)
-                }
-            }
-
-            TvEpisodes {
-                id: tvEpisodes
-                visible: false
-
+                focus: true
                 onPlay: {
                     globalView.push(videoPlayer)
                     videoPlayer.playUrl(url)
                 }
             }
+        }
 
-            Videos {
-                id: videos
-                visible: false
+        TvShows {
+            id: tvshows
+            visible: false
 
-                onPlay: {
-                    globalView.push(videoPlayer)
-                    videoPlayer.playUrl(url)
-                }
+            onShowSelected: {
+                tvEpisodes.showId = showId
+                stackView.push(tvEpisodes)
+            }
+        }
+
+        TvEpisodes {
+            id: tvEpisodes
+            visible: false
+
+            onPlay: {
+                globalView.push(videoPlayer)
+                videoPlayer.playUrl(url)
+            }
+        }
+
+        Videos {
+            id: videos
+            visible: false
+
+            onPlay: {
+                globalView.push(videoPlayer)
+                videoPlayer.playUrl(url)
             }
         }
     }
@@ -132,6 +132,32 @@ ApplicationWindow {
         Keys.onEscapePressed: {
             videoPlayer.stop()
             globalView.pop()
+        }
+    }
+
+    FirstRun {
+        id: firstRun
+        visible: false
+        progress: jungleProcessor.initialProgress
+
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+
+        onFinished: {
+            jungleConfig.initialRun = false
+            globalView.push(mainView)
+        }
+    }
+
+    StackView {
+        id: globalView
+        Component.onCompleted: {
+            if (jungleConfig.initialRun) {
+                push(firstRun)
+            }
+            else {
+                push(mainView)
+            }
         }
     }
 

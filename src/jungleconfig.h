@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ * <one line to give the library's name and an idea of what it does.>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,44 +18,29 @@
  *
  */
 
-#ifndef JUNGLE_QUEUE_H
-#define JUNGLE_QUEUE_H
+#ifndef JUNGLE_JUNGLECONFIG_H
+#define JUNGLE_JUNGLECONFIG_H
 
-#include "queueinterface.h"
-#include "consumerinterface.h"
-#include "jsondatabase.h"
-#include "jsoncollection.h"
-
-#include <QQueue>
+#include <QObject>
+#include <KConfig>
+#include <KConfigGroup>
 
 namespace Jungle {
 
-class Queue : public QObject, public QueueInterface
+class JungleConfig : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int size READ size NOTIFY sizeChanged)
+    Q_PROPERTY(bool initialRun READ initialRun WRITE setInitialRun)
 public:
-    Queue(const QString& name);
-    virtual ~Queue();
+    JungleConfig(QObject* parent = 0);
+    virtual ~JungleConfig();
 
-    void setConsumer(ConsumerInterface* consumer);
-    ConsumerInterface* consumer();
-
-    virtual void enqueue(const QVariantMap& input);
-    virtual bool empty() const;
-    virtual void dequeue();
-    virtual QVariantMap head();
-    virtual int size() const;
-
-signals:
-    void sizeChanged();
+    bool initialRun() const;
+    void setInitialRun(bool value);
 
 private:
-    ConsumerInterface* m_consumer;
-
-    JsonDatabase* m_db;
-    JsonCollection m_coll;
+    KConfig m_config;
 };
 }
 
-#endif // JUNGLE_QUEUE_H
+#endif // JUNGLE_JUNGLECONFIG_H

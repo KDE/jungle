@@ -58,6 +58,8 @@ void Queue::enqueue(const QVariantMap& input)
     static int count = 0;
     map["_mtime"] = QDateTime::currentDateTime().toMSecsSinceEpoch() + (count++);
     m_coll.insert(map);
+    emit sizeChanged();
+
     if (m_consumer)
         m_consumer->itemsAdded(this);
 }
@@ -82,6 +84,8 @@ void Queue::dequeue()
     }
     QString id = map.value("_id").toString();
     m_coll.remove(id);
+
+    emit sizeChanged();
 }
 
 void Queue::setConsumer(ConsumerInterface* consumer)

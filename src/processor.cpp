@@ -73,6 +73,12 @@ Processor::Processor()
     m_queues << &m_guessItQueue << &m_tvShowGenQueue << &m_tvSeasonQueue
              << &m_tvShowGenQueue << &m_movieQueue << &m_networkImageQueue
              << &m_saveQueue;
+
+    //
+    // Progress Tracking
+    //
+    m_numFilesAdded = m_guessItQueue.size();
+    connect(&m_guessItQueue, SIGNAL(sizeChanged()), this, SIGNAL(initialProgressChanged()));
 }
 
 Processor::~Processor()
@@ -87,6 +93,8 @@ void Processor::addFile(const QString& filePath)
     map.insert("url", filePath);
 
     m_guessItQueue.enqueue(map);
+    m_numFilesAdded++;
+    emit initialProgressChanged();
 }
 
 void Processor::removeFile(const QString& filePath)
@@ -109,3 +117,18 @@ void Processor::resume()
         }
     }
 }
+
+float Processor::initialProgress() const
+{
+    if (m_numFilesAdded) {
+        float queueSize = m_guessItQueue.size();
+        if (queueSize >= m_numFilesAdded) {
+            return 0.0;
+        }
+        return 1.0 - (queueSize / m_numFilesAdded);
+    }
+
+    return 0;
+}
+
+

@@ -35,6 +35,7 @@ set(SRCS
     databaseconsumer.cpp
     tvshowgenerationconsumer.cpp
     processor.cpp
+    jungleconfig.cpp
 
     networkimagefetchjob.cpp
 )
@@ -49,6 +50,7 @@ target_link_libraries(jungle
     Qt5::Widgets
     KF5::Baloo
     KF5::DBusAddons
+    KF5::ConfigCore
     TmdbQt::TmdbQt5
     kjsondatabase
     junglecommon

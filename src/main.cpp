@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,6 +31,7 @@
 
 #include "processor.h"
 #include "filesystemtracker.h"
+#include "jungleconfig.h"
 
 using namespace Jungle;
 
@@ -58,9 +58,13 @@ int main(int argc, char** argv)
         processor.removeFile(filePath);
     });
 
+    JungleConfig config;
+
     qDebug() << "Starting QML";
     QQmlEngine engine;
     QQmlContext* objectContext = engine.rootContext();
+    objectContext->setContextProperty("jungleProcessor", &processor);
+    objectContext->setContextProperty("jungleConfig", &config);
 
     QString path = QStandardPaths::locate(QStandardPaths::DataLocation, "main.qml");
     QQmlComponent component(&engine, path);

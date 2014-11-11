@@ -30,14 +30,20 @@ namespace Jungle {
 class Processor : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(float initialProgress READ initialProgress NOTIFY initialProgressChanged)
 public:
     Processor();
     virtual ~Processor();
+
+    float initialProgress() const;
 
 public slots:
     void addFile(const QString& filePath);
     void removeFile(const QString& filePath);
     void resume();
+
+signals:
+    void initialProgressChanged();
 
 private:
     Queue m_guessItQueue;
