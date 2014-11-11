@@ -35,6 +35,7 @@ AsyncJobConsumer::AsyncJobConsumer(QList< QueueInterface* > output, QObject* par
 
 void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
 {
+    m_inputQueue = queue;
     if (m_job) {
         return;
     }
@@ -42,7 +43,6 @@ void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
     if (!m_ready) {
         return;
     }
-    m_inputQueue = queue;
 
     m_input = queue->head();
     m_job = fetchJob(m_input);
