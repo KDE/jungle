@@ -24,6 +24,7 @@ using namespace Jungle;
 
 SortModel::SortModel(QObject* parent): QSortFilterProxyModel(parent)
 {
+    setSortLocaleAware(true);
     sort(0);
 }
 
