@@ -31,9 +31,6 @@ Jungle::NetworkImageFetchJob::NetworkImageFetchJob(QNetworkAccessManager* manage
     , m_input(input)
     , m_networkRequests(0)
 {
-    connect(manager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(slotNetworkReply(QNetworkReply*)));
-
     for (auto it = m_input.begin(); it != m_input.end(); it++) {
         if (it.value().type() != QVariant::String) {
             continue;
