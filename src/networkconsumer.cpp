@@ -26,7 +26,9 @@ NetworkConsumer::NetworkConsumer(QNetworkAccessManager* manager, QueueInterface*
     : AsyncJobConsumer(input, output, parent)
 {
     bool accessible = (manager->networkAccessible() == QNetworkAccessManager::Accessible);
-    setReady(accessible);
+    if (!accessible) {
+        setReady(accessible);
+    }
 
     connect(manager, SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)),
             this, SLOT(slotNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)));
