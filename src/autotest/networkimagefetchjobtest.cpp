@@ -40,13 +40,14 @@ using namespace Jungle;
 
 void NetworkImageFetchJobTest::test()
 {
+    QNetworkAccessManager manager;
     const QString url("https://www.google.es/images/srpr/logo11w.png");
 
     QVariantMap data;
     data["type"] = "tvepisode";
     data["thumbnail"] = url;
 
-    auto job = new NetworkImageFetchJob(data);
+    auto job = new NetworkImageFetchJob(&manager, data);
     QSignalSpy spy(job, SIGNAL(finished(Job*)));
     spy.wait();
 
@@ -59,11 +60,12 @@ void NetworkImageFetchJobTest::test()
 
 void NetworkImageFetchJobTest::testNoUrl()
 {
+    QNetworkAccessManager manager;
     QVariantMap data;
     data["type"] = "tvepisode";
     data["thumbnail"] = "not-a-url";
 
-    auto job = new NetworkImageFetchJob(data);
+    auto job = new NetworkImageFetchJob(&manager, data);
     QSignalSpy spy(job, SIGNAL(finished(Job*)));
     spy.wait();
 

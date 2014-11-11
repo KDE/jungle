@@ -17,32 +17,25 @@
  *
  */
 
-#ifndef JUNGLE_NETWORK_IMAGE_CONSUMER
-#define JUNGLE_NETWORK_IMAGE_CONSUMER
+#ifndef JUNGLE_NETWORKCONSUMER_H
+#define JUNGLE_NETWORKCONSUMER_H
 
-#include "networkconsumer.h"
-#include "networkimagefetchjob.h"
+#include "asyncjobconsumer.h"
+#include <QNetworkAccessManager>
 
 namespace Jungle {
 
-class NetworkImageConsumer : public NetworkConsumer
+class NetworkConsumer : public AsyncJobConsumer
 {
+    Q_OBJECT
 public:
-    explicit NetworkImageConsumer(QNetworkAccessManager* manager, QList<QueueInterface*> output, QObject* parent = 0)
-        : NetworkConsumer(manager, output, parent)
-    {
-    }
+    explicit NetworkConsumer(QNetworkAccessManager* manager,
+                             QList<QueueInterface*> output, QObject* parent = 0);
 
-protected:
-    virtual Job* fetchJob(const QVariantMap& input)
-    {
-        return new NetworkImageFetchJob(m_manager, input, this);
-    }
-
-private:
-    QNetworkAccessManager* m_manager;
+private slots:
+    void slotNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility access);
 };
 
 }
 
-#endif
+#endif // JUNGLE_NETWORKCONSUMER_H

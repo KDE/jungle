@@ -31,15 +31,14 @@ class NetworkImageFetchJob : public Job
 {
     Q_OBJECT
 public:
-    NetworkImageFetchJob(const QVariantMap& input, QObject* parent = 0);
+    NetworkImageFetchJob(QNetworkAccessManager* manager, const QVariantMap& input, QObject* parent = 0);
 
     virtual QVariantMap data() const;
 
 private slots:
-    void slotNetworkReply(QNetworkReply* reply);
+    void slotNetworkReply();
 
 private:
-    QNetworkAccessManager m_network;
     QVariantMap m_input;
 
     int m_networkRequests;

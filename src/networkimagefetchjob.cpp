@@ -23,13 +23,15 @@
 #include <QUuid>
 #include <QFile>
 #include <QTimer>
+#include <QNetworkRequest>
 
-Jungle::NetworkImageFetchJob::NetworkImageFetchJob(const QVariantMap& input, QObject* parent)
+Jungle::NetworkImageFetchJob::NetworkImageFetchJob(QNetworkAccessManager* manager,
+                                                   const QVariantMap& input, QObject* parent)
     : Job(parent)
     , m_input(input)
     , m_networkRequests(0)
 {
-    connect(&m_network, SIGNAL(finished(QNetworkReply*)),
+    connect(manager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(slotNetworkReply(QNetworkReply*)));
 
     for (auto it = m_input.begin(); it != m_input.end(); it++) {
@@ -39,7 +41,8 @@ Jungle::NetworkImageFetchJob::NetworkImageFetchJob(const QVariantMap& input, QOb
 
         QString val = it.value().toString();
         if (val.startsWith("http://") || val.startsWith("https://")) {
-            m_network.get(QNetworkRequest(QUrl(val)));
+            QNetworkReply* reply = manager->get(QNetworkRequest(QUrl(val)));
+            connect(reply, SIGNAL(finished()), this, SLOT(slotNetworkReply()));
             m_networkRequests++;
         }
     }
@@ -55,8 +58,9 @@ QVariantMap Jungle::NetworkImageFetchJob::data() const
     return m_input;
 }
 
-void Jungle::NetworkImageFetchJob::slotNetworkReply(QNetworkReply* reply)
+void Jungle::NetworkImageFetchJob::slotNetworkReply()
 {
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     const QString dataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 
     QString name = QUuid::createUuid().toString();

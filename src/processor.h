@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QNetworkAccessManager>
 #include "queue.h"
 
 namespace Jungle {
@@ -48,6 +49,9 @@ private:
     Queue m_saveQueue;
 
     QList<Queue*> m_queues;
+
+    int m_numFilesAdded;
+    QNetworkAccessManager m_network;
 };
 }
 

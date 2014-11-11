@@ -64,7 +64,7 @@ Processor::Processor()
     m_tvSeasonQueue.setConsumer(tvSeasonConsumer);
 
     QList<QueueInterface*> netOutQ = {&m_saveQueue};
-    NetworkImageConsumer* netImgConsumer = new NetworkImageConsumer(netOutQ);
+    NetworkImageConsumer* netImgConsumer = new NetworkImageConsumer(&m_network, netOutQ);
     m_networkImageQueue.setConsumer(netImgConsumer);
 
     DatabaseConsumer* dbConsumer = new DatabaseConsumer();
