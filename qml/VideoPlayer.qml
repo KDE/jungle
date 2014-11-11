@@ -137,7 +137,10 @@ Item {
     }
 
     onVisibleChanged: {
-        Jungle.Cursor.show()
+        if (!visible) {
+            Jungle.Cursor.show()
+            toolBoxHideTimer.stop()
+        }
     }
 }
 
