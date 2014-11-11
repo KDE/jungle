@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -36,12 +35,18 @@ public:
 
     virtual void itemsAdded(QueueInterface* queue);
 
+signals:
+    void readyChanged();
+
 protected:
     /**
      * Create the job out of the input. Return 0 if the input
      * should be ignored
      */
     virtual Job* fetchJob(const QVariantMap& input) = 0;
+
+    void setReady(bool status);
+    bool ready() const;
 
 private slots:
     void slotFinished(Job* job);
@@ -53,6 +58,7 @@ private:
     QueueInterface* m_inputQueue;
 
     QVariantMap m_input;
+    bool m_ready;
 };
 
 }

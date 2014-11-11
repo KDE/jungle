@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,38 +17,24 @@
  *
  */
 
-#ifndef THEMOVIEDBSTORE_H
-#define THEMOVIEDBSTORE_H
+#ifndef JUNGLE_THEMOVIEDBCONSUMER_H
+#define JUNGLE_THEMOVIEDBCONSUMER_H
 
-#include <QObject>
-#include "moviefetchjob.h"
-#include "tvshowfetchjob.h"
-#include "tvseasonfetchjob.h"
-
-#include <tmdbqt/themoviedbapi.h>
+#include "asyncjobconsumer.h"
+#include "themoviedbstore.h"
 
 namespace Jungle {
 
-class TheMovieDbStore : public QObject
+class TheMovieDbConsumer : public AsyncJobConsumer
 {
     Q_OBJECT
 public:
-    explicit TheMovieDbStore(QObject* parent = 0);
-    virtual ~TheMovieDbStore();
+    explicit TheMovieDbConsumer(TheMovieDbStore* store, QList<QueueInterface*> output, QObject* parent = 0);
 
-    MovieFetchJob* fetchMovie(const QString& name, int year = 0);
-    TvShowFetchJob* fetchTvShow(const QString& name, const QString& dbShowId);
-    TvSeasonFetchJob* fetchTvSeason(int showId, int seasonNum, const QString& dbShowId);
+private slots:
+    void slotInitialized();
 
-    bool isInitialized() const;
-
-signals:
-    void initialized();
-
-private:
-    TmdbQt::TheMovieDbApi m_api;
 };
-
 }
 
-#endif // THEMOVIEDBSTORE_H
+#endif // JUNGLE_THEMOVIEDBCONSUMER_H

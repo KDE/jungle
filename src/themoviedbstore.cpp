@@ -52,3 +52,8 @@ TvSeasonFetchJob* TheMovieDbStore::fetchTvSeason(int showId, int seasonNum, cons
 {
     return new TvSeasonFetchJob(&m_api, showId, seasonNum, dbShowId, this);
 }
+
+bool TheMovieDbStore::isInitialized() const
+{
+    return m_api.isInitialized();
+}

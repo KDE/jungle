@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -29,6 +28,8 @@ AsyncJobConsumer::AsyncJobConsumer(QList< QueueInterface* > output, QObject* par
     : QObject(parent)
     , m_job(0)
     , m_outputQueues(output)
+    , m_inputQueue(0)
+    , m_ready(true)
 {
 }
 
@@ -38,6 +39,9 @@ void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
         return;
     }
 
+    if (!m_ready) {
+        return;
+    }
     m_inputQueue = queue;
 
     m_input = queue->head();
@@ -88,3 +92,19 @@ void AsyncJobConsumer::slotFinished(Job* job)
         itemsAdded(m_inputQueue);
     }
 }
+
+bool AsyncJobConsumer::ready() const
+{
+    return m_ready;
+}
+
+void AsyncJobConsumer::setReady(bool status)
+{
+    m_ready = status;
+    emit readyChanged();
+
+    if (m_ready && m_inputQueue && !m_inputQueue->empty()) {
+        itemsAdded(m_inputQueue);
+    }
+}
+

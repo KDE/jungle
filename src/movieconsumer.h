@@ -20,17 +20,16 @@
 #ifndef JUNGLE_MOVIECONSUMER_H
 #define JUNGLE_MOVIECONSUMER_H
 
-#include "asyncjobconsumer.h"
-#include "themoviedbstore.h"
+#include "themoviedbconsumer.h"
 #include "moviefetchjob.h"
 
 namespace Jungle {
 
-class MovieConsumer : public AsyncJobConsumer
+class MovieConsumer : public TheMovieDbConsumer
 {
 public:
     explicit MovieConsumer(TheMovieDbStore* api, QList<QueueInterface*> output, QObject* parent = 0)
-        : AsyncJobConsumer(output, parent)
+        : TheMovieDbConsumer(api, output, parent)
         , m_api(api)
     {
     }

@@ -17,42 +17,27 @@
  *
  */
 
-#ifndef JUNGLE_TVSHOW_CONSUMER_H
-#define JUNGLE_TVSHOW_CONSUMER_H
-
 #include "themoviedbconsumer.h"
-#include "tvshowfetchjob.h"
+#include "themoviedbstore.h"
 
-namespace Jungle {
+#include <QDebug>
 
-class TvShowConsumer : public TheMovieDbConsumer
+using namespace Jungle;
+
+TheMovieDbConsumer::TheMovieDbConsumer(TheMovieDbStore* store, QList<QueueInterface*> output,
+                                       QObject* parent)
+    : AsyncJobConsumer(output, parent)
 {
-public:
-    explicit TvShowConsumer(TheMovieDbStore* api, QList<QueueInterface*> output, QObject* parent = 0)
-        : TheMovieDbConsumer(api, output, parent)
-        , m_api(api)
-    {
+    setReady(false);
+    if (store->isInitialized()) {
+        setReady(true);
     }
 
-protected:
-    virtual Job* fetchJob(const QVariantMap& input)
-    {
-        const QString type = input.value("type").toString();
-        if (type == QStringLiteral("tvshow")) {
-            Q_ASSERT(input.contains("title"));
-
-            const QString title = input.value("title").toString();
-            const QString dbShowId = input.value("id").toString();
-            return m_api->fetchTvShow(title, dbShowId);
-        }
-
-        return 0;
-    }
-
-private:
-    TheMovieDbStore* m_api;
-};
-
+    connect(store, SIGNAL(initialized()), this, SLOT(slotInitialized()));
 }
 
-#endif
+void TheMovieDbConsumer::slotInitialized()
+{
+    qDebug() << "INIT!!!!!!!";
+    setReady(true);
+}

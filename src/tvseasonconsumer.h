@@ -20,17 +20,16 @@
 #ifndef JUNGLE_TVSEASON_CONSUMER_H
 #define JUNGLE_TVSEASON_CONSUMER_H
 
-#include "asyncjobconsumer.h"
-#include "themoviedbstore.h"
+#include "themoviedbconsumer.h"
 #include "tvseasonfetchjob.h"
 
 namespace Jungle {
 
-class TvSeasonConsumer : public AsyncJobConsumer
+class TvSeasonConsumer : public TheMovieDbConsumer
 {
 public:
     explicit TvSeasonConsumer(TheMovieDbStore* api, QList<QueueInterface*> output, QObject* parent = 0)
-        : AsyncJobConsumer(output, parent)
+        : TheMovieDbConsumer(api, output, parent)
         , m_api(api)
     {
     }

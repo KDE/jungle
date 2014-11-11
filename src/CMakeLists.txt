@@ -29,6 +29,7 @@ set(SRCS
     job.cpp
     queue.cpp
     asyncjobconsumer.cpp
+    themoviedbconsumer.cpp
     guessitjob.cpp
     databaseconsumer.cpp
     tvshowgenerationconsumer.cpp
