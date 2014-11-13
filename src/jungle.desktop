@@ -1,7 +1,19 @@
 [Desktop Entry]
 Name=Jungle
+Name[nl]=Jungle
+Name[pt]=Jungle
+Name[uk]=Jungle
+Name[x-test]=xxJunglexx
 GenericName=KDE Video Player
+GenericName[nl]=KDE videospeler
+GenericName[pt]=Leitor de Vídeo do KDE
+GenericName[uk]=Відеопрогравач для KDE
+GenericName[x-test]=xxKDE Video Playerxx
 Comment=An amazing video player
+Comment[nl]=Een verbazende videospeler
+Comment[pt]=Um leitor de vídeos espectacular
+Comment[uk]=Чудовий відеопрогравач
+Comment[x-test]=xxAn amazing video playerxx
 Exec=jungle %U
 Terminal=false
 Type=Application
