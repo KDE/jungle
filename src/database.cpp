@@ -18,7 +18,8 @@
  */
 
 #include "database.h"
-#include "kvariantquery.h"
+
+#include <KVariantStore/KVariantQuery>
 
 #include <QVariantMap>
 #include <QDebug>

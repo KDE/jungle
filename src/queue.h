@@ -22,8 +22,9 @@
 
 #include "queueinterface.h"
 #include "consumerinterface.h"
-#include "kvariantstore.h"
-#include "kvariantcollection.h"
+
+#include <KVariantStore/KVariantStore>
+#include <KVariantStore/KVariantCollection>
 
 #include <QQueue>
 

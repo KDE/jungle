@@ -20,7 +20,8 @@
 
 #include "filesystemtracker.h"
 #include "baloovideosfetcher.h"
-#include <kvariantquery.h>
+
+#include <KVariantStore/KVariantQuery>
 
 #include <QStandardPaths>
 #include <QTimer>

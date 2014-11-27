@@ -18,7 +18,8 @@
  */
 
 #include "queue.h"
-#include "kvariantstore.h"
+
+#include <KVariantStore/KVariantStore>
 
 #include <QDebug>
 #include <QStandardPaths>

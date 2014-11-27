@@ -7,7 +7,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH})
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Core Test DBus Qml Quick Widgets)
 find_package(KF5 REQUIRED COMPONENTS KDELibs4Support DBusAddons I18n Service Baloo)
 find_package(TmdbQt5 REQUIRED)
-find_package(Ejdb REQUIRED)
+find_package(KVariantStore REQUIRED)
 
 find_package(GuessIt 0.9.3 REQUIRED) # Remove 'REQUIRED' on release
 set_package_properties(GuessIt PROPERTIES URL https://github.com/wackou/guessit
@@ -27,13 +27,9 @@ include(KDECompilerSettings)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_SOURCE_DIR}/ejdb
-  ${CMAKE_BINARY_DIR}/ejdb
-  ${EJDB_INCLUDE_DIRS}
 )
 
 add_subdirectory(src)
-add_subdirectory(ejdb)
 add_subdirectory(qml)
 
 feature_summary(WHAT ALL

@@ -23,8 +23,9 @@
 
 #include <QObject>
 #include <QSet>
-#include "kvariantstore.h"
-#include "kvariantcollection.h"
+
+#include <KVariantStore/KVariantStore>
+#include <KVariantStore/KVariantCollection>
 
 namespace Jungle {
 

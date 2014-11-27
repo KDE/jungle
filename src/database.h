@@ -20,9 +20,10 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include "kvariantstore.h"
-#include "kvariantcollection.h"
 #include "jungle_export.h"
+
+#include <KVariantStore/KVariantStore>
+#include <KVariantStore/KVariantCollection>
 
 namespace Jungle {
 
