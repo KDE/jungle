@@ -17,39 +17,34 @@
  *
  */
 
-#ifndef JSONCOLLECTION_H
-#define JSONCOLLECTION_H
+#ifndef _KVARIANT_QUERY_H
+#define _KVARIANT_QUERY_H
 
-#include "kjsondatabase_export.h"
+#include "kvariantstore_export.h"
 #include <QVariantMap>
 #include <tcejdb/ejdb.h>
 
-class JsonDatabase;
-class JsonQuery;
+class KVariantCollection;
 
-class JUNGLE_EXPORT JsonCollection
+class KVARIANTSTORE_EXPORT KVariantQuery
 {
 public:
-    JsonCollection();
-    ~JsonCollection();
+    ~KVariantQuery();
 
-    QString collectionName() const;
+    int totalCount();
 
-    QString insert(const QVariantMap& map);
-    QVariantMap fetch(const QString& id) const;
-    bool remove(const QString& id);
+    bool next();
+    QVariantMap result();
 
-    JsonQuery find(const QVariantMap& query, const QVariantMap& hints = QVariantMap()) const;
-    int count(const QVariantMap& query) const;
-    QVariantMap findOne(const QVariantMap& query, const QVariantMap& hints = QVariantMap()) const;
 private:
-    JsonCollection(EJDB* db, const QString& name);
+    KVariantQuery(EJQ* q, EJCOLL* coll);
 
-    EJDB* m_db;
-    EJCOLL* m_coll;
-    QString m_collectionName;
+    EJQ* m_ejq;
+    EJQRESULT m_result;
+    uint32_t m_count;
+    int m_pos;
 
-    friend class JsonDatabase;
+    friend class KVariantCollection;
 };
 
-#endif // JSONCOLLECTION_H
+#endif

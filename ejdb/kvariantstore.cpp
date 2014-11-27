@@ -17,34 +17,46 @@
  *
  */
 
-#ifndef JSONQUERY_H
-#define JSONQUERY_H
+#include "kvariantstore.h"
+#include "kvariantcollection.h"
 
-#include "kjsondatabase_export.h"
-#include <QVariantMap>
-#include <tcejdb/ejdb.h>
+#include <QDateTime>
+#include <QFile>
+#include <QDebug>
 
-class JsonCollection;
-
-class JUNGLE_EXPORT JsonQuery
+KVariantStore::KVariantStore()
 {
-public:
-    ~JsonQuery();
+    m_jdb = ejdbnew();
+}
 
-    int totalCount();
+KVariantStore::~KVariantStore()
+{
+    ejdbclose(m_jdb);
+    ejdbdel(m_jdb);
+}
 
-    bool next();
-    QVariantMap result();
+QString KVariantStore::filePath() const
+{
+    return m_filePath;
+}
 
-private:
-    JsonQuery(EJQ* q, EJCOLL* coll);
+void KVariantStore::setPath(const QString& filePath)
+{
+    m_filePath = filePath;
+}
 
-    EJQ* m_ejq;
-    EJQRESULT m_result;
-    uint32_t m_count;
-    int m_pos;
+bool KVariantStore::open()
+{
+    QByteArray path = QFile::encodeName(m_filePath);
+    if (!ejdbopen(m_jdb, path.constData(), JBOWRITER | JBOCREAT)) {
+        qDebug() << "Could not open db" << m_filePath;
+        return false;
+    }
 
-    friend class JsonCollection;
-};
+    return true;
+}
 
-#endif // JSONQUERY_H
+KVariantCollection KVariantStore::collection(const QString& name)
+{
+    return KVariantCollection(m_jdb, name);
+}

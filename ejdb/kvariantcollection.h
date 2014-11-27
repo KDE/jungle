@@ -17,32 +17,39 @@
  *
  */
 
-#ifndef EJDB_DATABASE_H
-#define EJDB_DATABASE_H
+#ifndef _KVARIANT_COLLECTION_H
+#define _KVARIANT_COLLECTION_H
 
-#include "kjsondatabase_export.h"
+#include "kvariantstore_export.h"
 #include <QVariantMap>
 #include <tcejdb/ejdb.h>
 
-class JsonCollection;
+class KVariantStore;
+class KVariantQuery;
 
-class JUNGLE_EXPORT JsonDatabase
+class KVARIANTSTORE_EXPORT KVariantCollection
 {
 public:
-    JsonDatabase();
-    ~JsonDatabase();
+    KVariantCollection();
+    ~KVariantCollection();
 
-    void setPath(const QString& filePath);
-    QString filePath() const;
+    QString collectionName() const;
 
-    bool open();
+    QString insert(const QVariantMap& map);
+    QVariantMap fetch(const QString& id) const;
+    bool remove(const QString& id);
 
-    JsonCollection collection(const QString& name);
-
+    KVariantQuery find(const QVariantMap& query, const QVariantMap& hints = QVariantMap()) const;
+    int count(const QVariantMap& query) const;
+    QVariantMap findOne(const QVariantMap& query, const QVariantMap& hints = QVariantMap()) const;
 private:
-    EJDB* m_jdb;
+    KVariantCollection(EJDB* db, const QString& name);
 
-    QString m_filePath;
+    EJDB* m_db;
+    EJCOLL* m_coll;
+    QString m_collectionName;
+
+    friend class KVariantStore;
 };
 
 #endif

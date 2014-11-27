@@ -1,16 +1,16 @@
 add_subdirectory(autotest)
 
-set(JSON_LIB_SRCS
-    jsondatabase.cpp
-    jsoncollection.cpp
-    jsonquery.cpp
+set(KVARIANTSTORE_LIB_SRCS
+    kvariantstore.cpp
+    kvariantcollection.cpp
+    kvariantquery.cpp
 )
 
-add_library(kjsondatabase SHARED ${JSON_LIB_SRCS})
-target_link_libraries(kjsondatabase
+add_library(kvariantstore SHARED ${KVARIANTSTORE_LIB_SRCS})
+target_link_libraries(kvariantstore
     Qt5::Core
     ${EJDB_LIBRARIES}
 )
 
-generate_export_header(kjsondatabase BASE_NAME JUNGLE EXPORT_FILE_NAME kjsondatabase_export.h)
-install(TARGETS kjsondatabase EXPORT JungleLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+generate_export_header(kvariantstore BASE_NAME KVARIANTSTORE EXPORT_FILE_NAME kvariantstore_export.h)
+install(TARGETS kvariantstore EXPORT JungleLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})

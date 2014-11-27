@@ -17,20 +17,20 @@
  *
  */
 
-#include "jsoncollection.h"
-#include "jsonquery.h"
+#include "kvariantcollection.h"
+#include "kvariantquery.h"
 #include "tools.h"
 
 #include <QDateTime>
 #include <QFile>
 #include <QDebug>
 
-JsonCollection::JsonCollection()
+KVariantCollection::KVariantCollection()
     : m_db(0)
 {
 }
 
-JsonCollection::JsonCollection(EJDB* db, const QString& name)
+KVariantCollection::KVariantCollection(EJDB* db, const QString& name)
     : m_db(db)
     , m_collectionName(name)
 {
@@ -42,16 +42,16 @@ JsonCollection::JsonCollection(EJDB* db, const QString& name)
     Q_ASSERT(m_coll);
 }
 
-JsonCollection::~JsonCollection()
+KVariantCollection::~KVariantCollection()
 {
 }
 
-QString JsonCollection::collectionName() const
+QString KVariantCollection::collectionName() const
 {
     return m_collectionName;
 }
 
-QString JsonCollection::insert(const QVariantMap& map)
+QString KVariantCollection::insert(const QVariantMap& map)
 {
     bson* rec = mapToBson(map);
 
@@ -72,7 +72,7 @@ QString JsonCollection::insert(const QVariantMap& map)
     return QString::fromUtf8(id);
 }
 
-QVariantMap JsonCollection::fetch(const QString& id) const
+QVariantMap KVariantCollection::fetch(const QString& id) const
 {
     bson_oid_t oid;
     bson_oid_from_string(&oid, id.toUtf8().constData());
@@ -89,7 +89,7 @@ QVariantMap JsonCollection::fetch(const QString& id) const
     return map;
 }
 
-bool JsonCollection::remove(const QString& id)
+bool KVariantCollection::remove(const QString& id)
 {
     bson_oid_t oid;
     bson_oid_from_string(&oid, id.toUtf8().constData());
@@ -97,13 +97,13 @@ bool JsonCollection::remove(const QString& id)
     return ejdbrmbson(m_coll, &oid);
 }
 
-JsonQuery JsonCollection::find(const QVariantMap& map, const QVariantMap& hints) const
+KVariantQuery KVariantCollection::find(const QVariantMap& map, const QVariantMap& hints) const
 {
     bson* rec = mapToBson(map, true);
     bson* hint = mapToBson(hints, true);
 
     EJQ* q = ejdbcreatequery(m_db, rec, 0, 0, hint);
-    JsonQuery query(q, m_coll);
+    KVariantQuery query(q, m_coll);
 
     ejdbquerydel(q);
 
@@ -113,7 +113,7 @@ JsonQuery JsonCollection::find(const QVariantMap& map, const QVariantMap& hints)
     return query;
 }
 
-int JsonCollection::count(const QVariantMap& map) const
+int KVariantCollection::count(const QVariantMap& map) const
 {
     bson* rec = mapToBson(map, true);
 
@@ -126,7 +126,7 @@ int JsonCollection::count(const QVariantMap& map) const
     return count;
 }
 
-QVariantMap JsonCollection::findOne(const QVariantMap& query, const QVariantMap& hintMap) const
+QVariantMap KVariantCollection::findOne(const QVariantMap& query, const QVariantMap& hintMap) const
 {
     bson* rec = mapToBson(query, true);
     bson* hint = mapToBson(hintMap, true);

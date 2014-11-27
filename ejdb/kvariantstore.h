@@ -17,46 +17,32 @@
  *
  */
 
-#include "jsondatabase.h"
-#include "jsoncollection.h"
+#ifndef _KVARIANT_STORE_H
+#define _KVARIANT_STORE_H
 
-#include <QDateTime>
-#include <QFile>
-#include <QDebug>
+#include "kvariantstore_export.h"
+#include <QVariantMap>
+#include <tcejdb/ejdb.h>
 
-JsonDatabase::JsonDatabase()
+class KVariantCollection;
+
+class KVARIANTSTORE_EXPORT KVariantStore
 {
-    m_jdb = ejdbnew();
-}
+public:
+    KVariantStore();
+    ~KVariantStore();
 
-JsonDatabase::~JsonDatabase()
-{
-    ejdbclose(m_jdb);
-    ejdbdel(m_jdb);
-}
+    void setPath(const QString& filePath);
+    QString filePath() const;
 
-QString JsonDatabase::filePath() const
-{
-    return m_filePath;
-}
+    bool open();
 
-void JsonDatabase::setPath(const QString& filePath)
-{
-    m_filePath = filePath;
-}
+    KVariantCollection collection(const QString& name);
 
-bool JsonDatabase::open()
-{
-    QByteArray path = QFile::encodeName(m_filePath);
-    if (!ejdbopen(m_jdb, path.constData(), JBOWRITER | JBOCREAT)) {
-        qDebug() << "Could not open db" << m_filePath;
-        return false;
-    }
+private:
+    EJDB* m_jdb;
 
-    return true;
-}
+    QString m_filePath;
+};
 
-JsonCollection JsonDatabase::collection(const QString& name)
-{
-    return JsonCollection(m_jdb, name);
-}
+#endif

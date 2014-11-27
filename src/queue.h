@@ -22,8 +22,8 @@
 
 #include "queueinterface.h"
 #include "consumerinterface.h"
-#include "jsondatabase.h"
-#include "jsoncollection.h"
+#include "kvariantstore.h"
+#include "kvariantcollection.h"
 
 #include <QQueue>
 
@@ -52,8 +52,8 @@ signals:
 private:
     ConsumerInterface* m_consumer;
 
-    JsonDatabase* m_db;
-    JsonCollection m_coll;
+    KVariantStore* m_db;
+    KVariantCollection m_coll;
 };
 }
 

@@ -23,8 +23,8 @@
 
 #include <QObject>
 #include <QSet>
-#include "jsondatabase.h"
-#include "jsoncollection.h"
+#include "kvariantstore.h"
+#include "kvariantcollection.h"
 
 namespace Jungle {
 
@@ -45,8 +45,8 @@ private slots:
     void slotFetchFinished();
 
 private:
-    JsonDatabase* m_db;
-    JsonCollection m_coll;
+    KVariantStore* m_db;
+    KVariantCollection m_coll;
 
     QSet<QString> m_filePaths;
 };

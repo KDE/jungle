@@ -20,8 +20,9 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include "jsondatabase.h"
-#include "jsoncollection.h"
+#include "kvariantstore.h"
+#include "kvariantcollection.h"
+#include "jungle_export.h"
 
 namespace Jungle {
 
@@ -60,8 +61,8 @@ private:
     QString m_path;
     bool m_initialized;
 
-    JsonDatabase m_jdb;
-    JsonCollection m_coll;
+    KVariantStore m_jdb;
+    KVariantCollection m_coll;
 };
 
 }

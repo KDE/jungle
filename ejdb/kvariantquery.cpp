@@ -17,36 +17,36 @@
  *
  */
 
-#include "jsonquery.h"
+#include "kvariantquery.h"
 #include "tools.h"
 
 #include <QDebug>
 
-JsonQuery::JsonQuery(EJQ* q, EJCOLL* coll)
+KVariantQuery::KVariantQuery(EJQ* q, EJCOLL* coll)
     : m_ejq(q)
     , m_pos(-1)
 {
     m_result = ejdbqryexecute(coll, q, &m_count, 0, 0);
 }
 
-JsonQuery::~JsonQuery()
+KVariantQuery::~KVariantQuery()
 {
     ejdbqresultdispose(m_result);
 //    ejdbquerydel(m_ejq);
 }
 
-int JsonQuery::totalCount()
+int KVariantQuery::totalCount()
 {
     return m_count;
 }
 
-bool JsonQuery::next()
+bool KVariantQuery::next()
 {
     m_pos++;
     return static_cast<uint32_t>(m_pos) < m_count;
 }
 
-QVariantMap JsonQuery::result()
+QVariantMap KVariantQuery::result()
 {
     int size;
     const void* data = ejdbqresultbsondata(m_result, m_pos, &size);

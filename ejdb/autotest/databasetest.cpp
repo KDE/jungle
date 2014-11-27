@@ -17,9 +17,9 @@
  *
  */
 
-#include "../jsondatabase.h"
-#include "../jsoncollection.h"
-#include "../jsonquery.h"
+#include "../kvariantstore.h"
+#include "../kvariantcollection.h"
+#include "../kvariantquery.h"
 
 #include <QTest>
 #include <QVariantMap>
@@ -34,7 +34,7 @@ class DatabaseTest : public QObject
 private Q_SLOTS:
     void init()
     {
-        db.reset(new JsonDatabase);
+        db.reset(new KVariantStore);
         db->setPath(m_tempDir.path() + QUuid::createUuid().toString());
         QVERIFY(db->open());
     }
@@ -55,7 +55,7 @@ private Q_SLOTS:
     void testQuerySort();
 private:
     QTemporaryDir m_tempDir;
-    QScopedPointer<JsonDatabase> db;
+    QScopedPointer<KVariantStore> db;
 };
 
 void DatabaseTest::testInsertAndFetch()
@@ -67,7 +67,7 @@ void DatabaseTest::testInsertAndFetch()
     data["episodeNumber"] = 5;
     data["doubleValue"] = 5.44;
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
     QVariantMap output = col.fetch(id);
 
@@ -83,7 +83,7 @@ void DatabaseTest::testInsertWithId()
     data["mimetype"] = "video/mp4";
     data["_id"] = id;
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString newId = col.insert(data);
     QCOMPARE(newId, id);
     QCOMPARE(col.fetch(id), data);
@@ -98,7 +98,7 @@ void DatabaseTest::testInsertArray()
     data["death"] = QVariant(list);
     data["mimetype"] = "video/mp4";
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
     QVariantMap output = col.fetch(id);
 
@@ -117,7 +117,7 @@ void DatabaseTest::testInsertRegex()
     data["type"] = "episode";
     data["mimetype"] = QRegularExpression("video/mp4");
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
     data["_id"] = id;
 
@@ -132,7 +132,7 @@ void DatabaseTest::testInsertMap()
     data["type"] = "episode";
     data["data"] = subData;
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
     data["_id"] = id;
 
@@ -146,7 +146,7 @@ void DatabaseTest::testDoubleInsert()
     data["type"] = "episode";
     data["mimetype"] = "video/mp4";
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
 
     data["_id"] = id;
@@ -166,14 +166,14 @@ void DatabaseTest::testInsertAndQuery()
     data["series"] = "Outlander";
     data["episodeNumber"] = 5;
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id1 = col.insert(data);
 
     data["episodeNumber"] = 6;
     QString id2 = col.insert(data);
 
     QVariantMap queryMap = {{"type", "episode"}};
-    JsonQuery query = col.find(queryMap);
+    KVariantQuery query = col.find(queryMap);
 
     QCOMPARE(query.totalCount(), 2);
     QVERIFY(query.next());
@@ -195,7 +195,7 @@ void DatabaseTest::testAndQuery()
     data["series"] = "Outlander";
     data["episodeNumber"] = 5;
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
 
     QVariantMap data2 = data;
@@ -204,7 +204,7 @@ void DatabaseTest::testAndQuery()
 
     QVariantMap queryMap = {{"type", "episode"},
                             {"series", "Outlander"}};
-    JsonQuery query = col.find(queryMap);
+    KVariantQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 1);
     QVERIFY(query.next());
     data["_id"] = id;
@@ -219,7 +219,7 @@ void DatabaseTest::testQueryNull()
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     col.insert(data);
 
     QVariantMap data2 = data;
@@ -227,7 +227,7 @@ void DatabaseTest::testQueryNull()
     col.insert(data2);
 
     QVariantMap queryMap;
-    JsonQuery query = col.find(queryMap);
+    KVariantQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 2);
 }
 
@@ -238,7 +238,7 @@ void DatabaseTest::testQueryNullValue()
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
 
     QVariantMap data2 = data;
@@ -250,7 +250,7 @@ void DatabaseTest::testQueryNullValue()
     // Will return all items which do not have a mimetype
     QVariantMap queryMap = {{"type", "episode"},
                             {"mimetype", QVariant()}};
-    JsonQuery query = col.find(queryMap);
+    KVariantQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 1);
     QVERIFY(query.next());
     QCOMPARE(query.result(), data2);
@@ -259,7 +259,7 @@ void DatabaseTest::testQueryNullValue()
 
 void DatabaseTest::testQueryRegexp()
 {
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
 
     QVariantMap data;
     data["type"] = "episode";
@@ -275,23 +275,23 @@ void DatabaseTest::testQueryRegexp()
     col.insert(data2);
 
     QVariantMap queryMap = {{"type", QRegularExpression("ep.*")}};
-    JsonQuery query = col.find(queryMap);
+    KVariantQuery query = col.find(queryMap);
     QCOMPARE(query.totalCount(), 1);
     QVERIFY(query.next());
     QCOMPARE(query.result(), data);
     QVERIFY(!query.next());
 
     QVariantMap queryMap2 = {{"type", QRegularExpression("tv")}};
-    JsonQuery query2 = col.find(queryMap2);
+    KVariantQuery query2 = col.find(queryMap2);
     QCOMPARE(query2.totalCount(), 0);
 
     QVariantMap queryMap3 = {{"series", QRegularExpression("outlander")}};
-    JsonQuery query3 = col.find(queryMap3);
+    KVariantQuery query3 = col.find(queryMap3);
     QCOMPARE(query3.totalCount(), 0);
 
     QRegularExpression exp("outlander", QRegularExpression::CaseInsensitiveOption);
     QVariantMap queryMap4 = {{"series", exp}};
-    JsonQuery query4 = col.find(queryMap4);
+    KVariantQuery query4 = col.find(queryMap4);
     QCOMPARE(query4.totalCount(), 1);
     QVERIFY(query4.next());
     QCOMPARE(query4.result(), data);
@@ -305,7 +305,7 @@ void DatabaseTest::testQueryCount()
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     col.insert(data);
 
     QVariantMap data2 = data;
@@ -324,7 +324,7 @@ void DatabaseTest::testQueryFindOne()
     data["mimetype"] = "video/mp4";
     data["series"] = "Outlander";
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     QString id = col.insert(data);
 
     QVariantMap data2 = data;
@@ -343,7 +343,7 @@ void DatabaseTest::testQuerySort()
     QVariantMap b = {{"a", 1}};
     QVariantMap c = {{"a", 3}};
 
-    JsonCollection col = db->collection("testCol");
+    KVariantCollection col = db->collection("testCol");
     col.insert(a);
     QString id = col.insert(b);
     col.insert(c);

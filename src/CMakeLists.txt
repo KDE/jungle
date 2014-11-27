@@ -5,7 +5,7 @@ set(LIB_SRCS
 add_library(junglecommon SHARED ${LIB_SRCS})
 target_link_libraries(junglecommon
     Qt5::Core
-    kjsondatabase
+    kvariantstore
 )
 
 generate_export_header(junglecommon BASE_NAME JUNGLE EXPORT_FILE_NAME jungle_export.h)
@@ -53,7 +53,7 @@ target_link_libraries(jungle
     KF5::ConfigCore
     KF5::I18n
     TmdbQt::TmdbQt5
-    kjsondatabase
+    kvariantstore
     junglecommon
 )
 

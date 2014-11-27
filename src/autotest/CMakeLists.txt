@@ -35,5 +35,5 @@ ecm_add_test(tvseasonfetchjobtest.cpp ../job.cpp ../moviefetchjob.cpp ../themovi
 
 ecm_add_test(queuetest.cpp ../queue.cpp
     TEST_NAME "queuetest"
-    LINK_LIBRARIES Qt5::Test kjsondatabase
+    LINK_LIBRARIES Qt5::Test kvariantstore
 )

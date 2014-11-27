@@ -20,7 +20,7 @@
 
 #include "filesystemtracker.h"
 #include "baloovideosfetcher.h"
-#include <jsonquery.h>
+#include <kvariantquery.h>
 
 #include <QStandardPaths>
 #include <QTimer>
@@ -35,7 +35,7 @@ FileSystemTracker::FileSystemTracker(QObject* parent)
     static QString jungleDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle/";
     QDir().mkpath(jungleDir);
 
-    m_db = new JsonDatabase();
+    m_db = new KVariantStore();
     m_db->setPath(jungleDir + QStringLiteral("fstracker"));
     if (!m_db->open()) {
         Q_ASSERT_X(0, "", "FileSystemTracker could not open database");
@@ -73,7 +73,7 @@ void FileSystemTracker::slotVideoResult(const QString& filePath)
 
 void FileSystemTracker::slotFetchFinished()
 {
-    JsonQuery q = m_coll.find(QVariantMap());
+    KVariantQuery q = m_coll.find(QVariantMap());
     while (q.next()) {
         QVariantMap map = q.result();
         QString filePath = map.value("url").toString();
