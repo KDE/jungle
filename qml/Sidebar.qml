@@ -18,33 +18,36 @@
 
 import QtQuick 2.1
 import QtQuick.Layouts 1.0
+import QtQuick.Controls 1.1
 
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-RowLayout {
+ToolBar {
     id: root
     signal moviesActivated
     signal tvShowsActivated
     signal videosActivated
 
-    PlasmaComponents.ToolButton {
-        text: "Movies"
-        onClicked: root.moviesActivated()
+    RowLayout {
+        PlasmaComponents.ToolButton {
+            text: "Movies"
+            onClicked: root.moviesActivated()
 
-        Layout.fillWidth: true
-    }
+            Layout.fillWidth: true
+        }
 
-    PlasmaComponents.ToolButton {
-        text: "TV Shows"
-        onClicked: root.tvShowsActivated()
+        PlasmaComponents.ToolButton {
+            text: "TV Shows"
+            onClicked: root.tvShowsActivated()
 
-        Layout.fillWidth: true
-    }
+            Layout.fillWidth: true
+        }
 
-    PlasmaComponents.ToolButton {
-        text: "Videos"
-        onClicked: root.videosActivated()
+        PlasmaComponents.ToolButton {
+            text: "Videos"
+            onClicked: root.videosActivated()
 
-        Layout.fillWidth: true
+            Layout.fillWidth: true
+        }
     }
 }
