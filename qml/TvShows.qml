@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.1 as QtControls
 
 import org.kde.jungle 0.1 as Jungle
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
 FocusScope {
     id: topElem
@@ -46,8 +47,6 @@ FocusScope {
         focus: true
         anchors.fill: parent
         highlightMoveDuration: 0
-        highlight: Rectangle {
-            color: "#2874CC"
-        }
+        highlight: PlasmaComponents.Highlight {}
     }
 }

@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 
 import org.kde.jungle 0.1 as Jungle
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
 GridView {
     id: gridView
@@ -24,9 +25,7 @@ GridView {
     }
 
     highlightMoveDuration: 0
-    highlight: Rectangle {
-        color: "#2874CC"
-    }
+    highlight: PlasmaComponents.Highlight {}
 
     cellWidth: 400
     cellHeight: 600
