@@ -26,6 +26,7 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QTimer>
+#include <QFileInfo>
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -71,8 +72,13 @@ int main(int argc, char** argv)
         processor.removeFile(filePath);
     });
 
+    QTimer::singleShot(0, &processor, SLOT(resume()));
+
     JungleConfig config;
 
+    //
+    // QML
+    //
     qDebug() << "Starting QML";
     QQmlEngine engine;
     QQmlContext* objectContext = engine.rootContext();
@@ -87,9 +93,21 @@ int main(int argc, char** argv)
 
     QString path = QStandardPaths::locate(QStandardPaths::DataLocation, "main.qml");
     QQmlComponent component(&engine, path);
-    component.create(objectContext);
+    QObject* object = component.create(objectContext);
 
-    QTimer::singleShot(0, &processor, SLOT(resume()));
+    //
+    // Another instance of Jungle is run
+    //
+    QObject::connect(&service, &KDBusService::activateRequested, [&](const QStringList& args, const QString&) {
+        if (args.size() <= 1) {
+            return;
+        }
+
+        QString url = QFileInfo(args[1]).absoluteFilePath();
+
+        qDebug() << "We should play" << url;
+        QMetaObject::invokeMethod(object, "play", QGenericReturnArgument(), Q_ARG(QVariant, url));
+    });
 
     return app.exec();
 }

@@ -39,8 +39,7 @@ ApplicationWindow {
         visible: false
 
         onVideoSelected: {
-            globalView.push(videoPlayer)
-            videoPlayer.playUrl(url)
+            play(url)
         }
     }
 
@@ -102,11 +101,15 @@ ApplicationWindow {
     function finishInitialization() {
         if (jungleArg) {
             globalView.push(mainView)
-            globalView.push(videoPlayer)
-            videoPlayer.playUrl(jungleArg)
+            play(jungleArg)
         }
         else {
             globalView.push(mainView)
         }
+    }
+
+    function play(url) {
+        globalView.push(videoPlayer)
+        videoPlayer.playUrl(url)
     }
 }
