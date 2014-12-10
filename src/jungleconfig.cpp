@@ -20,6 +20,9 @@
 
 #include "jungleconfig.h"
 
+#include <QStandardPaths>
+#include <QFile>
+
 using namespace Jungle;
 
 JungleConfig::JungleConfig(QObject* parent)
@@ -41,4 +44,12 @@ void JungleConfig::setInitialRun(bool value)
 {
     m_config.group("general").writeEntry("initial run", value);
     m_config.sync();
+}
+
+void JungleConfig::reset()
+{
+    QString path = QStandardPaths::locate(QStandardPaths::ConfigLocation, m_config.name());
+    QFile::remove(path);
+
+    m_config.reparseConfiguration();
 }

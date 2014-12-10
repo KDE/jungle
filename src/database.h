@@ -35,6 +35,7 @@ public:
     ~Database();
 
     static Database* instance();
+    static void reset();
 
     bool init();
     bool initialized();

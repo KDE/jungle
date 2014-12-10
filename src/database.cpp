@@ -55,6 +55,12 @@ Database* Database::instance()
     return &(*s_database);
 }
 
+void Database::reset()
+{
+    QString jungleDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/jungle";
+    QDir(jungleDir).removeRecursively();
+}
+
 bool Database::initialized()
 {
     return m_initialized;

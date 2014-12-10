@@ -38,6 +38,7 @@ public:
     bool initialRun() const;
     void setInitialRun(bool value);
 
+    void reset();
 private:
     KConfig m_config;
 };

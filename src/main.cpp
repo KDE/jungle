@@ -37,6 +37,7 @@
 #include "processor.h"
 #include "filesystemtracker.h"
 #include "jungleconfig.h"
+#include "database.h"
 
 using namespace Jungle;
 
@@ -50,11 +51,19 @@ int main(int argc, char** argv)
 
     QCommandLineParser parser;
     parser.addPositionalArgument(i18n("url"), i18n("The url to play"));
+    parser.addOption(QCommandLineOption("reset", i18n("Reset the database")));
     parser.addHelpOption();
     parser.process(app);
 
     if (parser.positionalArguments().size() > 1) {
         parser.showHelp(1);
+    }
+
+    if (parser.isSet("reset")) {
+        JungleConfig config;
+        config.reset();
+
+        Database::reset();
     }
 
     Processor processor;
