@@ -33,6 +33,7 @@ private Q_SLOTS:
     void testDefaultTypeShouldBeVideo();
     void testNotTvShowWhenNoSeason();
     void testDoubleQuestionMark();
+    void testTvShowWithCountry();
 };
 
 using namespace Jungle;
@@ -134,6 +135,19 @@ void GuessItJobTest::testDoubleQuestionMark()
     QVariantMap out = job->data();
     QCOMPARE(out, data);
 }
+
+void GuessItJobTest::testTvShowWithCountry()
+{
+    const QString url("Forever.US.S01E02.HDTV.x264-LOL.mp4");
+
+    GuessItJob* job = new GuessItJob(url);
+    QSignalSpy spy(job, SIGNAL(finished(Job*)));
+    spy.wait();
+
+    QVariantMap out = job->data();
+    QCOMPARE(out.value("series").toString(), QString("Forever"));
+}
+
 
 QTEST_MAIN(GuessItJobTest);
 

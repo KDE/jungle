@@ -114,6 +114,20 @@ void Jungle::GuessItJob::slotProcessFinished(int exitCode)
         }
     }
 
+    //
+    // HACK: Guess it often puts the country in brackets.
+    //       We do not want that
+    //
+    QString country = m_data.value("country").toString();
+    if (!country.isEmpty()) {
+        country = "(" + country + ")";
+        QString series = m_data.value("series").toString();
+        if (!series.isEmpty() && series.contains(country)) {
+            series.replace(country, QString());
+            m_data["series"] = series.trimmed();
+        }
+    }
+
     emitFinished();
 }
 
