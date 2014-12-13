@@ -28,15 +28,17 @@ ColumnLayout {
     Image {
         id: img
         source: cover
-        fillMode: Image.PreserveAspectFit
+        fillMode: Image.PreserveAspectCrop
         asynchronous: true
         mipmap: true
 
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+        Layout.maximumWidth: gridView.cellActualWidth
+        Layout.maximumHeight: gridView.cellActualWidth * 1.5
+        Layout.minimumWidth: gridView.cellActualWidth
+        Layout.minimumHeight: gridView.cellActualWidth * 1.5
 
         width: gridView.cellActualWidth
-        height: width * 1.5
+        height: gridView.cellActualWidth * 1.5
         visible: (img.status == Image.Ready)
     }
 
