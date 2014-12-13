@@ -49,7 +49,8 @@ AutomaticSpacingGrid {
     highlightMoveDuration: 0
     highlight: PlasmaComponents.Highlight {}
 
-    cellActualWidth: 350
+    // 342 x 512 is generally the size of the movie cover
+    cellActualWidth: 342
     cellActualHeight: 600
 
     minRowSpacing: 5

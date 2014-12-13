@@ -32,16 +32,25 @@ ColumnLayout {
         asynchronous: true
         mipmap: true
 
-        Layout.fillHeight: true
         Layout.fillWidth: true
+        Layout.fillHeight: true
 
-        width: gridView.cellWidth
+        width: gridView.cellActualWidth
+        visible: (img.status == Image.Ready)
+    }
+
+    Rectangle {
+        width: gridView.cellActualWidth
+        height: width * 1.5
+        color: "black"
+        visible: (img.status != Image.Ready)
+        Layout.alignment: Qt.AlignTop
     }
 
     PlasmaComponents.Label {
         text: display
         Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-        Layout.maximumWidth: gridView.cellWidth
+        Layout.maximumWidth: gridView.cellActualWidth
 
         font.bold: true
         elide: Text.ElideRight
@@ -51,7 +60,7 @@ ColumnLayout {
     PlasmaComponents.Label {
         id: sub
         Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-        Layout.maximumWidth: gridView.cellHeight
+        Layout.maximumWidth: gridView.cellActualWidth
 
         opacity: 0.5
         elide: Text.ElideRight
