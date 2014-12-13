@@ -37,6 +37,26 @@ ColumnLayout {
 
         width: gridView.cellActualWidth
         visible: (img.status == Image.Ready)
+
+        SystemPalette { id: sysPal; }
+        // Border
+        Rectangle {
+            id: borderRect
+            anchors.fill: parent
+            color: "#00000000"
+
+            antialiasing: true
+            border.color: sysPal.highlight
+            border.width: 5
+            visible: gridView.currentIndex == index
+        }
+
+        // Highlight
+        Rectangle {
+            anchors.fill: parent
+            color: "black"
+            opacity: gridView.currentIndex == index ? 0.1 : 0.0
+        }
     }
 
     Rectangle {
@@ -67,7 +87,10 @@ ColumnLayout {
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         onClicked: delegate.clicked()
+        onEntered: gridView.currentIndex = index
     }
 }
