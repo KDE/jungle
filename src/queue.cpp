@@ -41,6 +41,8 @@ Queue::Queue(const QString& name)
         Q_ASSERT_X(0, "", "Queue could not open database");
     }
     m_coll = m_db->collection("queue");
+
+    qDebug() << name << size();
 }
 
 Queue::~Queue()
