@@ -21,12 +21,12 @@ import QtQuick.Layouts 1.0
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 ColumnLayout {
+    id: delegate
     property alias subtext: sub.text
-    width: gridView.cellWidth
-    height: gridView.cellHeight
-    clip: true
+    signal clicked
 
     Image {
+        id: img
         source: cover
         fillMode: Image.PreserveAspectFit
         asynchronous: true
@@ -55,5 +55,10 @@ ColumnLayout {
 
         opacity: 0.5
         elide: Text.ElideRight
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: delegate.clicked()
     }
 }
