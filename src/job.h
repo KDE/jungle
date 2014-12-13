@@ -45,10 +45,16 @@ public:
 
 signals:
     void finished(Job* job);
+    void invalidData(Job* job);
 
 protected slots:
     void emitFinished() {
         emit finished(this);
+        deleteLater();
+    }
+
+    void emitInvalidData() {
+        emit invalidData(this);
         deleteLater();
     }
 };

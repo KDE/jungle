@@ -45,6 +45,9 @@ MovieFetchJob::MovieFetchJob(TmdbQt::TheMovieDbApi* api, const QString& searchTe
 
 void MovieFetchJob::slotMovieResult(TmdbQt::SearchJob* job)
 {
+    if (job->hasError()) {
+        qDebug() << job->errorMessage();
+    }
     TmdbQt::MovieDbList list = job->result();
     if (list.isEmpty()) {
         emitFinished();

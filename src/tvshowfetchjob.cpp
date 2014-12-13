@@ -29,6 +29,7 @@
 
 #include <QDebug>
 #include <QUrl>
+#include <QDebug>
 
 using namespace Jungle;
 
@@ -54,7 +55,7 @@ void TvShowFetchJob::slotResult(TmdbQt::TvSearchJob* job)
 {
     TmdbQt::TvShowDbList shows = job->result();
     if (shows.isEmpty()) {
-        emitFinished();
+        emitInvalidData();
         return;
     }
 
@@ -66,7 +67,17 @@ void TvShowFetchJob::slotResult(TmdbQt::TvSearchJob* job)
 
 void TvShowFetchJob::slotResult(TmdbQt::TvShowInfoJob* job)
 {
+    if (job->hasError()) {
+        qDebug() << job->errorMessage();
+        emitInvalidData();
+        return;
+    }
+
     TmdbQt::TvShowDb tvshow = job->result();
+    if (!tvshow.id()) {
+        emitInvalidData();
+        return;
+    }
 
     m_show["type"] = QStringLiteral("tvshow");
     m_show["title"] = tvshow.name();

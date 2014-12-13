@@ -50,6 +50,7 @@ protected:
 
 private slots:
     void slotFinished(Job* job);
+    void slotInvalidData(Job* job);
 
 private:
     Job* m_job;

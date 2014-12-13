@@ -55,6 +55,7 @@ void AsyncJobConsumer::itemsAdded(QueueInterface* queue)
     }
 
     connect(m_job, SIGNAL(finished(Job*)), this, SLOT(slotFinished(Job*)));
+    connect(m_job, SIGNAL(invalidData(Job*)), this, SLOT(slotInvalidData(Job*)));
 }
 
 void AsyncJobConsumer::slotFinished(Job* job)
@@ -83,6 +84,22 @@ void AsyncJobConsumer::slotFinished(Job* job)
         for (QueueInterface* queue : m_outputQueues) {
             queue->enqueue(map);
         }
+    }
+
+    m_inputQueue->dequeue();
+    m_job = 0;
+
+    if (!m_inputQueue->empty()) {
+        itemsAdded(m_inputQueue);
+    }
+}
+
+void AsyncJobConsumer::slotInvalidData(Job* job)
+{
+    m_input.insert("delete", true);
+
+    for (QueueInterface* queue : m_outputQueues) {
+        queue->enqueue(m_input);
     }
 
     m_inputQueue->dequeue();
