@@ -36,6 +36,7 @@ TvShowsModel::TvShowsModel(QObject* parent)
     names.insert(CoverRole, "cover");
     names.insert(ReleaseDateRole, "date");
     names.insert(ShowIdRole, "showId");
+    names.insert(YearRole, "year");
     setRoleNames(names);
 
     connect(Database::instance(), SIGNAL(tvShowAdded(QVariantMap)),
@@ -85,6 +86,9 @@ QVariant TvShowsModel::data(const QModelIndex& index, int role) const
 
         case ShowIdRole:
             return show.value("id").toString();
+
+        case YearRole:
+            return show.value("releaseDate").toDate().year();
     }
 
     return QVariant();

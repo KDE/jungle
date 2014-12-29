@@ -18,35 +18,38 @@
 
 import QtQuick 2.1
 import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.1 as QtControls
 
 import org.kde.jungle 0.1 as Jungle
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-FocusScope {
-    id: topElem
+AutomaticSpacingGrid {
+    id: gridView
     signal showSelected (string showId)
 
-    GridView {
-        id: gridView
-        model: Jungle.SortModel {
-            sourceModel: Jungle.TvShowsModel {}
-        }
-        delegate: MovieDelegate {
-            MouseArea {
-                anchors.fill: parent
-                onClicked: showSelected(model.showId)
-            }
-            Keys.onReturnPressed: showSelected(model.showId)
-            Keys.onSpacePressed: showSelected(model.showId)
-        }
-
-        cellWidth: 400
-        cellHeight: 600
-
-        focus: true
-        anchors.fill: parent
-        highlightMoveDuration: 0
-        highlight: PlasmaComponents.Highlight {}
+    model: Jungle.SortModel {
+        sourceModel: Jungle.TvShowsModel {}
     }
+
+    delegate: Item {
+        width: cellWidth
+        height: cellHeight
+
+        MovieDelegate {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+
+            subtext: model.year
+            onClicked: gridView.showSelected(model.showId)
+
+            Keys.onReturnPressed: gridView.showSelected(model.showId)
+            Keys.onSpacePressed: gridView.showSelected(model.showId)
+        }
+    }
+
+    // 342 x 512 is generally the size of the movie cover
+    cellActualWidth: 342
+    cellActualHeight: 600
+
+    minRowSpacing: 5
+    boundsBehavior: Flickable.StopAtBounds
 }

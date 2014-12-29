@@ -39,7 +39,8 @@ public:
     enum Roles {
         CoverRole = Qt::UserRole + 1,
         ReleaseDateRole,
-        ShowIdRole
+        ShowIdRole,
+        YearRole
     };
 
 private slots:
