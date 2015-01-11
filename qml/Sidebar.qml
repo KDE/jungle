@@ -32,22 +32,26 @@ ToolBar {
         PlasmaComponents.ToolButton {
             text: "Movies"
             onClicked: root.moviesActivated()
-
-            Layout.fillWidth: true
         }
 
         PlasmaComponents.ToolButton {
             text: "TV Shows"
             onClicked: root.tvShowsActivated()
-
-            Layout.fillWidth: true
         }
 
         PlasmaComponents.ToolButton {
             text: "Videos"
             onClicked: root.videosActivated()
+        }
 
+        // Spacer
+        Item {
             Layout.fillWidth: true
+        }
+
+        PlasmaComponents.ToolButton {
+            iconName: "view-fullscreen"
+            onClicked: applicationWindow.toggleFullScreen()
         }
     }
 }
