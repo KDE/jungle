@@ -22,37 +22,37 @@ import QtQuick.Controls 1.1 as QtControls
 
 import org.kde.jungle 0.1 as Jungle
 
-FocusScope {
-    id: topElem
+AutomaticSpacingGrid {
+    id: gridView
     signal play (string url)
-
     property alias showId: epModel.showId
 
-    GridView {
-        id: tvepisodes
-        model: Jungle.SortModel {
-            sourceModel: Jungle.TvEpisodeModel {
-                id: epModel
-            }
-            sortRoleName: "episodeNumber"
+    model: Jungle.SortModel {
+        sourceModel: Jungle.TvEpisodeModel {
+            id: epModel
         }
+        sortRoleName: "episodeNumber"
+    }
 
-        delegate: EpisodeDelegate {
+    delegate: Item {
+        width: cellWidth
+        height: cellHeight
+
+        EpisodeDelegate {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
             MouseArea {
                 anchors.fill: parent
                 onClicked: topElem.play(url)
             }
-            Keys.onReturnPressed: topElem.play(url)
-            Keys.onSpacePressed: topElem.play(url)
-        }
-
-        cellWidth: 400
-        cellHeight: 350
-
-        anchors.fill: parent
-        highlightMoveDuration: 0
-        highlight: Rectangle {
-            color: "#2874CC"
+            Keys.onReturnPressed: gridView.play(url)
+            Keys.onSpacePressed: gridView.play(url)
         }
     }
+
+    cellActualWidth: 400
+    cellActualHeight: 350
+
+    minRowSpacing: 5
+    boundsBehavior: Flickable.StopAtBounds
 }
