@@ -66,43 +66,39 @@ ColumnLayout {
             }
         }
 
-        initialItem: Movies {
-            id: movies
+        initialItem: movies
+    }
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            focus: true
-            onPlay: {
-                videoSelected(url)
+    Component {
+        id: movies
+        Movies {
+            onPlay: videoSelected(url)
+        }
+    }
+
+    Component {
+        id: tvshows
+        TvShows {
+            onShowSelected: {
+                stackView.push({
+                    item: tvEpisodes,
+                    properties: { showId: showId }
+                });
             }
         }
     }
 
-    TvShows {
-        id: tvshows
-        visible: false
-
-        onShowSelected: {
-            tvEpisodes.showId = showId
-            stackView.push(tvEpisodes)
-        }
-    }
-
-    TvEpisodes {
+    Component {
         id: tvEpisodes
-        visible: false
-
-        onPlay: {
-            videoSelected(url)
+        TvEpisodes {
+            onPlay: videoSelected(url)
         }
     }
 
-    Videos {
+    Component {
         id: videos
-        visible: false
-
-        onPlay: {
-            videoSelected(url)
+        Videos {
+            onPlay: videoSelected(url)
         }
     }
 }
