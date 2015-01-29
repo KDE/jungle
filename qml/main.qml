@@ -34,39 +34,35 @@ ApplicationWindow {
     height: 1600
     visible: true // the default is not true
 
-    MainView {
+    Component {
         id: mainView
-        visible: false
-
-        onVideoSelected: {
-            play(url)
+        MainView {
+            onVideoSelected: play(url)
         }
     }
 
-    VideoPlayer {
+    Component {
         id: videoPlayer
-        visible: false
-
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-
-        Keys.onEscapePressed: {
-            videoPlayer.stop()
-            globalView.pop()
+        VideoPlayer {
+            Keys.onEscapePressed: {
+                videoPlayer.stop()
+                globalView.pop()
+            }
         }
     }
 
-    FirstRun {
+    Component {
         id: firstRun
-        visible: false
-        progress: jungleProcessor.initialProgress
+        FirstRun {
+            progress: jungleProcessor.initialProgress
 
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-        onFinished: {
-            jungleConfig.initialRun = false
-            finishInitialization();
+            onFinished: {
+                jungleConfig.initialRun = false
+                finishInitialization();
+            }
         }
     }
 
@@ -109,7 +105,9 @@ ApplicationWindow {
     }
 
     function play(url) {
-        globalView.push(videoPlayer)
-        videoPlayer.playUrl(url)
+        globalView.push({
+            item: videoPlayer,
+            properties: { source: url, focus: true }
+        });
     }
 }

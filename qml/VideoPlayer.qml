@@ -27,6 +27,7 @@ Item {
 
     MediaPlayer {
         id: mediaPlayer
+        autoPlay: true
     }
 
     VideoOutput {
@@ -68,12 +69,6 @@ Item {
     }
 
     function play() {
-        mediaPlayer.play()
-    }
-
-    function playUrl(url) {
-        source = url
-        focus = true
         mediaPlayer.play()
     }
 
