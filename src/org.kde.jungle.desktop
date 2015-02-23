@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Jungle
+Name[bs]=Jungle
 Name[cs]=Jungle
 Name[de]=Jungle
 Name[es]=Jungle
@@ -12,6 +13,7 @@ Name[sv]=Djungel
 Name[uk]=Jungle
 Name[x-test]=xxJunglexx
 GenericName=KDE Video Player
+GenericName[bs]=KDE Video Plejer
 GenericName[cs]=Přehrávač videa pro KDE
 GenericName[de]=KDE-Videowiedergabe
 GenericName[es]=Reproductor de vídeo para KDE
@@ -24,6 +26,7 @@ GenericName[sv]=KDE-videospelare
 GenericName[uk]=Відеопрогравач для KDE
 GenericName[x-test]=xxKDE Video Playerxx
 Comment=An amazing video player
+Comment[bs]=Uzbudljivi video plejer
 Comment[cs]=Skvělý přehrávač videa
 Comment[es]=Un reproductor de vídeo increíble
 Comment[nl]=Een verbazende videospeler
