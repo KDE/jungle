@@ -24,8 +24,8 @@
 #include <QObject>
 #include <QSet>
 
-#include <KVariantStore/KVariantStore>
-#include <KVariantStore/KVariantCollection>
+#include <KDocumentStore/KDocumentStore>
+#include <KDocumentStore/KDocumentCollection>
 
 namespace Jungle {
 
@@ -46,8 +46,8 @@ private slots:
     void slotFetchFinished();
 
 private:
-    KVariantStore* m_db;
-    KVariantCollection m_coll;
+    KDocumentStore* m_db;
+    KDocumentCollection m_coll;
 
     QSet<QString> m_filePaths;
 };

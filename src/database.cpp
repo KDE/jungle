@@ -19,7 +19,7 @@
 
 #include "database.h"
 
-#include <KVariantStore/KVariantQuery>
+#include <KDocumentStore/KDocumentQuery>
 
 #include <QVariantMap>
 #include <QDebug>
@@ -86,7 +86,7 @@ QVariantMap Database::item(const QString& key, const QVariant& value)
 
 QVariantMap Database::query(const QVariantMap& map)
 {
-    KVariantQuery query = m_coll.find(map);
+    KDocumentQuery query = m_coll.find(map);
     if (query.next()) {
         return query.result();
     }
@@ -122,7 +122,7 @@ void Database::remove(const QString& id)
 QList<QVariantMap> Database::allMovies() const
 {
     QVariantMap queryMap = {{"type", "movie"}};
-    KVariantQuery query = m_coll.find(queryMap);
+    KDocumentQuery query = m_coll.find(queryMap);
 
     QList<QVariantMap> movies;
     while (query.next()) {
@@ -136,7 +136,7 @@ QList<QVariantMap> Database::allMovies() const
 QList<QVariantMap> Database::allVideos() const
 {
     QVariantMap queryMap = {{"type", "video"}};
-    KVariantQuery query = m_coll.find(queryMap);
+    KDocumentQuery query = m_coll.find(queryMap);
 
     QList<QVariantMap> videos;
     while (query.next()) {
@@ -160,7 +160,7 @@ QString Database::showId(const QString& name)
 QList<QVariantMap> Database::allShows() const
 {
     QVariantMap queryMap = {{"type", "tvshow"}};
-    KVariantQuery query = m_coll.find(queryMap);
+    KDocumentQuery query = m_coll.find(queryMap);
 
     QList<QVariantMap> shows;
     while (query.next()) {
@@ -181,7 +181,7 @@ QList<QVariantMap> Database::allEpisodes(const QString& showId, int season)
     if (season != -1) {
         queryMap.insert("season", season);
     }
-    KVariantQuery query = m_coll.find(queryMap);
+    KDocumentQuery query = m_coll.find(queryMap);
 
     QList<QVariantMap> epList;
     while (query.next()) {

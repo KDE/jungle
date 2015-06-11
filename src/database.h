@@ -22,8 +22,8 @@
 
 #include "jungle_export.h"
 
-#include <KVariantStore/KVariantStore>
-#include <KVariantStore/KVariantCollection>
+#include <KDocumentStore/KDocumentStore>
+#include <KDocumentStore/KDocumentCollection>
 
 namespace Jungle {
 
@@ -63,8 +63,8 @@ private:
     QString m_path;
     bool m_initialized;
 
-    KVariantStore m_jdb;
-    KVariantCollection m_coll;
+    KDocumentStore m_jdb;
+    KDocumentCollection m_coll;
 };
 
 }

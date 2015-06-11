@@ -23,8 +23,8 @@
 #include "queueinterface.h"
 #include "consumerinterface.h"
 
-#include <KVariantStore/KVariantStore>
-#include <KVariantStore/KVariantCollection>
+#include <KDocumentStore/KDocumentStore>
+#include <KDocumentStore/KDocumentCollection>
 
 #include <QQueue>
 
@@ -53,8 +53,8 @@ signals:
 private:
     ConsumerInterface* m_consumer;
 
-    KVariantStore* m_db;
-    KVariantCollection m_coll;
+    KDocumentStore* m_db;
+    KDocumentCollection m_coll;
 };
 }
 

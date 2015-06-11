@@ -19,7 +19,7 @@
 
 #include "queue.h"
 
-#include <KVariantStore/KVariantStore>
+#include <KDocumentStore/KDocumentStore>
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -35,7 +35,7 @@ Queue::Queue(const QString& name)
     QDir().mkpath(jungleDir);
 
     Q_ASSERT(!name.isEmpty());
-    m_db = new KVariantStore();
+    m_db = new KDocumentStore();
     m_db->setPath(jungleDir + QStringLiteral("queue_") + name);
     if (!m_db->open()) {
         Q_ASSERT_X(0, "", "Queue could not open database");
