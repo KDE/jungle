@@ -43,7 +43,7 @@ AutomaticSpacingGrid {
             anchors.top: parent.top
             MouseArea {
                 anchors.fill: parent
-                onClicked: topElem.play(url)
+                onClicked: gridView.play(url)
             }
             Keys.onReturnPressed: gridView.play(url)
             Keys.onSpacePressed: gridView.play(url)
