@@ -41,7 +41,7 @@ signals:
     void finished();
 
 private slots:
-    void queryResult(Baloo::QueryRunnable*, const Baloo::Result& res);
+    void queryResult(Baloo::QueryRunnable*, const QString& filePath);
     void slotFinished();
 };
 }

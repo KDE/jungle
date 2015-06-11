@@ -34,8 +34,8 @@ void BalooVideosFetcher::fetch()
     query.setType("Video");
 
     Baloo::QueryRunnable* runnable = new Baloo::QueryRunnable(query, this);
-    connect(runnable, SIGNAL(queryResult(Baloo::QueryRunnable*,Baloo::Result)),
-            this, SLOT(queryResult(Baloo::QueryRunnable*,Baloo::Result)));
+    connect(runnable, SIGNAL(queryResult(Baloo::QueryRunnable*,QString)),
+            this, SLOT(queryResult(Baloo::QueryRunnable*,QString)));
     connect(runnable, SIGNAL(finished(Baloo::QueryRunnable*)),
             this, SLOT(slotFinished()));
 
@@ -43,10 +43,8 @@ void BalooVideosFetcher::fetch()
     pool->start(runnable);
 }
 
-void BalooVideosFetcher::queryResult(Baloo::QueryRunnable*, const Baloo::Result& res)
+void BalooVideosFetcher::queryResult(Baloo::QueryRunnable*, const QString& filePath)
 {
-    const QString filePath = res.filePath();
-
     if (!filePath.isEmpty()) {
         emit videoResult(filePath);
     }
