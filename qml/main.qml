@@ -69,6 +69,7 @@ ApplicationWindow {
     StackView {
         id: globalView
         anchors.fill: parent
+        focus: true
         Component.onCompleted: {
             if (jungleConfig.initialRun) {
                 push(firstRun)
