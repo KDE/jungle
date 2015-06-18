@@ -24,10 +24,12 @@ import org.kde.jungle 0.1 as Jungle
 Item {
     id: video
     property alias source: mediaPlayer.source
+    signal done()
 
     MediaPlayer {
         id: mediaPlayer
         autoPlay: true
+        onStopped: done()
     }
 
     VideoOutput {
@@ -37,6 +39,10 @@ Item {
     }
 
     Keys.onSpacePressed: mediaPlayer.playbackState == MediaPlayer.PlayingState ? mediaPlayer.pause() : mediaPlayer.play()
+    Keys.onEscapePressed: {
+        stop();
+        done();
+    }
 
     Keys.onPressed: {
         var amount = 3000;

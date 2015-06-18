@@ -44,10 +44,7 @@ ApplicationWindow {
     Component {
         id: videoPlayer
         VideoPlayer {
-            Keys.onEscapePressed: {
-                videoPlayer.stop()
-                globalView.pop()
-            }
+            onDone: globalView.pop()
         }
     }
 
